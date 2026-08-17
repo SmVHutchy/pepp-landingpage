@@ -13,39 +13,18 @@
  */
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { STORE } from '../data/site.js';
 import { MOTION } from './motion-config.js';
 import { resolveEase } from './ds-ease.js';
 
+/* Navigation, Store-Weiche und Aufklappmenü liegen in nav.js — ohne GSAP,
+   damit die vier Rechtsseiten sie einbinden können, ohne die Animations-
+   bibliothek mitzuladen. Der Import wirkt beim Laden, es gibt nichts
+   aufzurufen. Siehe Fund 9 und 10 in docs/AUDIT-2026-08-17.md. */
+import './nav.js';
+
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── 1 · Navigation: ab 24px Scroll Hintergrund und Hairline ─────────────── */
-
-function initNav() {
-  const nav = document.querySelector('[data-nav]');
-  if (!nav) return;
-
-  const update = () => {
-    nav.dataset.solid = String(window.scrollY > 24);
-  };
-  update();
-  window.addEventListener('scroll', update, { passive: true });
-}
-
-/* ── 2 · Store-Weiche ───────────────────────────────────────────────────────
-   Ein CTA-Typ. Der Link zeigt im Markup auf den App Store, damit er ohne JS
-   funktioniert; auf Android wird zum Play Store umgeleitet. */
-
-function initStoreSwitch() {
-  const isAndroid = /Android/i.test(navigator.userAgent || '');
-  if (!isAndroid) return;
-
-  for (const cta of document.querySelectorAll('[data-cta]')) {
-    cta.setAttribute('href', STORE.android);
-  }
-}
-
-/* ── 3 · Ladeanzeige ────────────────────────────────────────────────────────
+/* ── 1 · Ladeanzeige ────────────────────────────────────────────────────────
    Sie steht im Markup auf hidden. Ohne JavaScript erscheint sie also nie und
    kann nichts dauerhaft verdecken — das ist die Bedingung dafür, dass die Seite
    ohne Skript vollständig bedienbar bleibt.
@@ -80,40 +59,7 @@ function initHeroLoader() {
   });
 }
 
-/* ── 3b · Aufklappmenü der Navigation ───────────────────────────────────────
-   Das Menü selbst ist ein natives <details> und funktioniert ohne dieses
-   Skript. Hier kommt nur dazu, was Nutzer von einem Menü erwarten und was
-   <details> nicht mitbringt: Escape schliesst, ein Klick daneben schliesst,
-   und ein Klick auf einen Anker schliesst mit — sonst bleibt das Panel über
-   dem Ziel stehen, zu dem man gerade gesprungen ist. */
-
-function initNavMenu() {
-  const menu = document.querySelector('[data-nav-menu]');
-  if (!menu) return;
-
-  const schliessen = () => {
-    menu.open = false;
-  };
-
-  for (const link of menu.querySelectorAll('a')) {
-    link.addEventListener('click', schliessen);
-  }
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && menu.open) {
-      schliessen();
-      /* Fokus zurück auf den Knopf: sonst steht er im geschlossenen Panel und
-         der nächste Tabulatorsprung beginnt an einer unsichtbaren Stelle. */
-      menu.querySelector('summary')?.focus();
-    }
-  });
-
-  document.addEventListener('click', (e) => {
-    if (menu.open && !menu.contains(e.target)) schliessen();
-  });
-}
-
-/* ── 4 · Sticky-CTA-Leiste: fährt ab 25% Scrolltiefe herein ─────────────── */
+/* ── 2 · Sticky-CTA-Leiste: fährt ab 25% Scrolltiefe herein ─────────────── */
 
 function initStickyBar() {
   const bar = document.querySelector('[data-sticky-cta]');
@@ -450,9 +396,8 @@ function initMechanicSwap() {
 
 /* ── Start ──────────────────────────────────────────────────────────────── */
 
-initNav();
-initNavMenu();
-initStoreSwitch();
+/* Navigation, Store-Weiche und Menü laufen bereits — sie hängen am Import
+   von ./nav.js oben. */
 initHeroLoader();
 initStickyBar();
 initMotion();
@@ -462,7 +407,7 @@ initMotion();
    Editor-Chunk weg — im dist/ liegt davon kein Byte.
    Bewusst ohne await: motion-editor.js importiert replayMotion aus dieser
    Datei zurück. Ein top-level await würde den Zirkel zum Deadlock machen und
-   damit auch initNav nie ausführen. */
+   damit auch die Ladeanzeige und die Sticky-Leiste nie starten. */
 if (import.meta.env.DEV) {
   import('./motion-editor.js').then((editor) => {
     editor.restoreOverrides();

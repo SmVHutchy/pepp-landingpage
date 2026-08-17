@@ -46,6 +46,16 @@ const { title, description, body } = Astro.props;
     }
   </main>
   <Footer />
+
+  {/* Nur die Navigation, ohne GSAP. Ohne dieses Skript blieb die klebende
+      Leiste auf diesen vier Seiten dauerhaft durchsichtig, und der Rechtstext
+      scrollte unlesbar durch sie hindurch; ausserdem lief die Android-Weiche
+      am CTA im Kopf nicht. Behebt Fund 9 und 10 aus
+      docs/AUDIT-2026-08-17.md. Die Animationslogik aus site.js bleibt der
+      Startseite vorbehalten — hier gibt es nichts zu animieren. */}
+  <script>
+    import '../scripts/nav.js';
+  </script>
 </Base>
 
 <style is:global>
