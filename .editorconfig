@@ -1,0 +1,20 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 88
+
+[*.md]
+# Zwei Leerzeichen am Zeilenende sind in Markdown ein harter Umbruch.
+trim_trailing_whitespace = false
+
+[src/legal/*.html]
+# Fremdtext, wird nicht angefasst. Siehe ADR-010 in docs/DECISIONS.md.
+indent_size = unset
+max_line_length = unset
+trim_trailing_whitespace = false

@@ -34,23 +34,29 @@ const cards = [
 ];
 ---
 
-{/* Kapitelfläche: die einzige Sektion der Seite auf --mkt-surface-chapter.
+{
+  /* Kapitelfläche: die einzige Sektion der Seite auf --mkt-surface-chapter.
     Acht gleich schwache Wechsel zwischen Off-White und Weiß trugen nichts;
     ein Farbmoment, der ein Kapitel markiert, trägt. SM-Padding, weil diese
-    Sektion beruhigt statt zu verkaufen. */}
+    Sektion beruhigt statt zu verkaufen. */
+}
 <section class="mkt-section mkt-section--sm mkt-section--chapter">
   <div class="mkt-container">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Sicherheit</p>
-      <h2 class="mkt-h2 mkt-h2--sm" data-anim>Kein Konto. Keine Karte. Kein Datenhandel.</h2>
+      <h2 class="mkt-h2 mkt-h2--sm" data-anim>
+        Kein Konto. Keine Karte. Kein Datenhandel.
+      </h2>
       <p class="mkt-lead sec__lead" data-anim>
         Pepp ist keine Banking-App. Durch die App fließt kein echtes Geld.
       </p>
     </div>
 
-    {/* Kartenrezept „Hairline-Reihen": eine Trennlinie zwischen den Reihen,
+    {
+      /* Kartenrezept „Hairline-Reihen": eine Trennlinie zwischen den Reihen,
         kein Rahmen um sie herum. Diese Sektion beruhigt, sie verkauft nicht —
-        vier Verkaufskarten wären der falsche Ton. */}
+        vier Verkaufskarten wären der falsche Ton. */
+    }
     <ul class="sec__rows mkt-rows mkt-list-reset">
       {
         cards.map((card) => (

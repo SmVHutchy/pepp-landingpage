@@ -28,7 +28,6 @@ const VIEWPORTS = [
   { name: '320', width: 320, height: 800 },
 ];
 
-
 const browser = await chromium.launch();
 const page = await browser.newPage({ reducedMotion: 'reduce', deviceScaleFactor: 1 });
 
@@ -45,12 +44,18 @@ for (const vp of VIEWPORTS) {
   result[vp.name] = await page.evaluate(() => {
     /* body > footer, nicht footer: <blockquote><footer> in den Zitatkarten
        würde sonst als eigener Seitenblock mitgezählt. */
-    const blocks = [...document.querySelectorAll('body > header, main > section, body > footer')];
+    const blocks = [
+      ...document.querySelectorAll('body > header, main > section, body > footer'),
+    ];
     const label = (el, i) => {
       if (el.tagName === 'HEADER') return '01-nav';
       if (el.tagName === 'FOOTER') return '15-footer';
       const id = el.id || el.getAttribute('aria-label') || '';
-      return `${String(i).padStart(2, '0')}-${(id || el.className.split(' ')[0] || 'sektion')
+      return `${String(i).padStart(2, '0')}-${(
+        id ||
+        el.className.split(' ')[0] ||
+        'sektion'
+      )
         .replace(/\s+/g, '-')
         .slice(0, 18)}`;
     };
@@ -102,15 +107,24 @@ const rhythm = [];
     const a = s[i - 1];
     const b = s[i];
     const diff = ['bg', 'pt', 'h2', 'recipe'].filter((k) => a[k] !== b[k]);
-    rhythm.push({ pair: `${a.name} → ${b.name}`, diff: diff.length, keys: diff.join(',') });
+    rhythm.push({
+      pair: `${a.name} → ${b.name}`,
+      diff: diff.length,
+      keys: diff.join(','),
+    });
   }
 }
 
 /* ── Ausgabe ─────────────────────────────────────────────────────────────── */
-const old = !SAVE && existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : null;
+const old =
+  !SAVE && existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : null;
 const prev = (vp, name) => old?.[vp]?.sections.find((x) => x.name === name);
 const delta = (now, before) =>
-  before === undefined ? '' : now === before ? '     ·' : `${now - before > 0 ? '+' : ''}${now - before}`;
+  before === undefined
+    ? ''
+    : now === before
+      ? '     ·'
+      : `${now - before > 0 ? '+' : ''}${now - before}`;
 
 for (const vp of VIEWPORTS) {
   const { doc, sections } = result[vp.name];
@@ -136,8 +150,12 @@ console.log(
 
 console.log('\n── Rhythmus: Nachbarpaare mit weniger als 2 Unterschieden ──');
 const flat = rhythm.filter((r) => r.diff < 2);
-if (!flat.length) console.log('  keine — jedes Nachbarpaar unterscheidet sich in mindestens 2 Dimensionen');
-for (const r of flat) console.log(`  ! ${r.pair.padEnd(48)} nur ${r.diff} (${r.keys || 'identisch'})`);
+if (!flat.length)
+  console.log(
+    '  keine — jedes Nachbarpaar unterscheidet sich in mindestens 2 Dimensionen'
+  );
+for (const r of flat)
+  console.log(`  ! ${r.pair.padEnd(48)} nur ${r.diff} (${r.keys || 'identisch'})`);
 
 if (SAVE) {
   if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true });

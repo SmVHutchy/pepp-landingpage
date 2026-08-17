@@ -1,0 +1,24 @@
+#!/bin/sh
+# Qualitätstor vor jedem Commit.
+#
+# Eingerichtet über das prepare-Skript in package.json (setzt core.hooksPath).
+# Kein husky, keine zusätzliche Abhängigkeit — der Hook ist ein Shellskript.
+#
+# Überspringen im Notfall: git commit --no-verify
+set -e
+
+echo "pre-commit: Formatierung prüfen ..."
+npm run --silent format:check || {
+  echo ""
+  echo "  Formatierung weicht ab. Beheben mit:  npm run format"
+  exit 1
+}
+
+echo "pre-commit: Typen und Astro prüfen ..."
+npm run --silent check || {
+  echo ""
+  echo "  astro check meldet Fehler."
+  exit 1
+}
+
+echo "pre-commit: ok"

@@ -24,12 +24,12 @@ export const PRICING = {
 
 Was sich beim Ändern **automatisch** mitzieht:
 
-| Ort | Was daraus entsteht |
-|---|---|
-| Preissektion | beide Preiskarten, „nur 1,66 € im Monat", Badge „spart 45 %" |
-| FAQ, Antwort 3 und 8 | Preis und Testdauer im Antworttext |
-| JSON-LD im `<head>` | die beiden `Offer`-Einträge für Google |
-| Jeder CTA | Beschriftung „**14** Tage gratis starten" aus `trialDays` |
+| Ort                  | Was daraus entsteht                                          |
+| -------------------- | ------------------------------------------------------------ |
+| Preissektion         | beide Preiskarten, „nur 1,66 € im Monat", Badge „spart 45 %" |
+| FAQ, Antwort 3 und 8 | Preis und Testdauer im Antworttext                           |
+| JSON-LD im `<head>`  | die beiden `Offer`-Einträge für Google                       |
+| Jeder CTA            | Beschriftung „**14** Tage gratis starten" aus `trialDays`    |
 
 Die abgeleiteten Werte werden gerechnet, nicht getippt: `yearlyPerMonth()` teilt durch 12 und
 rundet kaufmännisch, `yearlySavingsPercent()` rechnet die Ersparnis gegenüber monatlich.
@@ -126,16 +126,16 @@ Beispiel: die Micro-Trust-Punkte im Hero.
 Diese Regeln sind nicht Geschmack, sie werden von `node scripts/verify.mjs` maschinell geprüft.
 Ein Verstoß lässt die Abnahme durchfallen.
 
-| Regel | Richtig | Falsch |
-|---|---|---|
-| Ansprache | „du", immer | „Sie" |
-| Geld | `2,50 €` | `2.50 EUR`, `€2,50` |
-| Zeit | `30 Min` | `30 min`, `30 Minuten` |
-| Trenner | `·` | `-`, `\|` |
-| Anführung | `„ … "` | `" … "`, `" … "` |
-| Schreibung | Sentence case | Title Case |
-| CAPS | nur Sektions-Labels | Überschriften |
-| Emoji | keine | ein einziges |
+| Regel      | Richtig             | Falsch                 |
+| ---------- | ------------------- | ---------------------- |
+| Ansprache  | „du", immer         | „Sie"                  |
+| Geld       | `2,50 €`            | `2.50 EUR`, `€2,50`    |
+| Zeit       | `30 Min`            | `30 min`, `30 Minuten` |
+| Trenner    | `·`                 | `-`, `\|`              |
+| Anführung  | `„ … "`             | `" … "`, `" … "`       |
+| Schreibung | Sentence case       | Title Case             |
+| CAPS       | nur Sektions-Labels | Überschriften          |
+| Emoji      | keine               | ein einziges           |
 
 **Der CTA-Text ist unveränderlich.** „14 Tage gratis starten", sechsmal, überall gleich. Er
 steht fest verdrahtet in [`src/components/Cta.astro`](../src/components/Cta.astro) und lässt

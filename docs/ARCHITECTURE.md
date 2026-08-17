@@ -38,29 +38,29 @@ davon ist der weit überwiegende Teil GSAP selbst. Die vier Rechtsseiten laden
 
 ## 2 · Ordnerstruktur
 
-| Pfad | Zweck |
-|---|---|
-| `src/pages/` | Die fünf Routen. `index.astro` komponiert 14 Sektionen und baut das JSON-LD; die vier Rechtsseiten sind 6–14 Zeilen Hülle. |
-| `src/layouts/` | `Base.astro` = `<head>`, Meta, Canonical, Font-Preload, JSON-LD-Slot. `Legal.astro` = Typografie der Rechtsseiten, `is:global`, weil der Text über `set:html` kommt. |
-| `src/components/` | Drei Bausteine: `Cta.astro` (der einzige Primär-CTA), `Icon.astro` (Inline-SVG-Renderer), `Blob.astro` (dekorativer Farbschein). |
-| `src/components/sections/` | 17 Sektionskomponenten, je eine pro Seitenabschnitt. Die Nummerierung im Dateikopf entspricht der Sektionstabelle des Handoff-README. |
-| `src/data/` | `site.js` — Preise, Store-URLs, Betreiber, Domain. `faq.js` — die acht FAQ-Einträge. Die einzigen Datenquellen des Projekts. |
-| `src/content/legal/` | Drei rohe HTML-Fragmente (Impressum, Datenschutz, AGB). Fremdtext, wortgleich übernommen, wird per `?raw` zur Buildzeit eingelesen (`impressum.astro:6`). |
-| `src/scripts/` | `site.js` (Clientverhalten), `motion-config.js` (alle Bewegungsparameter), `ds-ease.js` (Bézier aus CSS-Tokens), `motion-editor.js` (nur Dev). |
-| `src/styles/` | `global.css` als Einstieg, darunter `tokens/` mit zehn Token-Dateien. |
-| `src/styles/tokens/` | Neun Dateien 1:1 aus dem Design System, plus `page-extensions.css` — die einzige Datei mit eigenen Hex-Werten dieses Projekts. |
-| `src/icons/` | 97 Outline-SVGs, 24er-Raster, 2 px Strich. Quelle für `Icon.astro`. Beim finalen Icon-Set wird nur dieser Ordner getauscht (`Icon.astro:5-7`). |
-| `src/assets/` | PNG-Quellen: `brand/` (Münze), `mascot/` (fünf Renders), `screens/` (sechs Prototyp-Screenshots). Laufen über `astro:assets`. |
-| `public/` | Wird unverändert nach `dist/` kopiert: `fonts/` (zwei WOFF2), `logo/` (zwei SVGs). Sonst nichts. |
-| `scripts/` | Sechs Node-Werkzeuge (Playwright/zlib), keine Build-Abhängigkeit. Siehe Abschnitt 6, „Werkzeuge". |
-| `docs/` | Projektdokumentation. Enthält aktuell `AUDIT-2026-08-17.md` (388 KB, 127 geprüfte Befunde). |
-| `design_handoff_pepp_landingpage/` | Das gelieferte Design-Bundle: `README.md` (die Spezifikation), `Pepp Landingpage.dc.html` (Design-Quelle mit Logik-Klasse), `index.standalone.html` (8,3 MB, alle Assets Base64-eingebettet). Referenz, kein Produktionscode — `README.md:16-18` sagt das ausdrücklich. `scripts/compare.mjs:18-21` rendert die Standalone-Datei als visuelle Wahrheit gegen den Dev-Server. |
-| `.compare/` | Lokale Artefakte von `compare.mjs`, `measure.mjs`, `shots.mjs`: Screenshot-Paare, Messbasislinien. Ignoriert (`.gitignore:7`). |
-| `.astro/` | Astro-Cache (Typen, Content-Store). Ignoriert (`.gitignore:4`). |
-| `dist/` | Buildausgabe. Ignoriert (`.gitignore:3`). |
-| `.claude/` | `launch.json` gehört ins Repo (Dev-Server auf Port 4321). `.claude/skills/` ist ignoriert (`.gitignore:26`) — persönliche Werkzeuge. |
-| `node_modules/` | Ignoriert (`.gitignore:2`). |
-| **`Pepp Final Design System/`** | **Nicht im Repo** (`.gitignore:22`), liegt aber im Arbeitsverzeichnis neben `src/`. 241 MB, davon 180 MB in `uploads/` und 39 MB in `assets/`. Enthält `tokens/` (die neun Quelldateien, aus denen `src/styles/tokens/` kopiert wurde — `styles.css` des DS hat exakt dieselbe Import-Reihenfolge wie `global.css:4-12`), `guidelines/`, `components/`, `ui_kits/`, `readme.md`, sowie drei HTML-Prototypen. **Nachschlagewerk, keine Build-Abhängigkeit:** nichts unter `src/` importiert daraus. Gebraucht wird er, wenn ein Token-Wert nachzuschlagen ist, ein Original-Asset (die unkomprimierten TTFs, die vollen Renders) benötigt wird, oder eine Guideline zu klären ist. Wer nur Features baut, braucht ihn nicht — ein frischer Klon ist ohne ihn vollständig baubar. |
+| Pfad                               | Zweck                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/pages/`                       | Die fünf Routen. `index.astro` komponiert 14 Sektionen und baut das JSON-LD; die vier Rechtsseiten sind 6–14 Zeilen Hülle.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `src/layouts/`                     | `Base.astro` = `<head>`, Meta, Canonical, Font-Preload, JSON-LD-Slot. `Legal.astro` = Typografie der Rechtsseiten, `is:global`, weil der Text über `set:html` kommt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `src/components/`                  | Drei Bausteine: `Cta.astro` (der einzige Primär-CTA), `Icon.astro` (Inline-SVG-Renderer), `Blob.astro` (dekorativer Farbschein).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `src/components/sections/`         | 17 Sektionskomponenten, je eine pro Seitenabschnitt. Die Nummerierung im Dateikopf entspricht der Sektionstabelle des Handoff-README.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `src/data/`                        | `site.js` — Preise, Store-URLs, Betreiber, Domain. `faq.js` — die acht FAQ-Einträge. Die einzigen Datenquellen des Projekts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `src/content/legal/`               | Drei rohe HTML-Fragmente (Impressum, Datenschutz, AGB). Fremdtext, wortgleich übernommen, wird per `?raw` zur Buildzeit eingelesen (`impressum.astro:6`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `src/scripts/`                     | `site.js` (Clientverhalten), `motion-config.js` (alle Bewegungsparameter), `ds-ease.js` (Bézier aus CSS-Tokens), `motion-editor.js` (nur Dev).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `src/styles/`                      | `global.css` als Einstieg, darunter `tokens/` mit zehn Token-Dateien.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `src/styles/tokens/`               | Neun Dateien 1:1 aus dem Design System, plus `page-extensions.css` — die einzige Datei mit eigenen Hex-Werten dieses Projekts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `src/icons/`                       | 97 Outline-SVGs, 24er-Raster, 2 px Strich. Quelle für `Icon.astro`. Beim finalen Icon-Set wird nur dieser Ordner getauscht (`Icon.astro:5-7`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `src/assets/`                      | PNG-Quellen: `brand/` (Münze), `mascot/` (fünf Renders), `screens/` (sechs Prototyp-Screenshots). Laufen über `astro:assets`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `public/`                          | Wird unverändert nach `dist/` kopiert: `fonts/` (zwei WOFF2), `logo/` (zwei SVGs). Sonst nichts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `scripts/`                         | Sechs Node-Werkzeuge (Playwright/zlib), keine Build-Abhängigkeit. Siehe Abschnitt 6, „Werkzeuge".                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `docs/`                            | Projektdokumentation. Enthält aktuell `AUDIT-2026-08-17.md` (388 KB, 127 geprüfte Befunde).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `design_handoff_pepp_landingpage/` | Das gelieferte Design-Bundle: `README.md` (die Spezifikation), `Pepp Landingpage.dc.html` (Design-Quelle mit Logik-Klasse), `index.standalone.html` (8,3 MB, alle Assets Base64-eingebettet). Referenz, kein Produktionscode — `README.md:16-18` sagt das ausdrücklich. `scripts/compare.mjs:18-21` rendert die Standalone-Datei als visuelle Wahrheit gegen den Dev-Server.                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `.compare/`                        | Lokale Artefakte von `compare.mjs`, `measure.mjs`, `shots.mjs`: Screenshot-Paare, Messbasislinien. Ignoriert (`.gitignore:7`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `.astro/`                          | Astro-Cache (Typen, Content-Store). Ignoriert (`.gitignore:4`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `dist/`                            | Buildausgabe. Ignoriert (`.gitignore:3`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `.claude/`                         | `launch.json` gehört ins Repo (Dev-Server auf Port 4321). `.claude/skills/` ist ignoriert (`.gitignore:26`) — persönliche Werkzeuge.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `node_modules/`                    | Ignoriert (`.gitignore:2`).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| **`Pepp Final Design System/`**    | **Nicht im Repo** (`.gitignore:22`), liegt aber im Arbeitsverzeichnis neben `src/`. 241 MB, davon 180 MB in `uploads/` und 39 MB in `assets/`. Enthält `tokens/` (die neun Quelldateien, aus denen `src/styles/tokens/` kopiert wurde — `styles.css` des DS hat exakt dieselbe Import-Reihenfolge wie `global.css:4-12`), `guidelines/`, `components/`, `ui_kits/`, `readme.md`, sowie drei HTML-Prototypen. **Nachschlagewerk, keine Build-Abhängigkeit:** nichts unter `src/` importiert daraus. Gebraucht wird er, wenn ein Token-Wert nachzuschlagen ist, ein Original-Asset (die unkomprimierten TTFs, die vollen Renders) benötigt wird, oder eine Guideline zu klären ist. Wer nur Features baut, braucht ihn nicht — ein frischer Klon ist ohne ihn vollständig baubar. |
 
 ---
 
@@ -75,19 +75,19 @@ Bewegungsquelle (`src/scripts/motion-config.js`) und eine Stilquelle
 Definiert in `src/data/site.js:10-15` (`currency: 'EUR'`, `monthly: 2.99`,
 `yearly: 19.9`, `trialDays: 14`). Vollständige Liste der Lesestellen:
 
-| Stelle | Was daraus wird |
-|---|---|
-| `src/components/Cta.astro:35` | Der CTA-Text: `` `${PRICING.trialDays} Tage gratis starten` `` — sechsmal auf der Startseite, viermal in der Navigation der Rechtsseiten. |
-| `src/components/sections/Pricing.astro:12` | `formatEuro(PRICING.monthly)` → „2,99 €" im Monatsplan (`:37`). |
-| `src/components/sections/Pricing.astro:13` | `formatEuro(PRICING.yearly)` → „19,90 €" im Jahresplan (`:48`) und in der Kleingedruckt-Zeile (`:65`). |
-| `src/components/sections/Pricing.astro:29` | Lead: „14 Tage voller Zugriff — kostenlos." |
-| `src/components/sections/Pricing.astro:45` | `yearlySavingsPercent()` → Badge „Beliebt · spart 45 %". Gerechnet in `site.js:56-58`: `1 − 19,9/(2,99·12) = 0,4454` → 45. |
-| `src/components/sections/Pricing.astro:49` | `yearlyPerMonth()` → „nur 1,66 € im Monat". Gerechnet in `site.js:51-53`: `19,9/12 = 1,6583`, kaufmännisch auf 1,66 gerundet. |
-| `src/components/sections/Pricing.astro:71` | Trust-Zeile: „14 Tage gratis · Erinnerung vor Ablauf · jederzeit kündbar". |
-| `src/data/faq.js:23` | FAQ-Antwort 3: Monats- und Jahrespreis plus Testdauer als Template-String. |
-| `src/data/faq.js:42` | FAQ-**Frage** 8: „Was passiert nach den 14 Tagen?" |
-| `src/pages/index.astro:38-39` | JSON-LD `SoftwareApplication.offers[0]`: `price: "2.99"`, `priceCurrency: "EUR"`. |
-| `src/pages/index.astro:44-45` | JSON-LD `SoftwareApplication.offers[1]`: `price: "19.90"`, `priceCurrency: "EUR"`. |
+| Stelle                                     | Was daraus wird                                                                                                                           |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/Cta.astro:35`              | Der CTA-Text: `` `${PRICING.trialDays} Tage gratis starten` `` — sechsmal auf der Startseite, viermal in der Navigation der Rechtsseiten. |
+| `src/components/sections/Pricing.astro:12` | `formatEuro(PRICING.monthly)` → „2,99 €" im Monatsplan (`:37`).                                                                           |
+| `src/components/sections/Pricing.astro:13` | `formatEuro(PRICING.yearly)` → „19,90 €" im Jahresplan (`:48`) und in der Kleingedruckt-Zeile (`:65`).                                    |
+| `src/components/sections/Pricing.astro:29` | Lead: „14 Tage voller Zugriff — kostenlos."                                                                                               |
+| `src/components/sections/Pricing.astro:45` | `yearlySavingsPercent()` → Badge „Beliebt · spart 45 %". Gerechnet in `site.js:56-58`: `1 − 19,9/(2,99·12) = 0,4454` → 45.                |
+| `src/components/sections/Pricing.astro:49` | `yearlyPerMonth()` → „nur 1,66 € im Monat". Gerechnet in `site.js:51-53`: `19,9/12 = 1,6583`, kaufmännisch auf 1,66 gerundet.             |
+| `src/components/sections/Pricing.astro:71` | Trust-Zeile: „14 Tage gratis · Erinnerung vor Ablauf · jederzeit kündbar".                                                                |
+| `src/data/faq.js:23`                       | FAQ-Antwort 3: Monats- und Jahrespreis plus Testdauer als Template-String.                                                                |
+| `src/data/faq.js:42`                       | FAQ-**Frage** 8: „Was passiert nach den 14 Tagen?"                                                                                        |
+| `src/pages/index.astro:38-39`              | JSON-LD `SoftwareApplication.offers[0]`: `price: "2.99"`, `priceCurrency: "EUR"`.                                                         |
+| `src/pages/index.astro:44-45`              | JSON-LD `SoftwareApplication.offers[1]`: `price: "19.90"`, `priceCurrency: "EUR"`.                                                        |
 
 Es gibt **kein** Preisliteral im Markup — mit einer Ausnahme ausserhalb dieses Flusses:
 `src/content/legal/agb.html` nennt eigene Beträge als Fremdtext (die AUDIT-Datei führt
@@ -103,12 +103,12 @@ mit `de-DE` — also „2,99 €", nie „2.99 EUR".
 
 Definiert in `src/data/site.js:5-8`.
 
-| Stelle | Was daraus wird |
-|---|---|
-| `src/components/Cta.astro:39` | `href={STORE.ios}` — der Standardwert jedes CTA im Markup. |
-| `src/components/sections/Footer.astro:56` | Sekundärer Store-Link „App Store". |
-| `src/components/sections/Footer.astro:60` | Sekundärer Store-Link „Google Play" — die einzige Stelle, an der `STORE.android` serverseitig gerendert wird. |
-| `src/scripts/site.js:44` | Clientseitig: auf Android wird `href` **aller** `[data-cta]` auf `STORE.android` umgeschrieben. Läuft nur auf der Startseite (siehe 4.11). |
+| Stelle                                    | Was daraus wird                                                                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/components/Cta.astro:39`             | `href={STORE.ios}` — der Standardwert jedes CTA im Markup.                                                                                 |
+| `src/components/sections/Footer.astro:56` | Sekundärer Store-Link „App Store".                                                                                                         |
+| `src/components/sections/Footer.astro:60` | Sekundärer Store-Link „Google Play" — die einzige Stelle, an der `STORE.android` serverseitig gerendert wird.                              |
+| `src/scripts/site.js:44`                  | Clientseitig: auf Android wird `href` **aller** `[data-cta]` auf `STORE.android` umgeschrieben. Läuft nur auf der Startseite (siehe 4.11). |
 
 Die Footer-Store-Buttons sind bewusst **keine** `Cta`-Komponente (`Footer.astro:6-8`):
 sie sind sekundär (Off-White auf Weiss, Pill, Hairline) und tragen nicht den CTA-Text.
@@ -118,10 +118,10 @@ Sonst würde `verify.mjs:58-61` sie als CTA mit abweichendem Text melden.
 
 Definiert in `src/data/site.js:27-39`.
 
-| Stelle | Was daraus wird |
-|---|---|
-| `src/components/sections/Footer.astro:70-71` | Die Copyright-Zeile: `copyrightYear`, `legalName`, `street`, `postalCode`, `city`. |
-| `src/pages/index.astro:53-59` | JSON-LD `Organization` mit `PostalAddress`: `legalName`, `street`, `postalCode`, `city`, `country`. |
+| Stelle                                       | Was daraus wird                                                                                     |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `src/components/sections/Footer.astro:70-71` | Die Copyright-Zeile: `copyrightYear`, `legalName`, `street`, `postalCode`, `city`.                  |
+| `src/pages/index.astro:53-59`                | JSON-LD `Organization` mit `PostalAddress`: `legalName`, `street`, `postalCode`, `city`, `country`. |
 
 `email`, `phone`, `managingDirector`, `register`, `vatId` werden **nirgends gelesen**.
 Die Rechtstexte enthalten dieselben Angaben als Literale
@@ -136,21 +136,20 @@ Widerspruch — aber eine Falle.
 Definiert in `src/data/site.js:21-25` (`origin: 'https://taschengeldapp.com'`,
 `locale: 'de-DE'`, `lang: 'de'`).
 
-| Stelle | Was daraus wird |
-|---|---|
-| `astro.config.mjs:6` | `site: SITE.origin` — Basis für alle absoluten URLs im Build. Das ist der einzige Import aus `src/` in die Astro-Konfiguration. |
-| `src/layouts/Base.astro:25` | `canonical` = `new URL(Astro.url.pathname, SITE.origin)`. |
-| `src/layouts/Base.astro:26` | `ogImage` = `SITE.origin + '/og-image.png'`. |
-| `src/layouts/Base.astro:30` | `<html lang={SITE.lang}>`. |
-| `src/layouts/Base.astro:40` | `<meta property="og:locale" content={SITE.locale}>`. |
+| Stelle                      | Was daraus wird                                                                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `astro.config.mjs:6`        | `site: SITE.origin` — Basis für alle absoluten URLs im Build. Das ist der einzige Import aus `src/` in die Astro-Konfiguration. |
+| `src/layouts/Base.astro:25` | `canonical` = `new URL(Astro.url.pathname, SITE.origin)`.                                                                       |
+| `src/layouts/Base.astro:26` | `ogImage` = `SITE.origin + '/og-image.png'`.                                                                                    |
+| `src/layouts/Base.astro:30` | `<html lang={SITE.lang}>`.                                                                                                      |
+| `src/layouts/Base.astro:40` | `<meta property="og:locale" content={SITE.locale}>`.                                                                            |
 
 Der Kommentar in `site.js:17-20` sagt: sobald die finale Domain feststeht, nur `origin`
 ändern. Das stimmt für Canonical, OG-URL und Sitemap.
 
 **Befund:** `public/og-image.png` existiert nicht. Der Ordner `public/` enthält nur
 `fonts/` und `logo/`; `dist/` entsprechend auch nicht. `dist/index.html` liefert
-`<meta property="og:image" content="https://taschengeldapp.com/og-image.png">` auf eine
-404. Zu beheben, bevor die Seite geteilt wird.
+`<meta property="og:image" content="https://taschengeldapp.com/og-image.png">` auf eine 404. Zu beheben, bevor die Seite geteilt wird.
 
 ### 3.5 `FAQ` → Sektion 13 und JSON-LD
 
@@ -164,7 +163,7 @@ Zwei Konsumenten, und nur zwei:
    ein `<details data-anim="card">` mit `<summary>{entry.q}</summary>` und `<p>{entry.a}</p>`.
 2. `src/pages/index.astro:21` importiert `FAQ`, `:62-70` baut daraus das JSON-LD
    `FAQPage`: `mainEntity: FAQ.map(entry => ({ '@type': 'Question', name: entry.q,
-   acceptedAnswer: { '@type': 'Answer', text: entry.a } }))`.
+acceptedAnswer: { '@type': 'Answer', text: entry.a } }))`.
 
 Beide lesen dieselbe Liste. Eine Frage kann damit nicht sichtbar stehen und im Schema
 fehlen, und die strukturierte Antwort kann nicht von der sichtbaren abweichen
@@ -178,16 +177,16 @@ gebaut (`Base.astro:12`, `index.astro:23`).
 gegliedert in acht Gruppen: `text`, `card`, `headline`, `heroParallax`, `side`, `blob`,
 `peek`, `mechanic`.
 
-| Gruppe | Gelesen in |
-|---|---|
-| `MOTION.text` | `site.js:195` (Default-`start`), `:302` (Fliesstext), `:309` (Headline-Rückfall) |
-| `MOTION.card` | `site.js:216` (Schmalfall von `revealSides`), `:303` |
-| `MOTION.headline` | `site.js:297` (`mode === 'lines'`), `:312` |
-| `MOTION.side` | `site.js:227`, `:230-234` |
-| `MOTION.heroParallax` | `site.js:326-331` |
-| `MOTION.blob` | `site.js:253-255` |
-| `MOTION.peek` | `site.js:272-276` |
-| `MOTION.mechanic` | `site.js:375` (`pinFrom`), `:409` (`fadeOut`), `:418` (`fadeIn`), `:429-430` (`start`/`end`) |
+| Gruppe                | Gelesen in                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------------- |
+| `MOTION.text`         | `site.js:195` (Default-`start`), `:302` (Fliesstext), `:309` (Headline-Rückfall)             |
+| `MOTION.card`         | `site.js:216` (Schmalfall von `revealSides`), `:303`                                         |
+| `MOTION.headline`     | `site.js:297` (`mode === 'lines'`), `:312`                                                   |
+| `MOTION.side`         | `site.js:227`, `:230-234`                                                                    |
+| `MOTION.heroParallax` | `site.js:326-331`                                                                            |
+| `MOTION.blob`         | `site.js:253-255`                                                                            |
+| `MOTION.peek`         | `site.js:272-276`                                                                            |
+| `MOTION.mechanic`     | `site.js:375` (`pinFrom`), `:409` (`fadeOut`), `:418` (`fadeIn`), `:429-430` (`start`/`end`) |
 
 Easing-Werte in `MOTION` sind entweder GSAP-Namen (`'power2.out'`) oder Token-Namen mit
 `--`-Präfix (`'--ease-overshoot'`, `'--ease-out-soft'`). `site.js` reicht sie durch
@@ -240,7 +239,7 @@ Komponenten-Styles
    Benutzungszeit auf, nicht zur Deklarationszeit. Über Dateigrenzen hinweg gilt aber die
    normale Kaskade: gleiche Spezifität (`:root`), also gewinnt die **letzte** Deklaration.
 3. Genau darauf beruht `page-extensions.css` als letzter Import. Es überschreibt bewusst
-   nichts, sondern *ergänzt* (`:5-13` die `--ink-*`-Hues, `:21-23` die Kapitelfläche,
+   nichts, sondern _ergänzt_ (`:5-13` die `--ink-*`-Hues, `:21-23` die Kapitelfläche,
    `:30-32` die Münz-Rotationsdauer, `:37-50` die Marketing-Typoskala, `:55-80` das
    Marketing-Layout, `:85-92` Navigation und Sticky-Leiste). Stünde es vor `colors.css`,
    wäre `--mkt-surface-chapter: var(--surface-sunken)` (`:22`) zwar noch definiert, aber
@@ -249,7 +248,7 @@ Komponenten-Styles
 4. `base.css` steht vor `page-extensions.css` und setzt Element-Defaults
    (`base.css:2` `body`, `:4` `a { color: var(--pepp-coral) }`). Diese Reihenfolge ist der
    Grund, warum `Legal.astro:138-142` die Linkfarbe pro Rechtsseite auf `--ink-pink`
-   überschreiben *kann* — der Selektor `.legal__inner a` ist spezifischer als `a`, aber
+   überschreiben _kann_ — der Selektor `.legal__inner a` ist spezifischer als `a`, aber
    `--ink-pink` muss zu diesem Zeitpunkt definiert sein, und das ist es, weil
    `page-extensions.css:7` vorher gelaufen ist.
 5. `global.css:17-403` steht nach allen Imports und darf deshalb Tokens benutzen
@@ -273,17 +272,17 @@ und `Pricing.astro:170` (`:global([data-cta])`, um den eingebetteten CTA zu erre
 Sieben Sektionen importieren PNGs als ES-Module und geben sie an `<Image>` aus
 `astro:assets`:
 
-| Import | Datei |
-|---|---|
-| `Hero.astro:16` | `mascot/pepp-wave.png` → `<Image>` in `:75-85`, `loading="eager"`, `fetchpriority="high"` |
-| `Hero.astro:17` | `brand/pepp-coin-freigestellt.png` → Ladeanzeige `:94-102` |
-| `Problem.astro:15` | `mascot/pepp-point.png` → Peek-Figur `:81-91`, `aria-hidden` |
-| `Rewards.astro:20` | `brand/pepp-coin-freigestellt.png` |
-| `Rewards.astro:21` | `mascot/moment-reward-unlocked.png` → `:123-132` |
+| Import                | Datei                                                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| `Hero.astro:16`       | `mascot/pepp-wave.png` → `<Image>` in `:75-85`, `loading="eager"`, `fetchpriority="high"`  |
+| `Hero.astro:17`       | `brand/pepp-coin-freigestellt.png` → Ladeanzeige `:94-102`                                 |
+| `Problem.astro:15`    | `mascot/pepp-point.png` → Peek-Figur `:81-91`, `aria-hidden`                               |
+| `Rewards.astro:20`    | `brand/pepp-coin-freigestellt.png`                                                         |
+| `Rewards.astro:21`    | `mascot/moment-reward-unlocked.png` → `:123-132`                                           |
 | `Mechanic.astro:9-11` | `screens/eltern-06-anlegen-details.png`, `eltern-03-quests.png`, `kind-03-quest-liste.png` |
-| `Modes.astro:10-11` | `screens/eltern-03-quests.png`, `kind-03-quest-liste.png` |
-| `Pot.astro:9-10` | `screens/kind-01-start-taschengeld.png`, `kind-12-sparziel.png` |
-| `FinalCta.astro:8` | `mascot/pepp-jump.png` |
+| `Modes.astro:10-11`   | `screens/eltern-03-quests.png`, `kind-03-quest-liste.png`                                  |
+| `Pot.astro:9-10`      | `screens/kind-01-start-taschengeld.png`, `kind-12-sparziel.png`                            |
+| `FinalCta.astro:8`    | `mascot/pepp-jump.png`                                                                     |
 
 Jedes `<Image>` setzt `format="webp"` und `densities={[1, 2]}` sowie feste
 `width`/`height` — daraus entsteht die `aspect-ratio` und CLS bleibt 0 (`Hero.astro:264-265`).
@@ -368,8 +367,7 @@ site.js:44 ────┘          :49,71                  │                 
 
 `src/scripts/site.js` wird ausschliesslich von `src/pages/index.astro:104-106` geladen,
 als `<script>import '../scripts/site.js';</script>`. Astro bündelt das als
-`type="module"`; das Tag steht am Ende des `<body>` (`dist/index.html`, Byte 98180 von
-98288) und blockiert nichts.
+`type="module"`; das Tag steht am Ende des `<body>` (`dist/index.html`, Byte 98180 von 98288) und blockiert nichts.
 
 Aufgerufen wird am Ende der Datei, in dieser Reihenfolge (`site.js:441-446`):
 `initNav`, `initNavMenu`, `initStoreSwitch`, `initHeroLoader`, `initStickyBar`,
@@ -532,7 +530,7 @@ Komponenten-Styles — steht als **ein** `<style>`-Block im `<head>`, 41.712 Byt
 nachgeprüft in `dist/index.html`. Es gibt keine einzige `.css`-Datei in `dist/_astro/`.
 **Blockiert:** das erste Paint, wie jedes CSS im `<head>`. **Kostet nicht:** einen
 zusätzlichen Roundtrip. Bei ~42 KB ist das der bessere Tausch, denn eine externe
-Stylesheet-Anfrage hätte dieselbe blockierende Wirkung *plus* Verbindungsaufbau. Kehrseite:
+Stylesheet-Anfrage hätte dieselbe blockierende Wirkung _plus_ Verbindungsaufbau. Kehrseite:
 das CSS ist nicht cachebar und liegt in jeder der fünf HTML-Dateien erneut.
 
 **3 · Fonts.** `Base.astro:50-56` setzt einen `<link rel="preload">` auf
@@ -638,14 +636,14 @@ Verzeichnisindex ausgeliefert.
 Sechs eigenständige Node-Skripte, ausgeführt gegen den laufenden Dev-Server
 (`LOCAL_URL`, Default `http://localhost:4321/`). Keines wird von `astro build` aufgerufen.
 
-| Datei | Zweck |
-|---|---|
-| `verify.mjs` | Abnahmeprüfung der harten Regeln in fünf Durchläufen: eine `<h1>`, Skip-Link, CTA-Disziplin, verbotene Begriffe (BaFin, IBAN, Zinsen…, `:87-93`), „Karte" nur in Verneinung (`:95-99`), keine Emoji, Mindestgrösse 12 px, kein `opacity:0` im CSS, Nav-Solid; Durchlauf 2 ohne JS, 3 mit `reduce`, 4 Reflow bei 320 px, 5 Sektionsrhythmus und Kontrast auf getönten Flächen. Exit-Code 1 bei Fehlern (`:385`). |
-| `compare.mjs` | Rendert `index.standalone.html` und den Dev-Server im selben Browser bei denselben Viewports, legt Bildpaare in `.compare/` ab. `reducedMotion: 'reduce'`, damit Layout statt Animationsphase verglichen wird (`:10-11`). |
-| `measure.mjs` | Misst Sektionshöhe, Padding, H2-Grösse, Kartenrezept und sichtbare Textmenge bei 1440/390/320 px und diffed gegen eine gespeicherte Basislinie (`--save`). Bezugspunkt ist der eigene vorherige Stand, nicht die Referenz. |
-| `shots.mjs` | Sektions-Screenshots des eigenen Stands. Schneidet aus dem Vollseitenbild statt `el.screenshot()`, sonst legt sich die klebende Navigation darüber (`:9-11`); scrollt vorher einmal durch, sonst fehlen alle `loading="lazy"`-Bilder (`:35-38`). |
-| `palette.mjs` | Prüft die Flächenverteilung gegen die 60/30/10-Regel per Rasterabtastung mit `elementFromPoint` — nicht per Summe der Elementflächen, die käme systematisch zu hoch (`:6-9`). |
-| `freistellen.mjs` | Freistellt und entsäumt gelieferte Renders. Zwei Modi: Flutung von den Randpixeln für Bilder ohne Alphakanal (`pepp-coin.png`), Entsäumen für Bilder mit Alphakanal, bei denen weisse Kantenpixel eingerechnet sind. PNG-Verarbeitung von Hand über `zlib`. Erzeugt hat es u. a. `pepp-coin-freigestellt.png`. |
+| Datei             | Zweck                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `verify.mjs`      | Abnahmeprüfung der harten Regeln in fünf Durchläufen: eine `<h1>`, Skip-Link, CTA-Disziplin, verbotene Begriffe (BaFin, IBAN, Zinsen…, `:87-93`), „Karte" nur in Verneinung (`:95-99`), keine Emoji, Mindestgrösse 12 px, kein `opacity:0` im CSS, Nav-Solid; Durchlauf 2 ohne JS, 3 mit `reduce`, 4 Reflow bei 320 px, 5 Sektionsrhythmus und Kontrast auf getönten Flächen. Exit-Code 1 bei Fehlern (`:385`). |
+| `compare.mjs`     | Rendert `index.standalone.html` und den Dev-Server im selben Browser bei denselben Viewports, legt Bildpaare in `.compare/` ab. `reducedMotion: 'reduce'`, damit Layout statt Animationsphase verglichen wird (`:10-11`).                                                                                                                                                                                       |
+| `measure.mjs`     | Misst Sektionshöhe, Padding, H2-Grösse, Kartenrezept und sichtbare Textmenge bei 1440/390/320 px und diffed gegen eine gespeicherte Basislinie (`--save`). Bezugspunkt ist der eigene vorherige Stand, nicht die Referenz.                                                                                                                                                                                      |
+| `shots.mjs`       | Sektions-Screenshots des eigenen Stands. Schneidet aus dem Vollseitenbild statt `el.screenshot()`, sonst legt sich die klebende Navigation darüber (`:9-11`); scrollt vorher einmal durch, sonst fehlen alle `loading="lazy"`-Bilder (`:35-38`).                                                                                                                                                                |
+| `palette.mjs`     | Prüft die Flächenverteilung gegen die 60/30/10-Regel per Rasterabtastung mit `elementFromPoint` — nicht per Summe der Elementflächen, die käme systematisch zu hoch (`:6-9`).                                                                                                                                                                                                                                   |
+| `freistellen.mjs` | Freistellt und entsäumt gelieferte Renders. Zwei Modi: Flutung von den Randpixeln für Bilder ohne Alphakanal (`pepp-coin.png`), Entsäumen für Bilder mit Alphakanal, bei denen weisse Kantenpixel eingerechnet sind. PNG-Verarbeitung von Hand über `zlib`. Erzeugt hat es u. a. `pepp-coin-freigestellt.png`.                                                                                                  |
 
 `playwright` und `wawoff2` sind genau dafür `devDependencies` (`package.json:17-20`) und
 gehen nicht in den Build ein.
@@ -657,7 +655,7 @@ gehen nicht in den Build ein.
 Die folgenden Entscheidungen weichen von dem ab, was man in einem Marketing-Projekt sonst
 findet. Alle sind im Code begründet; hier die Begründungen zusammengezogen.
 
-**7.1 Natives `<details>` statt JS-Accordion — für FAQ *und* Navigationsmenü.**
+**7.1 Natives `<details>` statt JS-Accordion — für FAQ _und_ Navigationsmenü.**
 `Faq.astro:22`, `Nav.astro:55`, `Rewards.astro:101`. Begründung in `Nav.astro:9-14`: die
 Seite muss ohne Skript **bedienbar** sein, nicht nur lesbar. `<details>` klappt ohne JS
 auf, ist per Tastatur erreichbar, braucht kein `aria-expanded` und meldet sich
@@ -758,7 +756,7 @@ Der Code gewinnt. Was hier steht, ist der belegte Ist-Zustand.
 
 2. **Hero zeigt das Maskottchen, nicht zwei App-Screens.** `README.md:40` beschreibt
    „rechts zwei Prototyp-Screens auf einer Bühne, unten angeschnitten". `Hero.astro:16,
-   75-85` zeigt `pepp-wave.png`. Die Abweichung ist in `Hero.astro:5-11` begründet und als
+75-85` zeigt `pepp-wave.png`. Die Abweichung ist in `Hero.astro:5-11` begründet und als
    Entscheidung gekennzeichnet: die Startseite zeigt die Marke, das Interface erst ab
    „Die Mechanik".
 
@@ -819,7 +817,7 @@ Der Code gewinnt. Was hier steht, ist der belegte Ist-Zustand.
 
 13. **Reflow-Zielbreite: 320 px statt 924 px.** `README.md:173` nennt „kein horizontales
     Scrollen bei 924 px" als erledigt und den Test bei 320 px als offen.
-    `verify.mjs:221-266` prüft bei 320 px, und zwar Text *und* gestrichene Flächen; die
+    `verify.mjs:221-266` prüft bei 320 px, und zwar Text _und_ gestrichene Flächen; die
     Massnahmen dazu stehen in `global.css:19`, `Hero.astro:122-126` und `site.js:211-214`.
 
 14. **Ein Rechtstext-Detail:** `README.md:155` sagt, Impressum/Datenschutz/AGB lägen unter

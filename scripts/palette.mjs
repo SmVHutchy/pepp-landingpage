@@ -23,11 +23,24 @@ const STEP = 8;
 
 /* Zuordnung nach Design System. Sunken und die Kapitelfläche zählen als
    neutral: es sind entsättigte Papiertöne, keine Pastellflächen. */
-const NEUTRAL = ['rgb(255, 255, 255)', 'rgb(251, 246, 241)', 'rgb(247, 241, 232)', 'rgb(242, 236, 228)'];
-const KONTRAST = ['rgb(17, 17, 17)', 'rgb(37, 37, 37)', 'rgb(26, 26, 26)', 'rgb(252, 96, 129)'];
+const NEUTRAL = [
+  'rgb(255, 255, 255)',
+  'rgb(251, 246, 241)',
+  'rgb(247, 241, 232)',
+  'rgb(242, 236, 228)',
+];
+const KONTRAST = [
+  'rgb(17, 17, 17)',
+  'rgb(37, 37, 37)',
+  'rgb(26, 26, 26)',
+  'rgb(252, 96, 129)',
+];
 
 const browser = await chromium.launch();
-const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+const page = await browser.newPage({
+  viewport: { width, height: 900 },
+  reducedMotion: 'reduce',
+});
 await page.goto(LOCAL, { waitUntil: 'networkidle' });
 await page.evaluate(() => document.fonts.ready);
 await page.waitForTimeout(300);
@@ -57,7 +70,9 @@ for (let top = 0; top < docHeight; top += 900) {
         const [r, g, b] = key.match(/\d+/g).map(Number);
         return list.some((c) => {
           const [cr, cg, cb] = c.match(/\d+/g).map(Number);
-          return Math.abs(r - cr) <= 2 && Math.abs(g - cg) <= 2 && Math.abs(b - cb) <= 2;
+          return (
+            Math.abs(r - cr) <= 2 && Math.abs(g - cg) <= 2 && Math.abs(b - cb) <= 2
+          );
         });
       };
 
@@ -135,7 +150,9 @@ for (let top = 0; top < docHeight; top += 900) {
 const flaeche = counts.neutral + counts.pastell + counts.kontrast;
 const pct = (n) => `${((n / flaeche) * 100).toFixed(1).padStart(5)} %`;
 
-console.log(`\nFlächenverteilung bei ${width}px, Raster ${STEP}px, Dokument ${docHeight}px`);
+console.log(
+  `\nFlächenverteilung bei ${width}px, Raster ${STEP}px, Dokument ${docHeight}px`
+);
 console.log(`  Off-White / Weiß / Papier   ${pct(counts.neutral)}   Ziel 60 %`);
 console.log(`  Pastell / Gradient          ${pct(counts.pastell)}   Ziel 30 %`);
 console.log(`  Schwarz / Coral             ${pct(counts.kontrast)}   Ziel 10 %`);

@@ -9,8 +9,8 @@
      SITE      Canonical, Open-Graph-URL
 
    EINE AUSNAHME, und sie ist ein offener Fehler: Die Rechtstexte in
-   src/content/legal/ sind wortgleich übernommener Fremdtext und lesen nichts
-   von hier. src/content/legal/agb.html:58-60 führt eigene Preise — heute
+   src/legal/ sind wortgleich übernommener Fremdtext und lesen nichts
+   von hier. src/legal/agb.html:58-60 führt eigene Preise — heute
    23,88 € im Jahr und einen Lifetime-Tarif für 79,99 €, während hier 19,90 €
    und kein Lifetime steht. Welcher Wert gilt, ist ungeklärt.
    Siehe Blocker B3 in docs/AUDIT-2026-08-17.md.
@@ -25,7 +25,8 @@
 
 export const STORE = {
   ios: 'https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126',
-  android: 'https://play.google.com/store/apps/details?id=de.bluebranch.taschengeld&hl=de',
+  android:
+    'https://play.google.com/store/apps/details?id=de.bluebranch.taschengeld&hl=de',
 };
 
 export const PRICING = {

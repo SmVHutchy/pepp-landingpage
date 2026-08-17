@@ -13,14 +13,14 @@ Barrierefreiheitserklärung.
 
 ## Stack
 
-| | |
-|---|---|
-| Generator | Astro 5.18.2, `output: 'static'` |
-| Sprache | JavaScript und `.astro`, TypeScript nur für Komponenten-Props |
-| Styling | CSS Custom Properties, keine Utility-Bibliothek |
-| Animation | GSAP 3.12.5 mit ScrollTrigger |
-| Bilder | `astro:assets` mit sharp, PNG → WebP beim Build |
-| Node | v22.22.3, npm 10.9.8 (verifiziert; es gibt keine `.nvmrc` und kein `engines`-Feld) |
+|           |                                                                                    |
+| --------- | ---------------------------------------------------------------------------------- |
+| Generator | Astro 5.18.2, `output: 'static'`                                                   |
+| Sprache   | JavaScript und `.astro`, TypeScript nur für Komponenten-Props                      |
+| Styling   | CSS Custom Properties, keine Utility-Bibliothek                                    |
+| Animation | GSAP 3.12.5 mit ScrollTrigger                                                      |
+| Bilder    | `astro:assets` mit sharp, PNG → WebP beim Build                                    |
+| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt keine `.nvmrc` und kein `engines`-Feld) |
 
 ## Schnellstart
 
@@ -37,26 +37,26 @@ keine `.env` — siehe [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Drei Befehle,
 
 ### In `package.json`
 
-| Befehl | Was er tut | Status |
-|---|---|---|
-| `npm run dev` | Dev-Server auf Port 4321 | funktioniert |
-| `npm run build` | Baut nach `dist/` — 5 Seiten, ~5 s | funktioniert |
-| `npm run preview` | Serviert `dist/` lokal | funktioniert, siehe Fallstrick unten |
-| `npm run check` | `astro check` | **kaputt**, siehe Fallstricke |
+| Befehl            | Was er tut                         | Status                               |
+| ----------------- | ---------------------------------- | ------------------------------------ |
+| `npm run dev`     | Dev-Server auf Port 4321           | funktioniert                         |
+| `npm run build`   | Baut nach `dist/` — 5 Seiten, ~5 s | funktioniert                         |
+| `npm run preview` | Serviert `dist/` lokal             | funktioniert, siehe Fallstrick unten |
+| `npm run check`   | `astro check`                      | **kaputt**, siehe Fallstricke        |
 
 ### Werkzeuge in `scripts/`
 
 Sechs Playwright-Werkzeuge, die **nicht** in `package.json` hinterlegt sind. Sie brauchen einen
 laufenden Dev-Server.
 
-| Befehl | Was er tut |
-|---|---|
-| `node scripts/verify.mjs` | **Abnahme-Prüfung.** 19 harte Regeln: CTA-Disziplin, verbotene Begriffe, Kontrast, genau eine `<h1>`, Bedienbarkeit ohne JavaScript, Reduced Motion, Reflow bei 320 px |
-| `node scripts/shots.mjs [1440\|390\|320]` | Sektions-Screenshots des eigenen Stands nach `.compare/` |
-| `node scripts/compare.mjs [sektion]` | Screenshot-Vergleich gegen die Design-Referenz |
-| `node scripts/measure.mjs [--save]` | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie |
-| `node scripts/palette.mjs [1440\|390\|320]` | Prüft die Flächenverteilung gegen die 60/30/10-Regel |
-| `node scripts/freistellen.mjs <quelle> <ziel>` | Stellt gelieferte Renders frei und entsäumt sie |
+| Befehl                                         | Was er tut                                                                                                                                                             |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `node scripts/verify.mjs`                      | **Abnahme-Prüfung.** 19 harte Regeln: CTA-Disziplin, verbotene Begriffe, Kontrast, genau eine `<h1>`, Bedienbarkeit ohne JavaScript, Reduced Motion, Reflow bei 320 px |
+| `node scripts/shots.mjs [1440\|390\|320]`      | Sektions-Screenshots des eigenen Stands nach `.compare/`                                                                                                               |
+| `node scripts/compare.mjs [sektion]`           | Screenshot-Vergleich gegen die Design-Referenz                                                                                                                         |
+| `node scripts/measure.mjs [--save]`            | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie                                                                                                 |
+| `node scripts/palette.mjs [1440\|390\|320]`    | Prüft die Flächenverteilung gegen die 60/30/10-Regel                                                                                                                   |
+| `node scripts/freistellen.mjs <quelle> <ziel>` | Stellt gelieferte Renders frei und entsäumt sie                                                                                                                        |
 
 **`verify.mjs` ist das Qualitätstor dieses Projekts.** Vor jedem Commit laufen lassen:
 
@@ -92,16 +92,16 @@ Begründung in [docs/DECISIONS.md](docs/DECISIONS.md) (ADR-002).
 
 ## Wo was steht
 
-| Frage | Datei |
-|---|---|
-| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Wie richte ich mich lokal ein | [docs/SETUP.md](docs/SETUP.md) |
-| Welche Umgebungsvariablen gibt es | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md) |
-| Wie ändere ich Preise, FAQ, Texte | [docs/CONTENT.md](docs/CONTENT.md) |
-| Warum ist das so und nicht anders | [docs/DECISIONS.md](docs/DECISIONS.md) |
-| Wie wird deployt | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) |
-| Was tun, wenn etwas kaputt ist | [docs/RUNBOOK.md](docs/RUNBOOK.md) |
-| Was ist offen | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md) |
+| Frage                               | Datei                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                     |
+| Wie richte ich mich lokal ein       | [docs/SETUP.md](docs/SETUP.md)                                                   |
+| Welche Umgebungsvariablen gibt es   | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                       |
+| Wie ändere ich Preise, FAQ, Texte   | [docs/CONTENT.md](docs/CONTENT.md)                                               |
+| Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)                                           |
+| Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                         |
+| Was tun, wenn etwas kaputt ist      | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                               |
+| Was ist offen                       | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md) |
 
 ## Die wichtigste Regel
 

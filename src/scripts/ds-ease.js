@@ -62,9 +62,7 @@ function bezier(x1, y1, x2, y2) {
 export function dsEase(token) {
   if (cache.has(token)) return cache.get(token);
 
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(token)
-    .trim();
+  const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
   const match = raw.match(
     /cubic-bezier\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)/
   );

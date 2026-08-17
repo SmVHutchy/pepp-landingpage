@@ -85,7 +85,10 @@ let svg = raw
    sie. Der Ersatz läuft nach dem Umbau des Open-Tags, damit das Attribut
    dort sicher noch steht. */
 if (strokeWidth !== undefined) {
-  svg = svg.replace(/^(\s*<svg[^>]*?)\sstroke-width="[^"]*"/, `$1 stroke-width="${strokeWidth}"`);
+  svg = svg.replace(
+    /^(\s*<svg[^>]*?)\sstroke-width="[^"]*"/,
+    `$1 stroke-width="${strokeWidth}"`
+  );
 }
 
 if (title) {

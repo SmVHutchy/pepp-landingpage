@@ -38,10 +38,12 @@ const browser = await chromium.launch();
     : fail(`${h1s.length} <h1> gefunden — es darf genau eine sein: ${h1s.join(' | ')}`);
 
   // Skip-Link
-  const skip = await page.$eval('.skip-link', (e) => ({
-    href: e.getAttribute('href'),
-    text: e.textContent.trim(),
-  })).catch(() => null);
+  const skip = await page
+    .$eval('.skip-link', (e) => ({
+      href: e.getAttribute('href'),
+      text: e.textContent.trim(),
+    }))
+    .catch(() => null);
   skip?.href === '#main'
     ? ok(`Skip-Link vorhanden: „${skip.text}"`)
     : fail('Skip-Link fehlt oder zeigt nicht auf #main');
@@ -58,9 +60,13 @@ const browser = await chromium.launch();
   const wrongText = ctas.filter((c) => c.text !== CTA_TEXT);
   wrongText.length === 0
     ? ok(`alle ${ctas.length} CTA tragen „${CTA_TEXT}"`)
-    : fail(`CTA mit abweichendem Text: ${wrongText.map((c) => `„${c.text}"`).join(', ')}`);
+    : fail(
+        `CTA mit abweichendem Text: ${wrongText.map((c) => `„${c.text}"`).join(', ')}`
+      );
 
-  const notLinks = ctas.filter((c) => c.tag !== 'a' || !/^https:\/\//.test(c.href ?? ''));
+  const notLinks = ctas.filter(
+    (c) => c.tag !== 'a' || !/^https:\/\//.test(c.href ?? '')
+  );
   notLinks.length === 0
     ? ok('jeder CTA ist ein <a> auf eine Store-URL')
     : fail(`CTA ohne echten Store-Link: ${notLinks.length}`);
@@ -80,13 +86,21 @@ const browser = await chromium.launch();
   // Ansprache: niemals „Sie"
   const sie = body.match(/\b(Sie|Ihnen|Ihre[nmrs]?|Ihr)\b/g);
   sie
-    ? warn(`mögliche „Sie"-Ansprache: ${[...new Set(sie)].join(', ')} — prüfen, ob Satzanfang/Eigenname`)
+    ? warn(
+        `mögliche „Sie"-Ansprache: ${[...new Set(sie)].join(', ')} — prüfen, ob Satzanfang/Eigenname`
+      )
     : ok('keine „Sie"-Ansprache');
 
   // Pepp ist kein Finanzprodukt
   const forbidden = [
-    'BaFin', 'Bankpartner', 'Einlagensicherung', 'IBAN', 'Cashback',
-    'Zinsen', 'Investieren', 'Vermögensaufbau',
+    'BaFin',
+    'Bankpartner',
+    'Einlagensicherung',
+    'IBAN',
+    'Cashback',
+    'Zinsen',
+    'Investieren',
+    'Vermögensaufbau',
   ];
   for (const term of forbidden) {
     body.includes(term) && fail(`verbotener Begriff auf der Seite: „${term}"`);
@@ -143,7 +157,10 @@ const browser = await chromium.launch();
       for (const rule of rules) {
         const t = rule.cssText ?? '';
         // (?![.\d]): sonst schlaegt jedes legitime opacity:0.14 mit an.
-        if (/opacity:\s*0(?![.\d])/.test(t) && !/hover|focus|active|data-visible/.test(t)) {
+        if (
+          /opacity:\s*0(?![.\d])/.test(t) &&
+          !/hover|focus|active|data-visible/.test(t)
+        ) {
           hits.push(t.slice(0, 90));
         }
       }
@@ -152,7 +169,9 @@ const browser = await chromium.launch();
   });
   cssOpacityZero.length === 0
     ? ok('kein opacity:0 als Startzustand im CSS')
-    : fail(`opacity:0 im CSS (Startzustände gehören ins JS): ${cssOpacityZero.join(' | ')}`);
+    : fail(
+        `opacity:0 im CSS (Startzustände gehören ins JS): ${cssOpacityZero.join(' | ')}`
+      );
 
   // Nav wird ab 24px Scroll solide — nur prüfbar, wenn die Seite scrollen kann
   const scrollable = await page.evaluate(() => {
@@ -160,7 +179,9 @@ const browser = await chromium.launch();
     return document.documentElement.scrollHeight > window.innerHeight + 24;
   });
   if (!scrollable) {
-    warn('Nav-Solid nicht geprüft: die Seite ist kürzer als der Viewport (noch nicht alle Sektionen gebaut)');
+    warn(
+      'Nav-Solid nicht geprüft: die Seite ist kürzer als der Viewport (noch nicht alle Sektionen gebaut)'
+    );
   } else {
     await page.waitForTimeout(400);
     const solid = await page.$eval('[data-nav]', (e) => e.dataset.solid);
@@ -178,9 +199,11 @@ const browser = await chromium.launch();
   const page = await context.newPage();
   await page.goto(LOCAL, { waitUntil: 'domcontentloaded' });
 
-  const state = await page.evaluate ? null : null; // ohne JS nicht auswertbar
+  const state = (await page.evaluate) ? null : null; // ohne JS nicht auswertbar
   const h1 = await page.textContent('h1').catch(() => null);
-  h1 ? ok(`ohne JS: H1 sichtbar („${h1.trim()}")`) : fail('ohne JS: keine H1 im Dokument');
+  h1
+    ? ok(`ohne JS: H1 sichtbar („${h1.trim()}")`)
+    : fail('ohne JS: keine H1 im Dokument');
 
   const ctaCount = (await page.$$('[data-cta]')).length;
   ctaCount > 0
@@ -252,7 +275,8 @@ const browser = await chromium.launch();
       }
       const painted =
         cs.backgroundImage !== 'none' ||
-        (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent') ||
+        (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' &&
+          cs.backgroundColor !== 'transparent') ||
         cs.borderTopWidth !== '0px';
       if (painted) surfaces.push(over);
     }
@@ -263,7 +287,9 @@ const browser = await chromium.launch();
     : fail(`320px: Text wird abgeschnitten: ${clipped.text.join(', ')}`);
   clipped.surfaces.length === 0
     ? ok('320px: keine Farbfläche ragt aus dem Viewport')
-    : fail(`320px: Fläche wird abgeschnitten: ${clipped.surfaces.slice(0, 5).join(', ')}`);
+    : fail(
+        `320px: Fläche wird abgeschnitten: ${clipped.surfaces.slice(0, 5).join(', ')}`
+      );
 
   await page.close();
 }
@@ -297,13 +323,16 @@ const browser = await chromium.launch();
       const a = dims[i - 1];
       const b = dims[i];
       const same = ['bg', 'pt', 'h2', 'recipe'].filter((k) => a[k] === b[k]);
-      if (same.length > 2) out.push(`Sektion ${a.i} und ${b.i} gleich in ${same.join(', ')}`);
+      if (same.length > 2)
+        out.push(`Sektion ${a.i} und ${b.i} gleich in ${same.join(', ')}`);
     }
     return out;
   });
 
   flat.length === 0
-    ? ok('Sektionsrhythmus: kein Nachbarpaar gleicht sich in mehr als 2 von 4 Dimensionen')
+    ? ok(
+        'Sektionsrhythmus: kein Nachbarpaar gleicht sich in mehr als 2 von 4 Dimensionen'
+      )
     : fail(`Sektionsrhythmus zu flach: ${flat.join(' | ')}`);
 
   /* Kontrast auf getönten Flächen. Die Tints sind neu als Fläche im Einsatz
@@ -341,7 +370,9 @@ const browser = await chromium.launch();
       if (neutral.has(`rgb(${bg.join(', ')})`)) continue;
 
       // Text mit eigenem Textknoten
-      const hasText = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+      const hasText = [...el.childNodes].some(
+        (n) => n.nodeType === 3 && n.textContent.trim()
+      );
       if (hasText) {
         const size = parseFloat(cs.fontSize);
         const bold = Number(cs.fontWeight) >= 700;
@@ -357,7 +388,8 @@ const browser = await chromium.launch();
       // Icons: SVG-Strich gegen die Fläche, Schwelle 3:1
       if (el.tagName === 'svg' && el.hasAttribute('data-pepp-icon')) {
         const r = ratio(parse(cs.stroke || cs.color), bg);
-        if (r < 3) out.push(`Icon ${el.className || '?'}: ${r.toFixed(2)}:1, nötig 3:1`);
+        if (r < 3)
+          out.push(`Icon ${el.className || '?'}: ${r.toFixed(2)}:1, nötig 3:1`);
       }
     }
     return [...new Set(out)];

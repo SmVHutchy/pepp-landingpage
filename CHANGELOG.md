@@ -32,11 +32,11 @@ Der Audit hat 238 Rohfunde erhoben, davon 153 bestätigt und nach Deduplizierung
 
 ### Blocker
 
-| | Fund | Ort |
-|---|---|---|
-| B1 | Der Nav-CTA bricht unter 412 px aus seiner Fläche; „14" und „starten" werden weiß auf Off-White gerendert und sind unsichtbar. Bei 320 px steht im Knopf nur „Tage gratis". Die projekteigene Abnahme-Prüfung meldet den Überlauf ebenfalls | [`src/components/Cta.astro:86`](src/components/Cta.astro:86) |
-| B2 | Die Barrierefreiheitserklärung liefert die nach BFSG verpflichtenden Angaben als sichtbare `[PLATZHALTER: …]`-Absätze aus; die Seite ist indexierbar und aus jedem Footer verlinkt | [`src/pages/barrierefreiheit.astro:65`](src/pages/barrierefreiheit.astro:65) |
-| B3 | Die AGB nennen 23,88 €/Jahr und einen Lifetime-Tarif für 79,99 €; Landingpage, FAQ und JSON-LD nennen 19,90 € und kein Lifetime | [`src/content/legal/agb.html:58`](src/content/legal/agb.html:58) |
+|     | Fund                                                                                                                                                                                                                                        | Ort                                                                          |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| B1  | Der Nav-CTA bricht unter 412 px aus seiner Fläche; „14" und „starten" werden weiß auf Off-White gerendert und sind unsichtbar. Bei 320 px steht im Knopf nur „Tage gratis". Die projekteigene Abnahme-Prüfung meldet den Überlauf ebenfalls | [`src/components/Cta.astro:86`](src/components/Cta.astro:86)                 |
+| B2  | Die Barrierefreiheitserklärung liefert die nach BFSG verpflichtenden Angaben als sichtbare `[PLATZHALTER: …]`-Absätze aus; die Seite ist indexierbar und aus jedem Footer verlinkt                                                          | [`src/pages/barrierefreiheit.astro:65`](src/pages/barrierefreiheit.astro:65) |
+| B3  | Die AGB nennen 23,88 €/Jahr und einen Lifetime-Tarif für 79,99 €; Landingpage, FAQ und JSON-LD nennen 19,90 € und kein Lifetime                                                                                                             | [`src/content/legal/agb.html:58`](src/content/legal/agb.html:58)             |
 
 ### Fehlende Dateien
 

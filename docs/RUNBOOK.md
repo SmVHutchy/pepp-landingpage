@@ -18,16 +18,16 @@ abstürzen kann. Das begrenzt die Fehlerbilder erheblich:
 
 ## Häufige Fehler in der Entwicklung
 
-| Symptom | Ursache | Lösung |
-|---|---|---|
-| `npm run check` hängt an einer Abfrage | `@astrojs/check` und `typescript` fehlen | `npm i -D @astrojs/check typescript` |
-| `curl localhost:4321` liefert nichts, Browser aber schon | Server lauscht nur auf IPv6 | `curl http://[::1]:4321/` |
-| Playwright-Werkzeuge brechen sofort ab | keine Browser installiert | `npx playwright install chromium` |
-| Bilder fehlen nach dem Build | `sharp` nicht sauber installiert | `rm -rf node_modules && npm install` |
-| `dist/` enthält alte Stände | Build-Cache | `rm -rf dist .astro && npm run build` |
-| Ein Screen bleibt halbtransparent hängen | `killTweensOf` oder `overwrite:'auto'` beim Bildtausch entfernt | [`site.js:372`](../src/scripts/site.js:372) prüfen |
-| Elemente bleiben unsichtbar | jemand hat `opacity: 0` ins CSS geschrieben | verboten, siehe [ADR-005](DECISIONS.md). `node scripts/verify.mjs` findet es |
-| Die Headline bricht falsch um | `splitIntoLines` misst vor dem Laden der Schrift | die Messung hängt an `document.fonts.ready`, [`site.js:356`](../src/scripts/site.js:356) |
+| Symptom                                                  | Ursache                                                         | Lösung                                                                                   |
+| -------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `npm run check` hängt an einer Abfrage                   | `@astrojs/check` und `typescript` fehlen                        | `npm i -D @astrojs/check typescript`                                                     |
+| `curl localhost:4321` liefert nichts, Browser aber schon | Server lauscht nur auf IPv6                                     | `curl http://[::1]:4321/`                                                                |
+| Playwright-Werkzeuge brechen sofort ab                   | keine Browser installiert                                       | `npx playwright install chromium`                                                        |
+| Bilder fehlen nach dem Build                             | `sharp` nicht sauber installiert                                | `rm -rf node_modules && npm install`                                                     |
+| `dist/` enthält alte Stände                              | Build-Cache                                                     | `rm -rf dist .astro && npm run build`                                                    |
+| Ein Screen bleibt halbtransparent hängen                 | `killTweensOf` oder `overwrite:'auto'` beim Bildtausch entfernt | [`site.js:372`](../src/scripts/site.js:372) prüfen                                       |
+| Elemente bleiben unsichtbar                              | jemand hat `opacity: 0` ins CSS geschrieben                     | verboten, siehe [ADR-005](DECISIONS.md). `node scripts/verify.mjs` findet es             |
+| Die Headline bricht falsch um                            | `splitIntoLines` misst vor dem Laden der Schrift                | die Messung hängt an `document.fonts.ready`, [`site.js:356`](../src/scripts/site.js:356) |
 
 ## Wenn ein Text falsch aussieht
 
@@ -74,10 +74,10 @@ in der Navigation (bekannt, Blocker B1). Mehr als zwei Fehler heißt: neu dazuge
 
 ## Ansprechpartner
 
-| Thema | Wer |
-|---|---|
-| Produkt, Preise, Inhalte | *offen — eintragen* |
-| Rechtstexte | *offen — Anwalt eintragen* |
-| Design System, Assets | *offen — eintragen* |
-| Hosting, Domain, DNS | *offen — nach der Entscheidung eintragen* |
-| App Store und Play Store | *offen — eintragen* |
+| Thema                    | Wer                                       |
+| ------------------------ | ----------------------------------------- |
+| Produkt, Preise, Inhalte | _offen — eintragen_                       |
+| Rechtstexte              | _offen — Anwalt eintragen_                |
+| Design System, Assets    | _offen — eintragen_                       |
+| Hosting, Domain, DNS     | _offen — nach der Entscheidung eintragen_ |
+| App Store und Play Store | _offen — eintragen_                       |

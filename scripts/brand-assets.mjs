@@ -90,7 +90,10 @@ erzeugt.push(['favicon.svg', 0]);
 const icoTeile = [];
 for (const groesse of [16, 32, 48]) {
   const png = await sharp(SCHNAUZE, { density: 384 })
-    .resize(groesse, groesse, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+    .resize(groesse, groesse, {
+      fit: 'contain',
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
     .png({ compressionLevel: 9 })
     .toBuffer();
   merke(`favicon-${groesse}.png`, png);
@@ -105,13 +108,21 @@ const OFFWHITE = { r: 251, g: 246, b: 241, alpha: 1 };
 
 merke(
   'apple-touch-icon.png',
-  await sharp(APP_ICON).resize(180, 180).flatten({ background: OFFWHITE }).png().toBuffer()
+  await sharp(APP_ICON)
+    .resize(180, 180)
+    .flatten({ background: OFFWHITE })
+    .png()
+    .toBuffer()
 );
 
 for (const groesse of [192, 512]) {
   merke(
     `icon-${groesse}.png`,
-    await sharp(APP_ICON).resize(groesse, groesse).flatten({ background: OFFWHITE }).png().toBuffer()
+    await sharp(APP_ICON)
+      .resize(groesse, groesse)
+      .flatten({ background: OFFWHITE })
+      .png()
+      .toBuffer()
   );
 }
 
@@ -120,11 +131,18 @@ for (const groesse of [192, 512]) {
    der Kantenlänge — das Motiv wird also auf 80 % skaliert und der Rand mit
    der Gradientfarbe des Icons gefüllt, damit keine Kante sichtbar wird. */
 const RAND = Math.round(512 * 0.1);
-const kern = await sharp(APP_ICON).resize(512 - RAND * 2, 512 - RAND * 2).toBuffer();
+const kern = await sharp(APP_ICON)
+  .resize(512 - RAND * 2, 512 - RAND * 2)
+  .toBuffer();
 merke(
   'icon-maskable-512.png',
   await sharp({
-    create: { width: 512, height: 512, channels: 4, background: { r: 226, g: 214, b: 245, alpha: 1 } },
+    create: {
+      width: 512,
+      height: 512,
+      channels: 4,
+      background: { r: 226, g: 214, b: 245, alpha: 1 },
+    },
   })
     .composite([{ input: kern, top: RAND, left: RAND }])
     .png()
@@ -133,5 +151,7 @@ merke(
 
 console.log('Marken-Dateien in public/:');
 for (const [name, groesse] of erzeugt) {
-  console.log(`  ${name.padEnd(24)} ${groesse ? (groesse / 1024).toFixed(1) + ' KB' : '(kopiert)'}`);
+  console.log(
+    `  ${name.padEnd(24)} ${groesse ? (groesse / 1024).toFixed(1) + ' KB' : '(kopiert)'}`
+  );
 }

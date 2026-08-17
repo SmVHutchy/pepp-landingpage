@@ -4,7 +4,7 @@
  *
  * Die Texte selbst sind Fremdtext und werden NICHT umformuliert: sie stammen
  * wortgleich aus dem bestehenden Auftritt und liegen als HTML-Fragmente in
- * src/content/legal/. Die Seite gibt ihnen nur Typografie.
+ * src/legal/. Die Seite gibt ihnen nur Typografie.
  *
  * Bewusst schmal (--mkt-content-width-narrow, 820px) wie das FAQ: bei
  * Fliesstext über die volle Containerbreite entstehen ~100 Zeichen pro Zeile,
@@ -21,7 +21,7 @@ interface Props {
   title: string;
   description: string;
   /**
-   * Rohes HTML-Fragment aus src/content/legal/, beginnt mit der einzigen <h1>.
+   * Rohes HTML-Fragment aus src/legal/, beginnt mit der einzigen <h1>.
    * Weglassen, wenn der Inhalt als Kindelement kommt — so bei
    * /barrierefreiheit, wo der Text nicht Fremdtext ist, sondern aus Listen im
    * Frontmatter entsteht.
@@ -47,12 +47,14 @@ const { title, description, body } = Astro.props;
   </main>
   <Footer />
 
-  {/* Nur die Navigation, ohne GSAP. Ohne dieses Skript blieb die klebende
+  {
+    /* Nur die Navigation, ohne GSAP. Ohne dieses Skript blieb die klebende
       Leiste auf diesen vier Seiten dauerhaft durchsichtig, und der Rechtstext
       scrollte unlesbar durch sie hindurch; ausserdem lief die Android-Weiche
       am CTA im Kopf nicht. Behebt Fund 9 und 10 aus
       docs/AUDIT-2026-08-17.md. Die Animationslogik aus site.js bleibt der
-      Startseite vorbehalten — hier gibt es nichts zu animieren. */}
+      Startseite vorbehalten — hier gibt es nichts zu animieren. */
+  }
   <script>
     import '../scripts/nav.js';
   </script>

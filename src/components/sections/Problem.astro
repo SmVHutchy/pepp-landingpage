@@ -51,10 +51,12 @@ const cards = [
       </h2>
     </div>
 
-    {/* data-anim="side" statt "card": die drei Figuren laufen aus der Richtung
+    {
+      /* data-anim="side" statt "card": die drei Figuren laufen aus der Richtung
         herein, in der sie stehen — die linke von links, die rechte von rechts.
         Die mittlere liegt auf der Sektionsmitte und entscheidet sich nach ihrem
-        Mittelpunkt. */}
+        Mittelpunkt. */
+    }
     <ul class="problem__cards mkt-list-reset">
       {
         cards.map((card) => (
@@ -70,13 +72,15 @@ const cards = [
     </ul>
   </div>
 
-  {/* Pepp tritt hinter der Kante der nächsten Sektion hervor. Er steht HIER,
+  {
+    /* Pepp tritt hinter der Kante der nächsten Sektion hervor. Er steht HIER,
       in der vorherigen Sektion; „So funktioniert's" hat einen deckenden
       Hintergrund und wird später gezeichnet, verdeckt ihn also von unten.
       Kein z-index nötig, die Zeichenreihenfolge macht es.
 
       aria-hidden und leeres alt: reine Dekoration, der Satz daneben trägt die
-      Aussage. Ab 901px, darunter würde die Figur die schmale Spalte zudecken. */}
+      Aussage. Ab 901px, darunter würde die Figur die schmale Spalte zudecken. */
+  }
   <div class="problem__peek u-desk" data-peek aria-hidden="true">
     <Image
       src={peek}

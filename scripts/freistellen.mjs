@@ -37,9 +37,12 @@ import { inflateSync, deflateSync } from 'node:zlib';
 
 const args = process.argv.slice(2);
 const [src, dest] = args.filter((a) => !a.startsWith('--'));
-const modusArg = (args.find((a) => a.startsWith('--modus=')) ?? '').split('=')[1] || 'auto';
+const modusArg =
+  (args.find((a) => a.startsWith('--modus=')) ?? '').split('=')[1] || 'auto';
 if (!src || !dest) {
-  console.error('Aufruf: node scripts/freistellen.mjs <quelle.png> <ziel.png> [--modus=…]');
+  console.error(
+    'Aufruf: node scripts/freistellen.mjs <quelle.png> <ziel.png> [--modus=…]'
+  );
   process.exit(1);
 }
 
@@ -361,8 +364,13 @@ writeFileSync(
 
 const frei = alpha.reduce((n, a) => n + (a === 0 ? 1 : 0), 0);
 console.log(`${src}\n  ->  ${dest}   [Modus: ${modus}]`);
-console.log(`  Motiv y ${motivOben}–${motivUnten}, Schatten wird erst ab y ${schattenAb} entfernt`);
-if (entferntHintergrund) console.log(`  Hintergrund entfernt: ${entferntHintergrund} Pixel`);
+console.log(
+  `  Motiv y ${motivOben}–${motivUnten}, Schatten wird erst ab y ${schattenAb} entfernt`
+);
+if (entferntHintergrund)
+  console.log(`  Hintergrund entfernt: ${entferntHintergrund} Pixel`);
 console.log(`  Eingebrannter Schatten entfernt: ${entferntSchatten} Pixel`);
-console.log(`  Randfarben korrigiert: ${entsaeumt} Pixel${weich ? `, weiche Kante: ${weich}` : ''}`);
+console.log(
+  `  Randfarben korrigiert: ${entsaeumt} Pixel${weich ? `, weiche Kante: ${weich}` : ''}`
+);
 console.log(`  Ergebnis: ${((frei / (w * h)) * 100).toFixed(1)} % transparent`);

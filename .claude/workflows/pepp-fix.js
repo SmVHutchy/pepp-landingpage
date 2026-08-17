@@ -1,21 +1,23 @@
 export const meta = {
   name: 'pepp-fix',
-  description: 'Befunde aus docs/AUDIT-2026-08-17.md beheben: umsetzen, gegenprüfen, verify.mjs, Commit-Vorschlag',
-  whenToUse: 'Wenn Funde aus dem Audit abgearbeitet werden sollen. args = Liste von Fundnummern, z.B. [1,4,5] — oder ein Filter wie "A11y" / "Performance" / "Blocker".',
+  description:
+    'Befunde aus docs/AUDIT-2026-08-17.md beheben: umsetzen, gegenprüfen, verify.mjs, Commit-Vorschlag',
+  whenToUse:
+    'Wenn Funde aus dem Audit abgearbeitet werden sollen. args = Liste von Fundnummern, z.B. [1,4,5] — oder ein Filter wie "A11y" / "Performance" / "Blocker".',
   phases: [
     { title: 'Auswahl', detail: 'Funde aus dem Auditbericht lesen und gruppieren' },
     { title: 'Umsetzung', detail: 'je Gruppe ein Agent im eigenen Worktree' },
     { title: 'Gegenpruefung', detail: 'jede Änderung adversarisch prüfen' },
     { title: 'Abnahme', detail: 'verify.mjs, Build, Commit-Vorschläge' },
   ],
-}
+};
 
 /* Gelernt am 17.08.2026: 15 parallele Prüfdimensionen waren für 5.038 Zeilen
    Quellcode zu breit — 238 Rohfunde, davon 29 % Ausschuss. Dieser Workflow ist
    bewusst schmal: wenige Agenten, dafür jeder mit klarem Auftrag und harter
    Abnahme durch das projekteigene verify.mjs. */
 
-const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/pepp_final'
+const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/pepp_final';
 
 const REGELN = `
 PROJEKT: Pepp Landingpage, Astro 5 static. WURZEL: ${ROOT}
@@ -53,7 +55,7 @@ ARBEITSWEISE:
 - Der bestehende Code ist dicht kommentiert und erklärt WARUM. Halte das durch.
   Entkräftest du eine Begründung, ersetze den Kommentar, lösche ihn nicht.
 - Jede Behauptung über Wirkung muss gemessen sein, nicht geschätzt.
-`
+`;
 
 const ABNAHME = `
 ABNAHME nach jeder Änderung, in dieser Reihenfolge:
@@ -64,70 +66,116 @@ ABNAHME nach jeder Änderung, in dieser Reihenfolge:
    Nach deiner Änderung darf es NICHT mehr Fehler geben. Behebst du B1, müssen es 0 sein.
 4. Bei sichtbaren Änderungen: node scripts/shots.mjs 320 und node scripts/shots.mjs 1440
 Hinweis: der Dev-Server bindet nur IPv6 — mit http://[::1]:4321/ prüfen, nicht localhost.
-`
+`;
 
 const ERGEBNIS = {
-  type: 'object', additionalProperties: false,
+  type: 'object',
+  additionalProperties: false,
   properties: {
-    umgesetzt: { type: 'array', items: {
-      type: 'object', additionalProperties: false,
-      properties: {
-        fund_nr: { type: 'string' },
-        datei: { type: 'string' },
-        was_geaendert: { type: 'string' },
-        warum_so: { type: 'string' },
-        gemessen: { type: 'string', description: 'Vorher/Nachher mit Zahlen, oder "nicht messbar"' },
+    umgesetzt: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          fund_nr: { type: 'string' },
+          datei: { type: 'string' },
+          was_geaendert: { type: 'string' },
+          warum_so: { type: 'string' },
+          gemessen: {
+            type: 'string',
+            description: 'Vorher/Nachher mit Zahlen, oder "nicht messbar"',
+          },
+        },
+        required: ['fund_nr', 'datei', 'was_geaendert', 'warum_so', 'gemessen'],
       },
-      required: ['fund_nr','datei','was_geaendert','warum_so','gemessen'],
-    }},
-    nicht_umgesetzt: { type: 'array', items: {
-      type: 'object', additionalProperties: false,
-      properties: { fund_nr: { type: 'string' }, grund: { type: 'string' } },
-      required: ['fund_nr','grund'],
-    }},
-    verify: { type: 'string', description: 'Wörtliche Ausgabe der Zusammenfassung von verify.mjs' },
+    },
+    nicht_umgesetzt: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: { fund_nr: { type: 'string' }, grund: { type: 'string' } },
+        required: ['fund_nr', 'grund'],
+      },
+    },
+    verify: {
+      type: 'string',
+      description: 'Wörtliche Ausgabe der Zusammenfassung von verify.mjs',
+    },
     build: { type: 'string', description: 'Läuft der Build? Wörtliche letzte Zeile.' },
-    commit_betreff: { type: 'string', description: 'Conventional Commit, deutsch, Imperativ, max 72 Zeichen' },
+    commit_betreff: {
+      type: 'string',
+      description: 'Conventional Commit, deutsch, Imperativ, max 72 Zeichen',
+    },
     commit_rumpf: { type: 'string' },
     fragen: { type: 'array', items: { type: 'string' } },
   },
-  required: ['umgesetzt','nicht_umgesetzt','verify','build','commit_betreff','commit_rumpf','fragen'],
-}
+  required: [
+    'umgesetzt',
+    'nicht_umgesetzt',
+    'verify',
+    'build',
+    'commit_betreff',
+    'commit_rumpf',
+    'fragen',
+  ],
+};
 
 const URTEIL = {
-  type: 'object', additionalProperties: false,
+  type: 'object',
+  additionalProperties: false,
   properties: {
     in_ordnung: { type: 'boolean' },
     begruendung: { type: 'string' },
-    regelverstoesse: { type: 'array', items: { type: 'string' }, description: 'Welche nicht verhandelbare Regel wurde gebrochen. Leer, wenn keine.' },
-    nebenwirkungen: { type: 'array', items: { type: 'string' }, description: 'Was die Änderung sonst noch kaputtmacht' },
+    regelverstoesse: {
+      type: 'array',
+      items: { type: 'string' },
+      description:
+        'Welche nicht verhandelbare Regel wurde gebrochen. Leer, wenn keine.',
+    },
+    nebenwirkungen: {
+      type: 'array',
+      items: { type: 'string' },
+      description: 'Was die Änderung sonst noch kaputtmacht',
+    },
   },
-  required: ['in_ordnung','begruendung','regelverstoesse','nebenwirkungen'],
-}
+  required: ['in_ordnung', 'begruendung', 'regelverstoesse', 'nebenwirkungen'],
+};
 
-const auswahl = args ?? 'Blocker'
+const auswahl = args ?? 'Blocker';
 
-phase('Auswahl')
+phase('Auswahl');
 
 const GRUPPEN_SCHEMA = {
-  type: 'object', additionalProperties: false,
+  type: 'object',
+  additionalProperties: false,
   properties: {
-    gruppen: { type: 'array', items: {
-      type: 'object', additionalProperties: false,
-      properties: {
-        titel: { type: 'string' },
-        funde: { type: 'array', items: { type: 'string' } },
-        dateien: { type: 'array', items: { type: 'string' } },
-        auftrag: { type: 'string', description: 'Konkreter Arbeitsauftrag für einen Agenten, mit Fundnummern und Dateien' },
+    gruppen: {
+      type: 'array',
+      items: {
+        type: 'object',
+        additionalProperties: false,
+        properties: {
+          titel: { type: 'string' },
+          funde: { type: 'array', items: { type: 'string' } },
+          dateien: { type: 'array', items: { type: 'string' } },
+          auftrag: {
+            type: 'string',
+            description:
+              'Konkreter Arbeitsauftrag für einen Agenten, mit Fundnummern und Dateien',
+          },
+        },
+        required: ['titel', 'funde', 'dateien', 'auftrag'],
       },
-      required: ['titel','funde','dateien','auftrag'],
-    }},
+    },
     uebersprungen: { type: 'array', items: { type: 'string' } },
   },
-  required: ['gruppen','uebersprungen'],
-}
+  required: ['gruppen', 'uebersprungen'],
+};
 
-const plan = await agent(`${REGELN}
+const plan = await agent(
+  `${REGELN}
 
 AUFGABE: Lies docs/AUDIT-2026-08-17.md und stelle die Arbeit für heute zusammen.
 
@@ -146,16 +194,19 @@ Bilde daraus Gruppen, die EIN Agent am Stück erledigen kann. Regeln fürs Grupp
 
 Der "auftrag" je Gruppe muss so konkret sein, dass ein Agent ohne Rückfrage loslegen kann:
 Fundnummern, betroffene Dateien, was genau zu tun ist, und woran er merkt, dass es stimmt.`,
-  { label: 'auswahl', phase: 'Auswahl', schema: GRUPPEN_SCHEMA, effort: 'high' })
+  { label: 'auswahl', phase: 'Auswahl', schema: GRUPPEN_SCHEMA, effort: 'high' }
+);
 
-log(`${plan.gruppen.length} Gruppen, ${plan.uebersprungen.length} übersprungen`)
+log(`${plan.gruppen.length} Gruppen, ${plan.uebersprungen.length} übersprungen`);
 
-phase('Umsetzung')
+phase('Umsetzung');
 
 const ergebnisse = await pipeline(
   plan.gruppen,
 
-  (g) => agent(`${REGELN}
+  (g) =>
+    agent(
+      `${REGELN}
 
 DEINE GRUPPE: ${g.titel}
 Funde: ${g.funde.join(', ')}
@@ -172,12 +223,23 @@ ${ABNAHME}
 Setze um, miss nach, und gib zurück was du geändert hast. Wenn ein Fund sich als
 falsch herausstellt oder eine Entscheidung braucht, die du nicht treffen darfst:
 nicht umsetzen, unter "nicht_umgesetzt" mit Grund melden.`,
-    { label: `fix:${g.titel}`, phase: 'Umsetzung', schema: ERGEBNIS, isolation: 'worktree', effort: 'high' }),
+      {
+        label: `fix:${g.titel}`,
+        phase: 'Umsetzung',
+        schema: ERGEBNIS,
+        isolation: 'worktree',
+        effort: 'high',
+      }
+    ),
 
   (r, g) => {
-    if (!r || !r.umgesetzt?.length) return { gruppe: g.titel, ergebnis: r, urteile: [] }
-    return parallel(r.umgesetzt.map((u) => () =>
-      agent(`${REGELN}
+    if (!r || !r.umgesetzt?.length)
+      return { gruppe: g.titel, ergebnis: r, urteile: [] };
+    return parallel(
+      r.umgesetzt.map(
+        (u) => () =>
+          agent(
+            `${REGELN}
 
 DU BIST DER GEGENPRÜFER. Ein Agent hat eine Änderung gemacht. Finde, was daran falsch ist.
 Gehe davon aus, dass sie Nebenwirkungen hat, bis du das Gegenteil geprüft hast.
@@ -198,32 +260,50 @@ PRÜFE:
 6. Ist es die kleinste wirksame Änderung, oder wurde nebenbei refaktoriert?
 
 Im Zweifel: in_ordnung=false. Schreib in die Begründung, was du konkret geprüft hast.`,
-        { label: `pruef:${u.fund_nr}`, phase: 'Gegenpruefung', schema: URTEIL })
-        .then((v) => ({ ...u, urteil: v }))
-    )).then((urteile) => ({ gruppe: g.titel, ergebnis: r, urteile: urteile.filter(Boolean) }))
+            { label: `pruef:${u.fund_nr}`, phase: 'Gegenpruefung', schema: URTEIL }
+          ).then((v) => ({ ...u, urteil: v }))
+      )
+    ).then((urteile) => ({
+      gruppe: g.titel,
+      ergebnis: r,
+      urteile: urteile.filter(Boolean),
+    }));
   }
-)
+);
 
-phase('Abnahme')
+phase('Abnahme');
 
-const fertig = ergebnisse.filter(Boolean)
-const beanstandet = fertig.flatMap((e) => e.urteile.filter((u) => !u.urteil?.in_ordnung))
+const fertig = ergebnisse.filter(Boolean);
+const beanstandet = fertig.flatMap((e) =>
+  e.urteile.filter((u) => !u.urteil?.in_ordnung)
+);
 
-log(`${fertig.length} Gruppen fertig, ${beanstandet.length} Änderungen beanstandet`)
+log(`${fertig.length} Gruppen fertig, ${beanstandet.length} Änderungen beanstandet`);
 
-const bericht = await agent(`${REGELN}
+const bericht = await agent(
+  `${REGELN}
 
 Die Arbeit ist getan. Das kam dabei heraus:
 
-${JSON.stringify(fertig.map((e) => ({
-  gruppe: e.gruppe,
-  umgesetzt: e.ergebnis?.umgesetzt,
-  nicht_umgesetzt: e.ergebnis?.nicht_umgesetzt,
-  verify: e.ergebnis?.verify,
-  build: e.ergebnis?.build,
-  commit: e.ergebnis?.commit_betreff,
-  beanstandungen: e.urteile.filter((u) => !u.urteil?.in_ordnung).map((u) => ({ fund: u.fund_nr, grund: u.urteil?.begruendung, verstoesse: u.urteil?.regelverstoesse })),
-})), null, 1)}
+${JSON.stringify(
+  fertig.map((e) => ({
+    gruppe: e.gruppe,
+    umgesetzt: e.ergebnis?.umgesetzt,
+    nicht_umgesetzt: e.ergebnis?.nicht_umgesetzt,
+    verify: e.ergebnis?.verify,
+    build: e.ergebnis?.build,
+    commit: e.ergebnis?.commit_betreff,
+    beanstandungen: e.urteile
+      .filter((u) => !u.urteil?.in_ordnung)
+      .map((u) => ({
+        fund: u.fund_nr,
+        grund: u.urteil?.begruendung,
+        verstoesse: u.urteil?.regelverstoesse,
+      })),
+  })),
+  null,
+  1
+)}
 
 Übersprungen bei der Auswahl: ${JSON.stringify(plan.uebersprungen)}
 
@@ -246,6 +326,12 @@ Dazu:
   Schönfärben nicht.
 
 Kein Marketingdeutsch, keine Floskeln. Fakten und Konsequenzen.`,
-  { label: 'bericht', phase: 'Abnahme', effort: 'high' })
+  { label: 'bericht', phase: 'Abnahme', effort: 'high' }
+);
 
-return { bericht, gruppen: fertig.length, beanstandet: beanstandet.length, uebersprungen: plan.uebersprungen }
+return {
+  bericht,
+  gruppen: fertig.length,
+  beanstandet: beanstandet.length,
+  uebersprungen: plan.uebersprungen,
+};

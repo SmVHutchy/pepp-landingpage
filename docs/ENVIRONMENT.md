@@ -30,13 +30,13 @@ kein Byte. Der Motion-Editor ist damit ein reines Entwicklerwerkzeug, das nie au
 **Orte:** `scripts/verify.mjs:16`, `measure.mjs:20`, `shots.mjs:18`, `compare.mjs:22`,
 `palette.mjs:20`
 
-| | |
-|---|---|
-| Zweck | Gegen welche URL die Werkzeuge in `scripts/` prüfen |
-| Format | vollständige URL mit Schema und abschließendem Schrägstrich |
-| Pflicht | nein |
-| Standard | `http://localhost:4321/` |
-| Woher | dein eigener Dev-Server oder eine Staging-URL |
+|          |                                                             |
+| -------- | ----------------------------------------------------------- |
+| Zweck    | Gegen welche URL die Werkzeuge in `scripts/` prüfen         |
+| Format   | vollständige URL mit Schema und abschließendem Schrägstrich |
+| Pflicht  | nein                                                        |
+| Standard | `http://localhost:4321/`                                    |
+| Woher    | dein eigener Dev-Server oder eine Staging-URL               |
 
 ```bash
 LOCAL_URL=https://staging.example.com/ node scripts/verify.mjs
@@ -50,12 +50,12 @@ nicht.
 Diese Werte stehen bewusst im Code und nicht in einer Umgebungsvariable — sie sind Teil des
 Inhalts, gehören ins Repo und in die Versionsgeschichte:
 
-| Wert | Ort |
-|---|---|
-| Domain | `SITE.origin` in [`src/data/site.js`](../src/data/site.js) |
-| Preise, Testdauer | `PRICING` ebenda |
-| Store-URLs | `STORE` ebenda |
-| Betreiberdaten | `OPERATOR` ebenda |
+| Wert              | Ort                                                        |
+| ----------------- | ---------------------------------------------------------- |
+| Domain            | `SITE.origin` in [`src/data/site.js`](../src/data/site.js) |
+| Preise, Testdauer | `PRICING` ebenda                                           |
+| Store-URLs        | `STORE` ebenda                                             |
+| Betreiberdaten    | `OPERATOR` ebenda                                          |
 
 Ändern beschreibt [CONTENT.md](CONTENT.md).
 

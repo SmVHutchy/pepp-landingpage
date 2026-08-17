@@ -3,11 +3,24 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.3.0 <21 || >=22"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "verify": "node scripts/verify.mjs",
+    "shots": "node scripts/shots.mjs",
+    "compare": "node scripts/compare.mjs",
+    "measure": "node scripts/measure.mjs",
+    "palette": "node scripts/palette.mjs",
+    "brand-assets": "node scripts/brand-assets.mjs",
+    "og-image": "node scripts/og-image.mjs",
+    "prepare": "git config core.hooksPath .githooks || true"
   },
   "dependencies": {
     "astro": "^5.6.1",
@@ -15,7 +28,11 @@
     "sharp": "^0.34.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "playwright": "^1.62.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "typescript": "^5.9.3",
     "wawoff2": "^2.0.1"
   }
 }

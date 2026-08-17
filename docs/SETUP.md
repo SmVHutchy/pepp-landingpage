@@ -4,11 +4,11 @@ Ziel: vom leeren Rechner zum laufenden Dev-Server in unter 15 Minuten.
 
 ## Voraussetzungen
 
-| | Version | geprüft am 17.08.2026 |
-|---|---|---|
-| Node.js | ≥ 20, empfohlen 22 | v22.22.3 |
-| npm | ≥ 10 | 10.9.8 |
-| Git | beliebig | 2.39.5 |
+|         | Version            | geprüft am 17.08.2026 |
+| ------- | ------------------ | --------------------- |
+| Node.js | ≥ 20, empfohlen 22 | v22.22.3              |
+| npm     | ≥ 10               | 10.9.8                |
+| Git     | beliebig           | 2.39.5                |
 
 Es gibt **keine** `.nvmrc` und kein `engines`-Feld in `package.json`. Die Versionen oben sind
 die, mit denen das Projekt nachweislich baut — nicht die, die es erzwingt. Wer `nvm` nutzt:
@@ -116,10 +116,10 @@ der Code; die bekannten Abweichungen stehen im [Auditbericht](AUDIT-2026-08-17.m
 
 ## Bekannte Fallstricke
 
-| Symptom | Ursache | Lösung |
-|---|---|---|
-| `npm run check` hängt an einer Abfrage | `@astrojs/check` und `typescript` fehlen | `npm i -D @astrojs/check typescript` |
-| `curl localhost:4321` liefert nichts | Server lauscht nur auf IPv6 | `curl http://[::1]:4321/` |
-| Playwright-Werkzeuge brechen ab | keine Browser installiert | `npx playwright install chromium` |
-| Bilder fehlen nach dem Build | `sharp` nicht sauber installiert | `rm -rf node_modules && npm install` |
-| `dist/` enthält alte Stände | Build-Cache | `rm -rf dist .astro && npm run build` |
+| Symptom                                | Ursache                                  | Lösung                                |
+| -------------------------------------- | ---------------------------------------- | ------------------------------------- |
+| `npm run check` hängt an einer Abfrage | `@astrojs/check` und `typescript` fehlen | `npm i -D @astrojs/check typescript`  |
+| `curl localhost:4321` liefert nichts   | Server lauscht nur auf IPv6              | `curl http://[::1]:4321/`             |
+| Playwright-Werkzeuge brechen ab        | keine Browser installiert                | `npx playwright install chromium`     |
+| Bilder fehlen nach dem Build           | `sharp` nicht sauber installiert         | `rm -rf node_modules && npm install`  |
+| `dist/` enthält alte Stände            | Build-Cache                              | `rm -rf dist .astro && npm run build` |

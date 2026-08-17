@@ -36,16 +36,20 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
 
-    {/* Marke im Tab. SVG zuerst — moderne Browser nehmen es und skalieren
+    {
+      /* Marke im Tab. SVG zuerst — moderne Browser nehmen es und skalieren
         verlustfrei; favicon.ico ist der Fallback und liegt zusätzlich unter
         dem Standardpfad, den ältere Browser ungefragt abrufen.
-        Erzeugt von scripts/brand-assets.mjs aus dem Design System. */}
+        Erzeugt von scripts/brand-assets.mjs aus dem Design System. */
+    }
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    {/* --bg-app, damit die Adressleiste auf Android nicht gegen die Seite
-        kontrastiert. */}
+    {
+      /* --bg-app, damit die Adressleiste auf Android nicht gegen die Seite
+        kontrastiert. */
+    }
     <meta name="theme-color" content="#FBF6F1" />
 
     <meta property="og:type" content="website" />
@@ -58,7 +62,9 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
     <meta name="twitter:title" content={ogTitle} />
     <meta name="twitter:description" content={twitterDescription} />
 
-    {/* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu blockieren. */}
+    {
+      /* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu blockieren. */
+    }
     <link
       rel="preload"
       href="/fonts/Quicksand-Variable.woff2"
@@ -68,8 +74,14 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
     />
 
     {
+      /* is:inline ist hier korrekt und nicht nur Beruhigung für astro check:
+        das ist ein Datenblock, kein ausführbares Skript. Er soll unverändert
+        im HTML stehen und nicht durch die Bündelung laufen. */
+    }
+    {
       jsonLd && (
         <script
+          is:inline
           type="application/ld+json"
           set:html={JSON.stringify(jsonLd)}
         />

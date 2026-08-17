@@ -35,77 +35,80 @@ import moment from '../../assets/mascot/moment-reward-unlocked.png';
   </div>
 
   <div class="rewards__band">
-      <div class="mkt-container rewards__grid">
-        <div class="rewards__card" data-anim="side">
-          {/* Freie Münze, kein Plättchen mehr. */}
-          <span class="rewards__medal">
-            <Image
-              src={coin}
-              alt="Pepp Goldmünze"
-              width={96}
-              height={96}
-              densities={[1, 2]}
-              format="webp"
-              loading="lazy"
-            />
-          </span>
-          <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
-          <p class="rewards__body">
-            2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212; nicht
-            auf ein Konto.
-          </p>
-          <ul class="rewards__points mkt-list-reset">
-            <li>
-              <Icon name="check" size={20} color="var(--pepp-success)" />
-              Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
-            </li>
-            <li>
-              <Icon name="check" size={20} color="var(--pepp-success)" />
-              Sparziel mit eigenem Bild: der Pott hat ein Ziel.
-            </li>
-          </ul>
-        </div>
+    <div class="mkt-container rewards__grid">
+      <div class="rewards__card" data-anim="side">
+        {/* Freie Münze, kein Plättchen mehr. */}
+        <span class="rewards__medal">
+          <Image
+            src={coin}
+            alt="Pepp Goldmünze"
+            width={96}
+            height={96}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+          />
+        </span>
+        <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
+        <p class="rewards__body">
+          2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212;
+          nicht auf ein Konto.
+        </p>
+        <ul class="rewards__points mkt-list-reset">
+          <li>
+            <Icon name="check" size={20} color="var(--pepp-success)" />
+            Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
+          </li>
+          <li>
+            <Icon name="check" size={20} color="var(--pepp-success)" />
+            Sparziel mit eigenem Bild: der Pott hat ein Ziel.
+          </li>
+        </ul>
+      </div>
 
-        <div class="rewards__card" data-anim="card">
-          <span class="rewards__medal rewards__medal--lilac">
-            <Icon name="clock" size={44} color="var(--text-inverse)" />
-          </span>
-          <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
-          <p class="rewards__body">
-            30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
-            Wochenziel und Obergrenze.
-          </p>
-          <ul class="rewards__points mkt-list-reset">
-            <li>
-              <Icon name="target" size={20} color="var(--pepp-success)" />
-              Wochenziel setzen, tägliche Obergrenze festlegen.
-            </li>
-            <li>
-              <Icon name="pause" size={20} color="var(--pepp-success)" />
-              Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
-            </li>
-          </ul>
-        </div>
+      <div class="rewards__card" data-anim="card">
+        <span class="rewards__medal rewards__medal--lilac">
+          <Icon name="clock" size={44} color="var(--text-inverse)" />
+        </span>
+        <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
+        <p class="rewards__body">
+          30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
+          Wochenziel und Obergrenze.
+        </p>
+        <ul class="rewards__points mkt-list-reset">
+          <li>
+            <Icon name="target" size={20} color="var(--pepp-success)" />
+            Wochenziel setzen, tägliche Obergrenze festlegen.
+          </li>
+          <li>
+            <Icon name="pause" size={20} color="var(--pepp-success)" />
+            Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
   <div class="mkt-container rewards__inner rewards__closing">
-    {/* Die Notiz ist der einzige Absatz der Seite, der redaktioneller
+    {
+      /* Die Notiz ist der einzige Absatz der Seite, der redaktioneller
         Kommentar statt Produktaussage ist — die Aussage selbst steht im Zitat
         darüber. Natives <details> wie im FAQ: ohne JavaScript bedienbar, per
-        Tastatur erreichbar, im DOM und damit indexierbar. */}
+        Tastatur erreichbar, im DOM und damit indexierbar. */
+    }
     <div class="rewards__quote mkt-card" data-anim="card">
       <p class="rewards__quote-text">
         &#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;
       </p>
       <details class="rewards__quote-more">
-        {/* Die Notiz besteht aus zwei Sätzen: Befund, dann was Pepp daraus
+        {
+          /* Die Notiz besteht aus zwei Sätzen: Befund, dann was Pepp daraus
             macht. Der Befund bleibt sichtbar und wird das <summary>, die
             Antwort klappt auf. Beide Sätze stehen wortgleich im Handoff — ein
-            eigener Aufklapp-Text wie „Mehr dazu" wäre erfunden gewesen. */}
+            eigener Aufklapp-Text wie „Mehr dazu" wäre erfunden gewesen. */
+        }
         <summary>
-          Bildschirmzeit ist in vielen Familien der größere Streitpunkt als
-          Taschengeld.
+          Bildschirmzeit ist in vielen Familien der größere Streitpunkt als Taschengeld.
         </summary>
         <p class="rewards__quote-note">
           In Pepp ist sie eine Belohnung mit klaren Grenzen.
@@ -113,11 +116,13 @@ import moment from '../../assets/mascot/moment-reward-unlocked.png';
       </details>
     </div>
 
-    {/* moment-reward-unlocked.png: der gelieferte Render zum Augenblick
+    {
+      /* moment-reward-unlocked.png: der gelieferte Render zum Augenblick
         „Belohnung freigeschaltet". Er steht neben dem Zitat, nicht als
         96px-Medaille in einer Karte — als Medaille wäre von der Szene nichts
         zu erkennen. Dekoration, deshalb aria-hidden und leeres alt: die
-        Aussage tragen Zitat und Karten. */}
+        Aussage tragen Zitat und Karten. */
+    }
     <div class="rewards__figure" data-anim="card" aria-hidden="true">
       <Image
         src={moment}
@@ -226,7 +231,9 @@ import moment from '../../assets/mascot/moment-reward-unlocked.png';
     object-fit: contain;
     /* Aus --ink-gold gemischt, nicht als Hex-Literal: der Wert bleibt an das
        Token gebunden, wenn sich der Goldton im System ändert. */
-    filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--ink-gold) 28%, transparent));
+    filter: drop-shadow(
+      0 8px 16px color-mix(in srgb, var(--ink-gold) 28%, transparent)
+    );
   }
 
   .rewards__medal--lilac {

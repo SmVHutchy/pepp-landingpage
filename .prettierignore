@@ -1,0 +1,32 @@
+# Erzeugtes
+dist/
+.astro/
+.compare/
+node_modules/
+package-lock.json
+
+# Nicht unser Code — Design-Bundle und Design System, unverändert übernommen
+design_handoff_pepp_landingpage/
+Pepp Final Design System/
+
+# Juristisch geprüfter Fremdtext. Wortgleich übernommen; ein Formatierer würde
+# Zeilenumbrüche verschieben und damit jeden künftigen Diff unlesbar machen,
+# ohne dass sich am Text etwas ändert. Siehe ADR-010 in docs/DECISIONS.md.
+src/legal/
+
+# Icon-Set: 97 Dateien, aus dem Design System übernommen. Wird beim finalen
+# Set komplett getauscht, nicht einzeln gepflegt.
+src/icons/
+
+# Design-Tokens: 1:1 aus dem Design System übernommen, bis auf die
+# Zeilenumbrüche. Ein Formatierer würde sie auseinanderziehen und damit den
+# zeilenweisen Abgleich gegen die Quelle unmöglich machen — genau der ist
+# aber der Grund, warum sie unverändert übernommen wurden.
+# page-extensions.css ist die Ausnahme: die Datei ist neu und gehört uns.
+src/styles/tokens/
+!src/styles/tokens/page-extensions.css
+
+# Erzeugte Marken-Dateien
+public/*.png
+public/*.ico
+public/*.svg

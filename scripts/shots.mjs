@@ -42,24 +42,31 @@ await page.evaluate(async () => {
   }
   window.scrollTo(0, 0);
 });
-await page.waitForFunction(
-  () => [...document.images].every((i) => i.complete),
-  { timeout: 20000 }
-).catch(() => console.warn('  ! nicht alle Bilder geladen'));
+await page
+  .waitForFunction(() => [...document.images].every((i) => i.complete), {
+    timeout: 20000,
+  })
+  .catch(() => console.warn('  ! nicht alle Bilder geladen'));
 await page.waitForTimeout(400);
 
 const boxes = await page.evaluate(() =>
-  [...document.querySelectorAll('body > header, main > section, body > footer')].map((el, i) => {
-    const r = el.getBoundingClientRect();
-    const id = el.id || el.getAttribute('aria-label') || el.className.split(' ')[0] || 'sektion';
-    return {
-      name: `${String(i).padStart(2, '0')}-${id.replace(/\s+/g, '-').slice(0, 18)}`,
-      x: 0,
-      y: Math.round(r.top + window.scrollY),
-      width: document.documentElement.clientWidth,
-      height: Math.round(r.height),
-    };
-  })
+  [...document.querySelectorAll('body > header, main > section, body > footer')].map(
+    (el, i) => {
+      const r = el.getBoundingClientRect();
+      const id =
+        el.id ||
+        el.getAttribute('aria-label') ||
+        el.className.split(' ')[0] ||
+        'sektion';
+      return {
+        name: `${String(i).padStart(2, '0')}-${id.replace(/\s+/g, '-').slice(0, 18)}`,
+        x: 0,
+        y: Math.round(r.top + window.scrollY),
+        width: document.documentElement.clientWidth,
+        height: Math.round(r.height),
+      };
+    }
+  )
 );
 
 for (const box of boxes) {

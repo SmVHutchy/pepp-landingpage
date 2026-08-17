@@ -13,13 +13,13 @@ npm ci          # im CI reproduzierbar, nutzt package-lock.json
 npm run build   # erzeugt dist/
 ```
 
-| | |
-|---|---|
-| Build-Befehl | `npm run build` |
-| Ausgabeverzeichnis | `dist/` |
-| Node-Version | 22 (verifiziert mit v22.22.3) |
-| Bauzeit | ~5 s für 5 Seiten |
-| Laufzeit | keine — reine statische Dateien |
+|                    |                                 |
+| ------------------ | ------------------------------- |
+| Build-Befehl       | `npm run build`                 |
+| Ausgabeverzeichnis | `dist/`                         |
+| Node-Version       | 22 (verifiziert mit v22.22.3)   |
+| Bauzeit            | ~5 s für 5 Seiten               |
+| Laufzeit           | keine — reine statische Dateien |
 
 Es sind **keine Umgebungsvariablen** beim Hoster zu hinterlegen. Siehe
 [ENVIRONMENT.md](ENVIRONMENT.md).
@@ -48,11 +48,11 @@ Die Canonical-URLs im HTML lauten aber auf `/impressum` **ohne** Endung.
 
 **Löst der Hoster `/impressum` auf `impressum.html` auf, ohne dass jemand eine Regel schreibt?**
 
-| Hoster | Antwort |
-|---|---|
-| Vercel | ja, von selbst |
-| Netlify | ja, von selbst |
-| Cloudflare Pages | ja, von selbst |
+| Hoster                     | Antwort                        |
+| -------------------------- | ------------------------------ |
+| Vercel                     | ja, von selbst                 |
+| Netlify                    | ja, von selbst                 |
+| Cloudflare Pages           | ja, von selbst                 |
 | nginx, Apache, S3 statisch | **nein** — Rewrite-Regel nötig |
 
 Ist die Antwort nein, ist es besser, `build.format` auf `'directory'` zu ändern, als eine
@@ -71,12 +71,12 @@ curl -o /dev/null -w "%{http_code}\n" https://<domain>/impressum
 
 Gegen den echten Build geprüft, alle vier liefern **404**:
 
-| Pfad | Warum er gebraucht wird |
-|---|---|
+| Pfad            | Warum er gebraucht wird                                                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | `/og-image.png` | wird in [`Base.astro:31`](../src/layouts/Base.astro:31) als `og:image` referenziert. Jeder geteilte Link zeigt heute kein Vorschaubild |
-| `/robots.txt` | fehlt vollständig |
-| `/sitemap.xml` | fehlt vollständig |
-| `/favicon.ico` | fehlt, ebenso das übrige Favicon-Set und das Web-Manifest |
+| `/robots.txt`   | fehlt vollständig                                                                                                                      |
+| `/sitemap.xml`  | fehlt vollständig                                                                                                                      |
+| `/favicon.ico`  | fehlt, ebenso das übrige Favicon-Set und das Web-Manifest                                                                              |
 
 Dazu fehlt eine eigene 404-Seite: `/nichtvorhanden` liefert die nackte Hoster-Standardseite.
 
@@ -85,14 +85,14 @@ Dazu fehlt eine eigene 404-Seite: `/nichtvorhanden` liefert die nackte Hoster-St
 Vorbereitet, damit die Umsetzung nach der Hoster-Entscheidung nur noch Abtippen ist.
 **Keiner dieser Header ist bisher live geprüft.**
 
-| Header | Wert | Begründung |
-|---|---|---|
-| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains` | erst setzen, wenn HTTPS für alle Subdomains sicher steht — sonst sperrt man sich aus |
-| `X-Content-Type-Options` | `nosniff` | verhindert MIME-Raten |
-| `Referrer-Policy` | `strict-origin-when-cross-origin` | keine Pfade an Dritte |
-| `Permissions-Policy` | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | die Seite braucht nichts davon |
-| `X-Frame-Options` | `SAMEORIGIN` | oder über `frame-ancestors` in der CSP |
-| `Content-Security-Policy` | siehe unten | |
+| Header                      | Wert                                                           | Begründung                                                                           |
+| --------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains`                          | erst setzen, wenn HTTPS für alle Subdomains sicher steht — sonst sperrt man sich aus |
+| `X-Content-Type-Options`    | `nosniff`                                                      | verhindert MIME-Raten                                                                |
+| `Referrer-Policy`           | `strict-origin-when-cross-origin`                              | keine Pfade an Dritte                                                                |
+| `Permissions-Policy`        | `camera=(), microphone=(), geolocation=(), interest-cohort=()` | die Seite braucht nichts davon                                                       |
+| `X-Frame-Options`           | `SAMEORIGIN`                                                   | oder über `frame-ancestors` in der CSP                                               |
+| `Content-Security-Policy`   | siehe unten                                                    |                                                                                      |
 
 ### CSP-Entwurf
 

@@ -27,26 +27,49 @@ const legal = [
 <footer class="foot">
   <div class="foot__grid">
     <div>
-      <a href="/" class="foot__brand" aria-label="Pepp &#8212; zur Startseite">
-        <img src="/logo/pepp-snout.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy" />
-        <img src="/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" loading="lazy" />
+      <a href="/" class="foot__brand" aria-label="Pepp — zur Startseite">
+        <img
+          src="/logo/pepp-snout.svg"
+          alt=""
+          aria-hidden="true"
+          width="28"
+          height="28"
+          loading="lazy"
+        />
+        <img
+          src="/logo/pepp-wordmark.svg"
+          alt="Pepp"
+          width="76"
+          height="26"
+          loading="lazy"
+        />
       </a>
-      <p class="foot__claim">
-        Die Familien-App, in der aus Aufgaben Quests werden.
-      </p>
+      <p class="foot__claim">Die Familien-App, in der aus Aufgaben Quests werden.</p>
     </div>
 
     <nav aria-label="Footer-Navigation">
       <p class="mkt-label foot__head">Produkt</p>
       <ul class="foot__links mkt-list-reset">
-        {product.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        {
+          product.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
     <nav aria-label="Rechtliches">
       <p class="mkt-label foot__head">Rechtliches</p>
       <ul class="foot__links mkt-list-reset">
-        {legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+        {
+          legal.map((item) => (
+            <li>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
       </ul>
     </nav>
 
@@ -68,7 +91,8 @@ const legal = [
   <div class="foot__legal">
     <p>
       &#169; {OPERATOR.copyrightYear} Pepp &#183; {OPERATOR.legalName} &#183;
-      {OPERATOR.street}, {OPERATOR.postalCode} {OPERATOR.city}
+      {OPERATOR.street}, {OPERATOR.postalCode}
+      {OPERATOR.city}
     </p>
   </div>
 </footer>

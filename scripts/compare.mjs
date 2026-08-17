@@ -15,10 +15,8 @@ import { mkdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = new URL('..', import.meta.url);
-const REFERENCE = new URL(
-  'design_handoff_pepp_landingpage/index.standalone.html',
-  ROOT
-).href;
+const REFERENCE = new URL('design_handoff_pepp_landingpage/index.standalone.html', ROOT)
+  .href;
 const LOCAL = process.env.LOCAL_URL ?? 'http://localhost:4321/';
 const OUT = fileURLToPath(new URL('.compare/', ROOT));
 
@@ -91,11 +89,21 @@ async function shoot(page, url, tag, viewport) {
     const guilty = [];
     for (const el of document.querySelectorAll('body *')) {
       const r = el.getBoundingClientRect();
-      if (r.width > 0 && r.right > vw + 1 && getComputedStyle(el).position !== 'fixed') {
-        guilty.push(`${el.tagName.toLowerCase()}.${el.className || '?'} +${Math.round(r.right - vw)}px`);
+      if (
+        r.width > 0 &&
+        r.right > vw + 1 &&
+        getComputedStyle(el).position !== 'fixed'
+      ) {
+        guilty.push(
+          `${el.tagName.toLowerCase()}.${el.className || '?'} +${Math.round(r.right - vw)}px`
+        );
       }
     }
-    return { vw, scrollWidth: document.documentElement.scrollWidth, guilty: guilty.slice(0, 3) };
+    return {
+      vw,
+      scrollWidth: document.documentElement.scrollWidth,
+      guilty: guilty.slice(0, 3),
+    };
   });
   if (overflow.guilty.length) {
     console.log(

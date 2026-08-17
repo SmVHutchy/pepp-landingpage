@@ -61,8 +61,10 @@ const microTrust = [
         }
       </ul>
 
-      {/* QR-Code: OFFEN bis die finale Domain steht (README, offener Punkt 2).
-          Kein Bild aus einem Fremddienst einbetten. */}
+      {
+        /* QR-Code: OFFEN bis die finale Domain steht (README, offener Punkt 2).
+          Kein Bild aus einem Fremddienst einbetten. */
+      }
       <div class="hero__qr u-desk">
         <div class="hero__qr-placeholder">
           <span>[PLATZHALTER</span>
@@ -76,8 +78,10 @@ const microTrust = [
     </div>
 
     <div class="hero__visual">
-      {/* Der Dawn-Schein liegt HINTER dem Maskottchen, nicht als Fläche:
-          er gibt der Figur Grund, ohne selbst Fläche zu werden. */}
+      {
+        /* Der Dawn-Schein liegt HINTER dem Maskottchen, nicht als Fläche:
+          er gibt der Figur Grund, ohne selbst Fläche zu werden. */
+      }
       <div class="hero__glow" aria-hidden="true"></div>
 
       <div class="hero__figure" data-hero-figure>
@@ -94,11 +98,13 @@ const microTrust = [
         />
       </div>
 
-      {/* Ladeanzeige. hidden im Markup: ohne JavaScript ist sie NIE da, kann
+      {
+        /* Ladeanzeige. hidden im Markup: ohne JavaScript ist sie NIE da, kann
           also nichts dauerhaft verdecken. Sie liegt neben dem Maskottchen und
           nie über H1 oder CTA — die tragen den LCP. Das Skript zeigt sie erst,
           wenn die Schriften nach 150ms noch nicht stehen, und entfernt sie bei
-          document.fonts.ready. */}
+          document.fonts.ready. */
+      }
       <div class="hero__loader" data-loader hidden>
         <Image
           src={coin}

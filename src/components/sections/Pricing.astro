@@ -7,7 +7,12 @@
    JSON-LD und die FAQ-Antwort in einem Zug. */
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
-import { PRICING, formatEuro, yearlyPerMonth, yearlySavingsPercent } from '../../data/site.js';
+import {
+  PRICING,
+  formatEuro,
+  yearlyPerMonth,
+  yearlySavingsPercent,
+} from '../../data/site.js';
 
 const monthly = formatEuro(PRICING.monthly);
 const yearly = formatEuro(PRICING.yearly);
@@ -26,8 +31,7 @@ const included = [
       <p class="mkt-label" data-anim>Preis</p>
       <h2 class="mkt-h2" data-anim>Heute gratis starten. Morgen weniger Stress.</h2>
       <p class="mkt-lead price__lead" data-anim>
-        {PRICING.trialDays} Tage voller Zugriff &#8212; kostenlos. Danach ein Preis,
-        ein Familien-Account.
+        {PRICING.trialDays} Tage voller Zugriff &#8212; kostenlos. Danach ein Preis, ein Familien-Account.
       </p>
     </div>
 

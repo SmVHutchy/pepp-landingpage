@@ -28,11 +28,11 @@ hinzu.
 
 ## Die drei Blocker
 
-| | Fund | Aufwand | Wer |
-|---|---|---|---|
-| **B1** | Nav-CTA bricht unter 412 px aus seiner Fläche. Bei 320 px steht im Knopf nur „Tage gratis", der Rest ist weiß auf Off-White und unsichtbar. Betrifft jedes gängige Handy | S | Entwicklung |
-| **B2** | Barrierefreiheitserklärung liefert BFSG-Pflichtangaben als sichtbare Platzhalter aus. Seite ist indexierbar und aus jedem Footer verlinkt | S + Zulieferung | Auftraggeber |
-| **B3** | AGB nennen 23,88 €/Jahr plus Lifetime für 79,99 €, die Preissektion 19,90 € ohne Lifetime. Widerspruch zwischen Werbung und Vertragsbedingung, nach § 5 UWG angreifbar | M | **Entscheidung offen** |
+|        | Fund                                                                                                                                                                     | Aufwand         | Wer                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- | ---------------------- |
+| **B1** | Nav-CTA bricht unter 412 px aus seiner Fläche. Bei 320 px steht im Knopf nur „Tage gratis", der Rest ist weiß auf Off-White und unsichtbar. Betrifft jedes gängige Handy | S               | Entwicklung            |
+| **B2** | Barrierefreiheitserklärung liefert BFSG-Pflichtangaben als sichtbare Platzhalter aus. Seite ist indexierbar und aus jedem Footer verlinkt                                | S + Zulieferung | Auftraggeber           |
+| **B3** | AGB nennen 23,88 €/Jahr plus Lifetime für 79,99 €, die Preissektion 19,90 € ohne Lifetime. Widerspruch zwischen Werbung und Vertragsbedingung, nach § 5 UWG angreifbar   | M               | **Entscheidung offen** |
 
 Details in [`docs/AUDIT-2026-08-17.md`](docs/AUDIT-2026-08-17.md).
 
@@ -41,14 +41,14 @@ Details in [`docs/AUDIT-2026-08-17.md`](docs/AUDIT-2026-08-17.md).
 Keine Zugangsdaten liegen im Repo, und die Seite braucht zur Laufzeit keine. Zu übertragen sind
 trotzdem:
 
-| Was | Wer hat es heute | Anmerkung |
-|---|---|---|
-| Domain und DNS | *offen* | die finale Domain steht noch nicht fest |
-| Hosting-Konto | *offen* | Entscheidung steht aus |
-| App-Store-Konto (Apple) | *offen* | für die Store-URL |
-| Play-Console-Konto (Google) | *offen* | dito |
-| Design System (241 MB) | liegt lokal neben dem Repo | nicht im Repo, siehe ADR-002 |
-| Originaldateien Design | *offen* | Quelle der Renders und Prototyp-Screens |
+| Was                         | Wer hat es heute           | Anmerkung                               |
+| --------------------------- | -------------------------- | --------------------------------------- |
+| Domain und DNS              | _offen_                    | die finale Domain steht noch nicht fest |
+| Hosting-Konto               | _offen_                    | Entscheidung steht aus                  |
+| App-Store-Konto (Apple)     | _offen_                    | für die Store-URL                       |
+| Play-Console-Konto (Google) | _offen_                    | dito                                    |
+| Design System (241 MB)      | liegt lokal neben dem Repo | nicht im Repo, siehe ADR-002            |
+| Originaldateien Design      | _offen_                    | Quelle der Renders und Prototyp-Screens |
 
 **Werte gehören nicht ins Repo.** Diese Tabelle nennt nur, was zu übergeben ist.
 
@@ -66,27 +66,27 @@ trotzdem:
 
 ## Was bewusst offen ist
 
-| Was | Warum | Braucht |
-|---|---|---|
-| Social-Proof-Sektion | leer mit Platzhaltern; Erfinden ist verboten und nach UWG angreifbar | echte Zitate, Store-Bewertungen |
-| QR-Code im Hero | hängt an der finalen Domain | Domain |
-| Barrierefreiheitserklärung | drei Pflichtangaben fehlen | Kontaktstelle, Durchsetzungsstelle, Prüfdatum |
-| Hoster-Konfiguration | Ziel nicht entschieden | Entscheidung |
+| Was                        | Warum                                                                | Braucht                                       |
+| -------------------------- | -------------------------------------------------------------------- | --------------------------------------------- |
+| Social-Proof-Sektion       | leer mit Platzhaltern; Erfinden ist verboten und nach UWG angreifbar | echte Zitate, Store-Bewertungen               |
+| QR-Code im Hero            | hängt an der finalen Domain                                          | Domain                                        |
+| Barrierefreiheitserklärung | drei Pflichtangaben fehlen                                           | Kontaktstelle, Durchsetzungsstelle, Prüfdatum |
+| Hoster-Konfiguration       | Ziel nicht entschieden                                               | Entscheidung                                  |
 
 ## Technische Schuld
 
-| Was | Aufwand |
-|---|---|
-| Kein Linter, kein Formatter, kein Pre-Commit-Hook | S |
-| `npm run check` nicht lauffähig (`@astrojs/check`, `typescript` fehlen) | S |
-| Die sechs Werkzeuge in `scripts/` stehen in keinem npm-Skript — inklusive `verify.mjs` | S |
-| Keine `.nvmrc`, kein `engines`-Feld | S |
-| Keine automatisierten Tests außer `verify.mjs`, keine CI | M |
-| Astro 5.18.2 gegen 7.2.2, offene Sicherheitsmeldung (GHSA-j687-52p2-xcff) | M |
-| GSAP ist der größte Posten im 117-KB-Bündel | M |
-| Drei ungenutzte Assets, ungenutzte Icons | S |
-| Handoff-Spezifikation an 14 Stellen älter als der Code | S |
-| Rechtstexte lesen `OPERATOR` nicht — Adressänderung an vier Stellen nötig | M |
+| Was                                                                                    | Aufwand |
+| -------------------------------------------------------------------------------------- | ------- |
+| Kein Linter, kein Formatter, kein Pre-Commit-Hook                                      | S       |
+| `npm run check` nicht lauffähig (`@astrojs/check`, `typescript` fehlen)                | S       |
+| Die sechs Werkzeuge in `scripts/` stehen in keinem npm-Skript — inklusive `verify.mjs` | S       |
+| Keine `.nvmrc`, kein `engines`-Feld                                                    | S       |
+| Keine automatisierten Tests außer `verify.mjs`, keine CI                               | M       |
+| Astro 5.18.2 gegen 7.2.2, offene Sicherheitsmeldung (GHSA-j687-52p2-xcff)              | M       |
+| GSAP ist der größte Posten im 117-KB-Bündel                                            | M       |
+| Drei ungenutzte Assets, ungenutzte Icons                                               | S       |
+| Handoff-Spezifikation an 14 Stellen älter als der Code                                 | S       |
+| Rechtstexte lesen `OPERATOR` nicht — Adressänderung an vier Stellen nötig              | M       |
 
 ## Die nächsten drei Schritte
 

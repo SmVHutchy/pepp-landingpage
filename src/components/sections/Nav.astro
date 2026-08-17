@@ -50,9 +50,11 @@ const links = [
     </ul>
 
     <div class="nav__actions">
-      {/* u-hide-xs: unter 480px passt der CTA nicht neben Marke und Menü.
+      {
+        /* u-hide-xs: unter 480px passt der CTA nicht neben Marke und Menü.
           Begründung und Rechnung in global.css. Hero-CTA und Sticky-Leiste
-          tragen den Download dort. */}
+          tragen den Download dort. */
+      }
       <Cta size="nav" class="u-hide-xs" />
 
       <details class="nav__menu u-mob" data-nav-menu>
@@ -98,7 +100,6 @@ const links = [
     align-items: center;
     gap: var(--space-8);
   }
-
 
   .nav__brand {
     display: flex;

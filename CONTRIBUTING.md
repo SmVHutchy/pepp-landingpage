@@ -17,11 +17,11 @@ node scripts/verify.mjs      # in einem zweiten Terminal
 
 ## Zweige
 
-| Zweig | Zweck |
-|---|---|
-| `main` | Baseline des übernommenen Standes. Nicht direkt bearbeiten. |
-| `release/polish` | die laufende Aufräumarbeit |
-| `feat/…`, `fix/…`, `docs/…` | ein Zweig je Vorhaben, von `release/polish` |
+| Zweig                       | Zweck                                                       |
+| --------------------------- | ----------------------------------------------------------- |
+| `main`                      | Baseline des übernommenen Standes. Nicht direkt bearbeiten. |
+| `release/polish`            | die laufende Aufräumarbeit                                  |
+| `feat/…`, `fix/…`, `docs/…` | ein Zweig je Vorhaben, von `release/polish`                 |
 
 ## Commits
 
@@ -79,6 +79,7 @@ Sie sind nicht Geschmack. `verify.mjs` prüft sie maschinell, und sie stammen au
 Design-Spezifikation.
 
 **Inhalt**
+
 - Ansprache „du", nie „Sie". Sentence case. Deutsche Anführungszeichen „ … ".
 - Geld als `2,50 €`, Zeit als `30 Min`, Trenner `·`. Keine Emoji.
 - Verboten: BaFin, Bankpartner, Einlagensicherung, IBAN, Karte, Cashback, Zinsen,
@@ -88,6 +89,7 @@ Design-Spezifikation.
   und lässt sich nicht überschreiben — das ist Absicht.
 
 **Technik**
+
 - Die Seite muss ohne JavaScript vollständig **lesbar und bedienbar** bleiben.
 - Animations-Startzustände nur per JS, **nie** `opacity: 0` im CSS.
 - `prefers-reduced-motion: reduce` schaltet jede Bewegung ab, Endzustände stehen sofort.
@@ -95,6 +97,7 @@ Design-Spezifikation.
 - Reflow bei 320 px ohne horizontales Scrollen.
 
 **Design**
+
 - Keine Hex-Werte im Markup. Farben, Abstände, Radien, Schatten und Motion-Werte kommen aus
   den Tokens in `src/styles/tokens/`.
 - Primär-CTA schwarz. Coral ist nie Buttonfläche. Maskottchen-Pink ist nie UI-Fläche.
