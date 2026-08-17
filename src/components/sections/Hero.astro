@@ -62,14 +62,27 @@ const microTrust = [
       </ul>
 
       {
-        /* QR-Code: OFFEN bis die finale Domain steht (README, offener Punkt 2).
-          Kein Bild aus einem Fremddienst einbetten. */
+        /* Der QR-Code zeigt auf SITE.origin, nicht direkt in einen Store: ein
+          App-Store-Link führt auf Android ins Leere und umgekehrt. Gescannt
+          landet man auf dieser Seite, und die Store-Weiche in nav.js schickt
+          von dort mit einem Tipp in den richtigen Store — genau das sagt die
+          Zeile daneben.
+
+          Erzeugt von scripts/qr-code.mjs, kein Bild aus einem Fremddienst.
+          NACH EINEM DOMAINWECHSEL neu erzeugen: npm run qr-code
+
+          Vorher stand hier eine gestrichelte Box mit dem sichtbaren Text
+          „[PLATZHALTER QR-Code]" — im ersten Bildschirm jeder Desktop-Sitzung. */
       }
       <div class="hero__qr u-desk">
-        <div class="hero__qr-placeholder">
-          <span>[PLATZHALTER</span>
-          <span>QR-Code]</span>
-        </div>
+        <img
+          class="hero__qr-code"
+          src="/qr-store.svg"
+          alt=""
+          width="96"
+          height="96"
+          loading="lazy"
+        />
         <p class="hero__qr-text">
           Code mit der Handy&#8209;Kamera scannen &#183; die App wartet im Store auf
           dich.
@@ -224,23 +237,18 @@ const microTrust = [
     border-top: var(--border-hair) solid var(--border-hairline);
   }
 
-  .hero__qr-placeholder {
+  /* Die weisse Ruhezone gehört zum Code — Scanner brauchen sie. Deshalb
+     liegt das Innenpolster auf der Karte und nicht im SVG, und der
+     Hintergrund ist --pepp-surface (reines Weiss) und nicht --bg-app. */
+  .hero__qr-code {
     width: 96px;
     height: 96px;
     flex: 0 0 auto;
-    border-radius: var(--radius-lg);
-    border: var(--border-hair) dashed var(--border-hairline);
-    background: var(--pepp-surface);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: var(--type-label-size);
-    line-height: 1.35;
-    font-weight: var(--weight-semibold);
-    color: var(--text-secondary);
+    display: block;
     padding: var(--space-3);
+    border-radius: var(--radius-lg);
+    border: var(--border-hair) solid var(--border-hairline);
+    background: var(--pepp-surface);
   }
 
   .hero__qr-text {

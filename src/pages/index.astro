@@ -91,7 +91,26 @@ const jsonLd = [
     <Pot />
     <Security />
     <Family />
-    <SocialProof />
+    {
+      /* Sektion 11b · Social Proof — AUS DEM FLUSS GENOMMEN, nicht gelöscht.
+
+        Die Sektion bestand aus einer Überschrift und einer gestrichelten Box
+        mit dem sichtbaren Text „[PLATZHALTER: Diese Sektion wird nach dem
+        Launch mit echten Stimmen befüllt …]". Das wurde live ausgeliefert und
+        stand zwischen zwei fertigen Sektionen — eine leere Sektion liest sich
+        als Fehler, eine fehlende als Absicht.
+
+        Erfunden wird nichts: keine Zitate, keine Bewertungen, keine Zahlen.
+        Das bleibt so (Handoff-Vorgabe, und nach § 5 UWG angreifbar).
+
+        WIEDER EINSETZEN, sobald echte Stimmen und ein Store-Rating vorliegen:
+        die Zeile unten entkommentieren und die Platzhalter in
+        SocialProof.astro durch die echten Inhalte ersetzen. Die Komponente
+        ist unverändert und behält ihre Position zwischen Family und Pricing.
+
+        Siehe Fund 16 in docs/AUDIT-2026-08-17.md. */
+    }
+    {/* <SocialProof /> */}
     <Pricing />
     <Faq />
     <FinalCta />
