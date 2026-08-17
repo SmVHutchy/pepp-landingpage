@@ -149,19 +149,41 @@ const points = [
     position: relative;
   }
 
+  /* Die Bühne ist 512px breit: 320 (vorn) + 280 (hinten) − 88 (Überlappung).
+     Mit festen Pixelmaßen und justify-content:center schnitt overflow:hidden
+     bei schmalem Viewport links und rechts je (512 − Bühnenbreite) / 2 ab —
+     bei 320px Viewport also 116px je Seite, mitten durch beide Geräte. Vom
+     Inhalt blieben Fragmente wie „nma", „IGELD" und „ARZIEL" stehen.
+
+     Deshalb prozentual statt fest. Die drei Werte sind aus dem Entwurf
+     abgeleitet und halten dessen Verhältnisse exakt ein:
+       vorn        320 / 512 = 62,5 %
+       hinten      280 / 512 = 54,69 %
+       Überlappung  88 / 512 = 17,19 %
+     Bis 512px Bühnenbreite greift der Prozentwert, darüber der Pixelwert —
+     das Gerät wird also nie größer als im Entwurf, nur bei Bedarf kleiner.
+
+     Bei den negativen Margins ist es max() und nicht min(): gesucht ist der
+     betragsmäßig kleinere Wert, und der ist bei negativen Zahlen der größere.
+
+     height:auto statt fester Höhe, damit das Seitenverhältnis mitläuft. Die
+     width/height-Attribute am <Image> bleiben und tragen weiterhin das
+     Seitenverhältnis für die Layoutreservierung — kein CLS.
+
+     Behebt Fund 15 aus docs/AUDIT-2026-08-17.md. */
   .pot__screen--front {
     z-index: 2;
-    width: 320px;
-    height: 692px;
+    width: min(320px, 62.5%);
+    height: auto;
     filter: drop-shadow(0 18px 40px rgb(26 26 26 / 0.16));
   }
 
   .pot__screen--back {
     z-index: 1;
-    width: 280px;
-    height: 606px;
-    margin-left: -88px;
-    margin-top: 56px;
+    width: min(280px, 54.69%);
+    height: auto;
+    margin-left: max(-88px, -17.19%);
+    margin-top: min(56px, 10.94%);
     filter: drop-shadow(0 16px 32px rgb(26 26 26 / 0.12));
   }
 
