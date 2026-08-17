@@ -1,0 +1,162 @@
+---
+/* /404 — die Seite, die der Hoster ausliefert, wenn eine URL nicht existiert.
+   Sie fehlte: bisher kam die nackte Standardseite des Hosters, ohne Marke,
+   ohne Navigation und ohne Weg zurück.
+
+   Bewusst KEINE eigene Sektionsstruktur und kein Marketing. Eine Fehlerseite
+   hat eine Aufgabe: sagen was los ist und einen Weg zurück anbieten. Der CTA
+   der Seite steht hier nicht — wer im Nichts landet, soll nicht verkauft
+   bekommen, sondern zurückfinden. Der Nav-CTA ist ohnehin da.
+
+   Der Maskottchen-Render ist derselbe wie in „Das Problem", nichts Neues
+   erfunden. Er ist Dekoration und trägt deshalb alt="".
+
+   Hinweis für den Betrieb: eine statische Seite kann keinen 404-Status
+   setzen. Der Hoster muss diese Datei als Fehlerseite eintragen, sonst
+   antwortet er mit seiner eigenen. Siehe docs/DEPLOYMENT.md. */
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Nav from '../components/sections/Nav.astro';
+import Footer from '../components/sections/Footer.astro';
+import Icon from '../components/Icon.astro';
+
+import pepp from '../assets/mascot/pepp-point.png';
+
+const wege = [
+  { href: '/', label: 'Zur Startseite' },
+  { href: '/#funktionen', label: 'So funktioniert Pepp' },
+  { href: '/#preis', label: 'Was Pepp kostet' },
+  { href: '/#faq', label: 'Häufige Fragen' },
+];
+---
+
+<Base
+  title="Seite nicht gefunden · Pepp"
+  description="Diese Seite gibt es nicht. Hier geht es zurück zu Pepp."
+>
+  <Nav />
+
+  <main id="main" class="nf">
+    <div class="mkt-container nf__inner">
+      <div class="nf__text">
+        <p class="mkt-label">Fehler 404</p>
+        <h1 class="mkt-h2">Diese Seite gibt es nicht.</h1>
+        <p class="mkt-lead nf__lead">
+          Vielleicht ein alter Link, vielleicht ein Tippfehler. Beides halb so
+          wild &#8212; hier geht es weiter.
+        </p>
+
+        <ul class="nf__wege mkt-list-reset">
+          {
+            wege.map((weg) => (
+              <li>
+                <a href={weg.href}>
+                  <span>{weg.label}</span>
+                  <Icon name="arrow-right" size={18} />
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="nf__figur">
+        <Image
+          src={pepp}
+          alt=""
+          width={340}
+          height={399}
+          densities={[1, 2]}
+          format="webp"
+          loading="eager"
+        />
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+
+  <script>
+    import '../scripts/nav.js';
+  </script>
+</Base>
+
+<style>
+  /* Mindesthöhe, damit der Footer bei kurzem Inhalt nicht mitten auf dem
+     Bildschirm klebt. 100dvh statt 100vh: auf iOS Safari zählt vh die
+     eingeklappte Adressleiste mit und die Seite bekäme eine Leerzeile. */
+  .nf {
+    min-height: calc(100dvh - var(--height-nav));
+    display: flex;
+    align-items: center;
+    /* Die kleine Stufe, nicht die grosse: eine Fehlerseite ist keine
+       Argumentsektion und braucht deren Atem nicht. */
+    padding-block: var(--mkt-section-y-sm);
+    background: var(--bg-app);
+  }
+
+  .nf__inner {
+    display: grid;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+    width: 100%;
+  }
+
+  .nf__lead {
+    margin-top: var(--space-5);
+  }
+
+  .nf__wege {
+    margin-top: clamp(24px, 3vw, 32px);
+    display: grid;
+    gap: 0;
+    max-width: 30rem;
+  }
+
+  .nf__wege a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    /* 56px: deutlich über der 44px-Mindestgröße für Berührungsziele. */
+    min-height: 56px;
+    padding-inline: var(--space-2);
+    border-top: var(--border-hair) solid var(--border-hairline);
+    font-size: var(--type-bodyl-size);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color var(--dur-fast) var(--ease-standard);
+  }
+
+  .nf__wege li:last-child a {
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+  }
+
+  .nf__wege a:hover {
+    color: var(--text-highlight);
+  }
+
+  .nf__figur {
+    justify-self: center;
+  }
+
+  .nf__figur :global(img) {
+    display: block;
+    width: min(340px, 62vw);
+    height: auto;
+    filter: drop-shadow(0 18px 40px rgb(26 26 26 / 0.14));
+  }
+
+  @media (min-width: 901px) {
+    .nf__inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    }
+
+    /* Auf Mobil steht die Figur unter dem Text, auf Desktop daneben —
+       und dort rechts, wie überall sonst auf der Seite. */
+    .nf__figur {
+      order: 2;
+    }
+  }
+</style>
