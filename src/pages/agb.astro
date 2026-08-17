@@ -1,0 +1,11 @@
+---
+/* /agb — Text wortgleich aus src/content/legal/agb.html. */
+import Legal from '../layouts/Legal.astro';
+import body from '../content/legal/agb.html?raw';
+---
+
+<Legal
+  title="AGB · Pepp"
+  description="Allgemeine Geschäftsbedingungen für die Nutzung der Pepp-App."
+  body={body}
+/>

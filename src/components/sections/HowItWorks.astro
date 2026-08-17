@@ -1,0 +1,141 @@
+---
+/* Sektion 5 · So funktioniert's (#funktionen)
+   Weiss mit Radius oben — der erste Sektionsübergang. Enthält CTA-Instanz 2. */
+import Cta from '../Cta.astro';
+import Icon from '../Icon.astro';
+
+const steps = [
+  {
+    number: '01',
+    icon: 'plus',
+    tint: 'var(--pepp-peach-tint)',
+    ink: 'var(--ink-peach)',
+    title: 'Quest anlegen',
+    body: 'Aufgabe wählen, Belohnung dranhängen: 2,50 € oder 30 Min.',
+  },
+  {
+    number: '02',
+    icon: 'camera',
+    tint: 'var(--pepp-pink-tint)',
+    ink: 'var(--ink-pink)',
+    title: 'Kind erledigt sie',
+    body: 'Quest annehmen, machen, Foto oder Kommentar als Beweis schicken.',
+  },
+  {
+    number: '03',
+    icon: 'check-check',
+    tint: 'var(--pepp-blue-tint)',
+    ink: 'var(--ink-blue)',
+    title: 'Du gibst frei',
+    body: 'Kurz ansehen, freigeben. Oder zurückschicken — ohne Neustart.',
+  },
+  {
+    number: '04',
+    icon: 'coins',
+    tint: 'var(--pepp-gold-tint)',
+    ink: 'var(--ink-gold)',
+    title: 'Der Pott füllt sich',
+    body: 'Die Belohnung wandert in den Pott — sichtbar als Ring um Pepp.',
+  },
+];
+---
+
+{/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
+<section id="funktionen" class="mkt-section mkt-section--xl mkt-section--card">
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>So funktioniert’s</p>
+      <h2 class="mkt-h2" data-anim>Vier Schritte, dann läuft es.</h2>
+      <p class="mkt-lead how__lead" data-anim>
+        Einmal einrichten dauert Minuten. Danach macht die Quest die Diskussion.
+      </p>
+    </div>
+
+    <ol class="how__steps mkt-list-reset">
+      {
+        steps.map((step) => (
+          <li class="mkt-card mkt-card--sunken" data-anim="card">
+            <div class="how__step-head">
+              <span class="mkt-tile" style={`background:${step.tint}`}>
+                <Icon name={step.icon} size={22} color={step.ink} />
+              </span>
+              <span class="how__step-number">{step.number}</span>
+            </div>
+            <h3 class="how__step-title">{step.title}</h3>
+            <p class="how__step-body">{step.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <div class="how__cta" data-anim>
+      <Cta />
+      <p class="how__cta-note">
+        14 Tage gratis &#183; Kein Bankkonto nötig &#183; Jederzeit kündbar
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Kein margin-top: den Abstand setzt .mkt-head als gap. Sonst addieren sich
+     gap und Margin, und welcher gewinnt, entscheidet die Ladereihenfolge der
+     Astro-Scoped-Styles gegen global.css. */
+  .how__lead {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  .how__steps {
+    margin-top: var(--mkt-stack-gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+  }
+
+  .how__step-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .how__step-number {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: 28px;
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-secondary);
+  }
+
+  .how__step-title {
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-h3-size);
+    line-height: var(--type-h3-lh);
+    color: var(--text-primary);
+  }
+
+  .how__step-body {
+    margin: 6px 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+
+  .how__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5) var(--space-7);
+    margin-top: clamp(32px, 4vw, 48px);
+  }
+
+  .how__cta-note {
+    margin: 0;
+    font-size: 14px;
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+</style>

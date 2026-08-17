@@ -1,0 +1,403 @@
+/* Pepp Design System — Reihenfolge wie in styles.css des Design Systems.
+   tokens/*.css sind 1:1 aus dem Design System übernommen; nur fonts.css ist
+   auf /fonts/ umgeschrieben und page-extensions.css ist neu. */
+@import url('./tokens/fonts.css');
+@import url('./tokens/colors.css');
+@import url('./tokens/gradients.css');
+@import url('./tokens/typography.css');
+@import url('./tokens/spacing.css');
+@import url('./tokens/radius.css');
+@import url('./tokens/elevation.css');
+@import url('./tokens/motion.css');
+@import url('./tokens/base.css');
+@import url('./tokens/page-extensions.css');
+
+/* ── Seitenweite Grundlagen ───────────────────────────────────────────── */
+
+body {
+  background: var(--bg-app);
+  overflow-x: hidden; /* Reflow bei 320px ohne horizontales Scrollen */
+}
+
+/* Fokus-Ring: 2px schwarz, offset 3px — WCAG 2.4.7 */
+:focus-visible {
+  outline: var(--border-strong) solid var(--pepp-black);
+  outline-offset: 3px;
+  border-radius: var(--radius-xs);
+}
+
+/* Skip-Link: außerhalb des Viewports, bei Fokus sichtbar */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: var(--pepp-black);
+  color: var(--text-inverse);
+  font-weight: var(--weight-semibold);
+}
+.skip-link:focus {
+  left: var(--space-5);
+  top: var(--space-5);
+}
+
+/* Icons: nie am Baseline-Gap hängen, nie im Flex schrumpfen. */
+svg[data-pepp-icon] {
+  display: block;
+  flex: 0 0 auto;
+}
+
+/* ── Marketing-Layout ─────────────────────────────────────────────────── */
+
+.mkt-container {
+  max-width: var(--mkt-content-width);
+  margin-inline: auto;
+  padding-inline: var(--mkt-gutter);
+}
+
+.mkt-section {
+  padding-block: var(--mkt-section-y);
+  /* Bezugspunkt für die absolut liegenden Farbblobs und die Maskottchen, die
+     an einer Sektionskante hervortreten. Kein overflow:hidden hier — welche
+     Sektion ihre Dekoration beschneidet, entscheidet sie selbst. */
+  position: relative;
+}
+
+/* Der Inhalt liegt über der Dekoration. Ohne das würden Blobs ihn überdecken,
+   sobald sie eine Deckkraft über etwa 0,4 haben. */
+.mkt-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Drei Padding-Stufen. XL für die Sektionen, die das Argument tragen, SM für
+   die, die nur beruhigen. Ohne Stufen liest die Seite als Metronom. */
+.mkt-section--xl {
+  padding-block: var(--mkt-section-y-xl);
+}
+
+.mkt-section--sm {
+  padding-block: var(--mkt-section-y-sm);
+}
+
+/* Sektionsübergang: weiße Sektion legt sich mit Radius über die Off-White-Fläche */
+.mkt-section--card {
+  position: relative;
+  background: var(--surface-card);
+  border-top: var(--border-hair) solid var(--border-hairline);
+  border-radius: var(--radius-section-top) var(--radius-section-top) 0 0;
+}
+
+.mkt-section--ground {
+  background: var(--bg-app);
+}
+
+/* Kapitelfläche — genau eine Sektion auf der Seite (Sicherheit). Kein Radius
+   und kein Rahmen: die Fläche selbst ist die Zäsur, sie braucht keine Kante. */
+.mkt-section--chapter {
+  background: var(--mkt-surface-chapter);
+}
+
+/* ── Typografie der Marketing-Skala ───────────────────────────────────── */
+
+.mkt-h1 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-mkt-h1);
+  line-height: var(--type-mkt-h1-lh);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin: 0;
+  max-width: 13ch;
+}
+
+.mkt-h2 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-mkt-h2);
+  line-height: var(--type-mkt-h2-lh);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text-primary);
+  margin: 0;
+  max-width: var(--measure-headline);
+}
+
+/* Zweite H2-Stufe für stützende Sektionen. Nur die Größe ändert sich; Familie,
+   Gewicht, Laufweite und Zeilenhöhe bleiben, damit es dieselbe Stimme bleibt. */
+.mkt-h2--sm {
+  font-size: var(--type-mkt-h2-sm);
+}
+
+.mkt-h3 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  color: var(--text-primary);
+  margin: 0;
+}
+
+/* ── Sektionskopf ─────────────────────────────────────────────────────────
+   Label über H2 über Lead sind drei gestapelte Zeilen, elfmal wiederholt.
+   Ab 901px stehen H2 links und Label plus Lead rechts: die Höhe wird
+   max(H2, Label+Lead) statt der Summe, ohne dass ein Wort wegfällt. Die
+   rechte Hälfte der Kopfzeile stand bisher leer.
+
+   Die DOM-Reihenfolge bleibt Label → H2 → Lead. Ohne CSS, im Vorleseprogramm
+   und unter 901px liest sich der Kopf also unverändert.
+
+   Das LABEL bleibt links über der H2. Der erste Versuch hatte es mit nach
+   rechts genommen, über den Lead — dort stand ein 12px-CAPS-Wort allein über
+   einem Absatz, ohne Headline daneben in Blickhöhe, und las als verwaistes
+   Fragment. Es gehört zu der Überschrift, die es benennt. Damit sind es
+   -408px statt -826px; der Rest des Gewinns war die falsche Hälfte.
+
+   Drei Geschwister ohne Wrapper: Zeile und Spalte werden einzeln zugewiesen,
+   sonst würden Label und H2 im selben Grid-Bereich übereinanderliegen.
+
+   :has(.mkt-lead) ist Absicht — ohne Lead gibt es rechts nichts zu zeigen.
+   Diese fünf Sektionen behalten die Stapelung. */
+
+.mkt-head {
+  display: grid;
+  gap: var(--space-5);
+}
+
+/* Abstände gehören dem Container, nicht den Kindern: sonst entscheidet die
+   Ladereihenfolge der Astro-Scoped-Styles darüber, ob margin-top gewinnt. */
+.mkt-head > .mkt-label,
+.mkt-head > .mkt-lead,
+.mkt-head > h2 {
+  margin: 0;
+}
+
+@media (min-width: 901px) {
+  .mkt-head:has(.mkt-lead) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-rows: auto auto;
+    column-gap: var(--mkt-head-gap);
+    row-gap: var(--space-4);
+    align-items: start;
+  }
+
+  .mkt-head:has(.mkt-lead) > .mkt-label {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .mkt-head:has(.mkt-lead) > h2 {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  /* Über beide Zeilen, oben ausgerichtet: der Lead beginnt auf derselben
+     Höhe wie das Label, nicht erst neben der Headline. */
+  .mkt-head:has(.mkt-lead) > .mkt-lead {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+}
+
+/* Sektions-Label: das einzige CAPS auf der Seite. Steht in --text-secondary,
+   nicht --text-tertiary: #AAA199 erreicht nur 2,5:1 und ist reine Dekoration. */
+.mkt-label {
+  font-family: var(--font-ui);
+  font-size: var(--type-label-size);
+  /* Bewusst KEINE line-height: die Marketing-Seite lässt sie erben (22px).
+     Der DS-Token --type-label-lh (16px) gilt fürs App-UI und würde jede
+     Sektion um 6px verkürzen. */
+  font-weight: var(--type-label-weight);
+  letter-spacing: var(--type-label-tracking);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin: 0 0 var(--space-5);
+}
+
+.mkt-lead {
+  font-family: var(--font-ui);
+  font-size: var(--type-mkt-lead);
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: var(--measure-body);
+}
+
+.mkt-body {
+  font-family: var(--font-ui);
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* ── Karten ───────────────────────────────────────────────────────────── */
+
+.mkt-card {
+  background: var(--surface-card);
+  border: var(--border-hair) solid var(--border-hairline);
+  border-radius: var(--radius-2xl);
+  padding: clamp(22px, 2.2vw, 32px);
+  box-shadow: var(--shadow-1);
+}
+
+/* Auf weißen Sektionen kehrt sich die Kartenfläche um: Off-White auf Weiß. */
+.mkt-card--sunken {
+  background: var(--bg-app);
+}
+
+/* Rezept 2 · Tint-Figur — Panel als Bildfläche, Text nackt darunter.
+   Der Griff stammt von mysunwest: dort trägt ein getöntes Panel die Grafik,
+   und Titel und Body stehen ohne Rahmen, ohne Schatten und ohne Padding-Kasten
+   direkt auf der Seitenfläche. Bei uns ist die Grafik dasselbe Outline-Icon
+   wie vorher, nur bei 64px statt 24px: kein neues Asset, keine erfundene Form.
+
+   aspect-ratio statt fester Höhe, damit die Fläche vor dem Laden steht und
+   CLS bei 0 bleibt. Die Tint-Fläche und der --ink-*-Hue kommen als Inline-Wert
+   pro Karte, weil sie inhaltlich zugeordnet sind. */
+.mkt-figure__panel {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-2xl);
+  display: grid;
+  place-items: center;
+}
+
+.mkt-figure__title {
+  margin: var(--space-6) 0 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  color: var(--text-primary);
+}
+
+.mkt-figure__body {
+  margin: var(--space-3) 0 0;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  color: var(--text-secondary);
+  max-width: var(--measure-body);
+}
+
+/* Rezept 3 · Hairline-Reihen — Liste statt Karten.
+   Für Aussagen, die beruhigen statt verkaufen: eine Trennlinie zwischen den
+   Reihen, kein Rahmen um sie herum. Ab 901px zwei Spalten, damit die Zeilen
+   nicht über die ganze Containerbreite laufen. */
+.mkt-rows {
+  display: grid;
+  gap: 0 var(--mkt-head-gap);
+}
+
+.mkt-rows > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: start;
+  padding-block: var(--space-6);
+  border-top: var(--border-hair) solid var(--border-hairline);
+}
+
+.mkt-rows__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  font-size: var(--type-h3-size);
+  line-height: var(--type-h3-lh);
+  color: var(--text-primary);
+}
+
+.mkt-rows__body {
+  margin: var(--space-3) 0 0;
+  font-size: var(--type-body-size);
+  line-height: var(--type-body-lh);
+  color: var(--text-secondary);
+  max-width: var(--measure-body);
+}
+
+/* Erster Satz hervorgehoben: nur Farbe und Gewicht, nie die Größe. */
+.mkt-rows__body strong {
+  color: var(--text-primary);
+  font-weight: var(--weight-semibold);
+}
+
+@media (min-width: 901px) {
+  .mkt-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── Angeschnittene Geräte-Screens ───────────────────────────────────────
+   Die Bühnen begrenzen ihre Höhe mit overflow:hidden, damit ein 779px hoher
+   Screen die Sektion nicht aufzieht. Das erzeugt eine gerade Schnittkante
+   quer durchs Gerät — es sieht nach Versehen aus, nicht nach Absicht.
+
+   Die Maske lässt den Screen stattdessen auslaufen. overflow:hidden bleibt und
+   hält die Höhe; die Maske nimmt nur der Kante die Härte. --fade-b und
+   --fade-r sagen, ab welchem Anteil unten bzw. rechts der Übergang beginnt;
+   100% heisst „an dieser Kante nicht ausblenden".
+
+   mask-composite:intersect verschneidet beide Richtungen. Ohne die
+   Verschneidung würden sich die Verläufe addieren und die Ecke bliebe hart. */
+.mkt-fade-edges {
+  --fade-b: 100%;
+  --fade-r: 100%;
+  mask-image: linear-gradient(to bottom, #000 var(--fade-b), transparent 100%),
+    linear-gradient(to right, #000 var(--fade-r), transparent 100%);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  /* KEIN -webkit-mask-composite daneben: in Chrome sind die -webkit-mask-*
+     Eigenschaften Aliase der ungeprefixten, aber -webkit-mask-composite hat
+     einen anderen Wertevorrat. `source-in` überschrieb `intersect` und machte
+     die Maske leer — die Geräte-Screens in Sektion 8 waren dadurch komplett
+     unsichtbar. mask-composite gibt es in Chrome, Firefox und ab Safari 15.4. */
+  mask-composite: intersect;
+}
+
+/* IconTile: 40px, Radius 12, Tint-Fläche + abgedunkeltes Icon */
+.mkt-tile {
+  width: var(--space-9);
+  height: var(--space-9);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+/* ── Listen ohne Marker ───────────────────────────────────────────────── */
+
+.mkt-list-reset {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Sichtbarkeit nach Viewport ───────────────────────────────────────── */
+/* Bruchpunkt 901px wie im Design: darunter greift das Burger-Menü und die
+   Sticky-Leiste, darüber die Anker-Navigation. */
+
+@media (max-width: 900px) {
+  .u-desk {
+    display: none !important;
+  }
+}
+
+@media (min-width: 901px) {
+  .u-mob {
+    display: none !important;
+  }
+}
+
+/* ── Reduced Motion: jede Bewegung aus, Endzustände stehen sofort ─────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

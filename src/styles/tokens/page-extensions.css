@@ -1,0 +1,92 @@
+/* Ergänzungen dieser Seite — abgedunkelte Hues, damit Icons und Chips auf den
+   Tint-Flächen 4,5:1 erreichen. Das Kern-Design-System hat dafür noch keine
+   Tokens; laut Handoff-README gehören diese sieben dort übernommen oder ersetzt.
+   Solange sie hier stehen, ist das die einzige Stelle mit eigenen Hex-Werten. */
+:root {
+  --ink-peach: #a05a28; /* Peach-Hue abgedunkelt, 4,6:1 auf Peach-Tint */
+  --ink-pink: #b03050; /* Pink/Coral-Hue abgedunkelt */
+  --ink-blue: #3d6dd0; /* Blue-Hue abgedunkelt */
+  --ink-lilac: #5b4bb8; /* Lilac-Hue abgedunkelt */
+  --ink-gold: #a9781a; /* Gold-Hue abgedunkelt */
+  --surface-hover: #f2ece4;
+  --action-primary-hover: #252525;
+}
+
+/* Kapitelfläche. Die Seite hatte acht gleich schwache Wechsel zwischen
+   Off-White und Weiß; mysunwest setzt statt dessen EINEN vollflächigen
+   Farbmoment, der ein Kapitel trägt. Hier ist es --surface-sunken (#F7F1E8),
+   das im Design System definiert, aber nirgends benutzt war. Der Alias
+   existiert, damit im Markup die Absicht steht und nicht der Farbname — und
+   damit die Regel „genau einmal auf der Seite" grep-bar bleibt. */
+:root {
+  --mkt-surface-chapter: var(--surface-sunken);
+}
+
+/* Umlaufdauer der Münze in der Ladeanzeige. Das Design System hat keine Dauer
+   für dauerhafte Rotation — --dur-reward (4000ms) beschreibt den einmaligen
+   Belohnungsmoment in der App, nicht eine Endlosschleife. Deshalb hier, in
+   derselben Rolle wie die --ink-*-Werte oben: eine Ergänzung dieser Seite,
+   sichtbar an einer Stelle statt verstreut im Markup. */
+:root {
+  --dur-coin-spin: 1600ms;
+}
+
+/* Marketing-Skala der Landingpage. Die App-Skala des Design Systems ist auf
+   360 dp gebaut; die Seite braucht fluide clamp()-Werte fürs Desktop-Layout.
+   Werte 1:1 aus dem Handoff-README, Abschnitt „Typografie". */
+:root {
+  --type-mkt-h1: clamp(38px, 4.8vw, 64px);
+  --type-mkt-h1-lh: 1.06;
+  --type-mkt-h2: clamp(30px, 3.8vw, 52px);
+  --type-mkt-h2-lh: 1.08;
+  /* Zweite H2-Stufe: stützende Sektionen sollen nicht so laut sprechen wie
+     die fünf, die das Argument tragen. Untergrenze 24px, damit die Stufe auf
+     390px noch von --type-h3-size (20px) unterscheidbar bleibt. */
+  --type-mkt-h2-sm: clamp(24px, 2.6vw, 36px);
+  --type-mkt-lead: clamp(17px, 1.5vw, 20px);
+  --type-mkt-price: clamp(36px, 4vw, 56px);
+  --type-mkt-quote: clamp(22px, 2.4vw, 32px);
+  --tracking-tight: -0.02em;
+}
+
+/* Marketing-Layout: Werte aus „Spacing" und „Radien" des Handoff-README.
+   Die Spacing-Tokens des Design Systems beschreiben das 360-dp-App-Raster,
+   nicht die Sektionsrhythmik einer Landingpage. */
+:root {
+  /* Drei Padding-Stufen statt einer. Ohne Stufen liegt die Höhenvarianz der
+     Sektionen bei 1 — mysunwest und slush liegen bei 2,5. XL tragen die drei
+     Sektionen, die das Argument tragen (5, 7, 12), SM die drei, die nur
+     beruhigen (10, 11, 11b). Alle drei Werte teilen sich Unter- und
+     Obergrenze mit der Grundstufe, damit sie mobil zusammenlaufen. */
+  --mkt-section-y-sm: clamp(40px, 5.5vw, 80px);
+  --mkt-section-y: clamp(64px, 9vw, 132px);
+  --mkt-section-y-xl: clamp(80px, 11vw, 168px);
+  --mkt-gutter: clamp(20px, 4vw, 32px);
+  /* Spaltenabstand im zweispaltigen Sektionskopf. */
+  --mkt-head-gap: clamp(32px, 4vw, 64px);
+  --mkt-content-width: 1180px;
+  --mkt-content-width-narrow: 820px; /* FAQ */
+  --mkt-card-gap: clamp(16px, 2vw, 24px);
+  --mkt-stack-gap: clamp(32px, 4vw, 56px);
+  --radius-section-top: clamp(32px, 4vw, 56px);
+  --radius-panel: 36px;
+  --radius-cta: 14px;
+  --height-cta: 56px;
+  --height-cta-nav: 40px;
+  --height-nav: 72px;
+  --shadow-screen: drop-shadow(0 18px 40px rgba(26, 26, 26, 0.18));
+  --shadow-screen-soft: drop-shadow(0 18px 40px rgba(26, 26, 26, 0.14));
+  --shadow-screen-small: drop-shadow(0 16px 32px rgba(26, 26, 26, 0.14));
+}
+
+/* Navigation: transparent im Ruhezustand, ab 24px Scroll Off-White mit 88%
+   plus Hairline. Beide Zustände sind aus den Farbtokens gemischt, damit hier
+   kein rgba()-Literal steht. */
+:root {
+  --nav-bg-idle: color-mix(in srgb, var(--pepp-offwhite) 0%, transparent);
+  --nav-bg-solid: color-mix(in srgb, var(--pepp-offwhite) 88%, transparent);
+  --nav-border-idle: color-mix(in srgb, var(--pepp-hairline) 0%, transparent);
+  --nav-blur: saturate(1.4) blur(12px);
+  --sticky-bar-bg: color-mix(in srgb, var(--pepp-offwhite) 92%, transparent);
+  --sticky-bar-blur: blur(12px);
+}

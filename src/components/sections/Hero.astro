@@ -1,0 +1,323 @@
+---
+/* Sektion 2 · Hero
+   H1 und CTA werden NIE animiert — sie tragen den LCP. Deshalb steht hier
+   auch kein data-anim und kein Startzustand.
+
+   Statt zwei angeschnittener App-Screens steht hier das Maskottchen: der
+   gelieferte Render pepp-wave.png, 1022x1200 mit Alphakanal, aus dem Character
+   Sheet die Hero-Pose. Nichts nachgezeichnet, nichts umgefärbt.
+
+   Die App-Screens sind damit erst ab „Die Mechanik" zu sehen. Das ist bewusst
+   so entschieden: die Startseite zeigt die Marke, nicht das Interface. */
+import { Image } from 'astro:assets';
+import Cta from '../Cta.astro';
+import Icon from '../Icon.astro';
+
+import mascot from '../../assets/mascot/pepp-wave.png';
+import coin from '../../assets/brand/pepp-coin-freigestellt.png';
+
+const microTrust = ['14 Tage gratis', 'Kein Bankkonto nötig', 'Jederzeit kündbar'];
+---
+
+<section class="hero">
+  <div class="hero__grid">
+    <div class="hero__copy">
+      <p class="hero__chip">
+        <Icon name="sparkles" size={16} color="var(--pepp-coral)" />
+        In Pepp heißen Aufgaben Quests
+      </p>
+
+      <h1 class="mkt-h1">Aus Aufgaben werden Quests.</h1>
+
+      <p class="hero__subline">
+        Kinder sammeln Rewards. Eltern behalten den Überblick.
+      </p>
+
+      <div class="hero__actions">
+        <Cta elevated />
+        <a class="hero__textlink" href="#funktionen">
+          So funktioniert’s
+          <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
+
+      <ul class="hero__trust mkt-list-reset">
+        {
+          microTrust.map((item) => (
+            <li>
+              <Icon name="check" size={16} color="var(--pepp-success)" />
+              {item}
+            </li>
+          ))
+        }
+      </ul>
+
+      {/* QR-Code: OFFEN bis die finale Domain steht (README, offener Punkt 2).
+          Kein Bild aus einem Fremddienst einbetten. */}
+      <div class="hero__qr u-desk">
+        <div class="hero__qr-placeholder">
+          <span>[PLATZHALTER</span>
+          <span>QR-Code]</span>
+        </div>
+        <p class="hero__qr-text">
+          Code mit der Handy&#8209;Kamera scannen &#183; die App wartet im Store auf
+          dich.
+        </p>
+      </div>
+    </div>
+
+    <div class="hero__visual">
+      {/* Der Dawn-Schein liegt HINTER dem Maskottchen, nicht als Fläche:
+          er gibt der Figur Grund, ohne selbst Fläche zu werden. */}
+      <div class="hero__glow" aria-hidden="true"></div>
+
+      <div class="hero__figure" data-hero-figure>
+        <Image
+          src={mascot}
+          alt="Pepp, das Sparschwein-Maskottchen, winkt"
+          width={520}
+          height={611}
+          densities={[1, 2]}
+          format="webp"
+          loading="eager"
+          fetchpriority="high"
+          class="hero__mascot"
+        />
+      </div>
+
+      {/* Ladeanzeige. hidden im Markup: ohne JavaScript ist sie NIE da, kann
+          also nichts dauerhaft verdecken. Sie liegt neben dem Maskottchen und
+          nie über H1 oder CTA — die tragen den LCP. Das Skript zeigt sie erst,
+          wenn die Schriften nach 150ms noch nicht stehen, und entfernt sie bei
+          document.fonts.ready. */}
+      <div class="hero__loader" data-loader hidden>
+        <Image
+          src={coin}
+          alt=""
+          width={44}
+          height={44}
+          densities={[1, 2]}
+          format="webp"
+          loading="eager"
+        />
+        <span class="hero__loader-text">Pepp wird geladen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(24px, 4vw, 48px) 0 0;
+  }
+
+  .hero__grid {
+    position: relative;
+    max-width: var(--mkt-content-width);
+    margin-inline: auto;
+    padding-inline: var(--mkt-gutter);
+    display: grid;
+    /* minmax(0,1fr) statt 1fr: die Bühne enthält einen 820px breiten
+       Screen-Container. Mit auto-Minimum würde dessen min-content die Spalte
+       auf 820px aufziehen und die Copy-Spalte aus dem Viewport schieben —
+       der Text wird dann von overflow:hidden abgeschnitten statt umzubrechen
+       (Reflow-Verstoss bei 320px). */
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 56px);
+    align-items: center;
+  }
+
+  @media (min-width: 901px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    }
+  }
+
+  .hero__copy {
+    max-width: 560px;
+    padding-bottom: clamp(48px, 6vw, 80px);
+  }
+
+  .hero__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0 0 clamp(16px, 2vw, 24px);
+    padding: 6px 14px 6px 10px;
+    background: var(--pepp-surface);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-pill);
+    font-size: var(--type-caption-size);
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+  }
+
+  .hero__subline {
+    font-family: var(--font-ui);
+    font-size: var(--type-mkt-lead);
+    line-height: 1.5;
+    color: var(--text-secondary);
+    margin: clamp(16px, 2vw, 24px) 0 0;
+    max-width: var(--measure-body);
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: clamp(24px, 3vw, 32px);
+  }
+
+  .hero__textlink {
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hero__textlink:hover {
+    color: var(--pepp-ink);
+  }
+
+  .hero__trust {
+    margin: clamp(24px, 3vw, 32px) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-6);
+  }
+
+  .hero__trust li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: 14px;
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+
+  .hero__qr {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin-top: clamp(32px, 4vw, 48px);
+    padding-top: var(--space-7);
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+
+  .hero__qr-placeholder {
+    width: 96px;
+    height: 96px;
+    flex: 0 0 auto;
+    border-radius: var(--radius-lg);
+    border: var(--border-hair) dashed var(--border-hairline);
+    background: var(--pepp-surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: var(--type-label-size);
+    line-height: 1.35;
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+    padding: var(--space-3);
+  }
+
+  .hero__qr-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-width: 30ch;
+  }
+
+  .hero__visual {
+    position: relative;
+    width: 100%;
+    display: grid;
+    place-items: center;
+  }
+
+  /* --glow-peach ist ein radialer closest-side-Verlauf und im Design System
+     genau für den Maskottchen-Schein angelegt. Er lief bisher ungenutzt mit.
+     Radial statt Rechteck-mit-Blur: kein Radius, kein filter, und damit auch
+     keine sichtbare Kante, wie sie mein erster Versuch hatte. */
+  .hero__glow {
+    position: absolute;
+    inset: -10%;
+    background: var(--glow-peach);
+    pointer-events: none;
+  }
+
+  .hero__figure {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Feste Breite über clamp und aspect-ratio aus width/height am <Image>:
+     die Höhe steht damit vor dem Laden und CLS bleibt 0. */
+  .hero__mascot {
+    width: clamp(220px, 34vw, 520px);
+    height: auto;
+    display: block;
+    /* --shadow-mascot ist im Design System genau dieser Wert. Ich hatte ihn
+       zuerst als Literal hingeschrieben — das war ein Doppel des Tokens und
+       die einzige Hex-Angabe im Markup. */
+    filter: drop-shadow(var(--shadow-mascot));
+  }
+
+  .hero__loader {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-5) var(--space-3) var(--space-3);
+    border-radius: var(--radius-pill);
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    box-shadow: var(--shadow-1);
+  }
+
+  .hero__loader[hidden] {
+    display: none;
+  }
+
+  .hero__loader img {
+    width: 44px;
+    height: 44px;
+    display: block;
+  }
+
+  .hero__loader-text {
+    font-size: 14px;
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+  }
+
+  /* Die Münze dreht sich um die eigene Achse — ein Sparschwein-Loader statt
+     eines Standard-Spinners. Kein Blinken, kein Pulsieren der Fläche: nur die
+     Münze bewegt sich, der Text steht still und bleibt lesbar. */
+  @keyframes pepp-coin-spin {
+    from {
+      transform: rotateY(0deg);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__loader img {
+      animation: pepp-coin-spin var(--dur-coin-spin) linear infinite;
+    }
+  }
+</style>

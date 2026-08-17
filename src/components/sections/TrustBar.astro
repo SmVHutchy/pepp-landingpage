@@ -1,0 +1,55 @@
+---
+/* Sektion 3 · Trust-Bar
+   Weiss mit Hairline oben und unten. z-index 2, damit die angeschnittenen
+   Hero-Screens dahinter verschwinden. */
+import Icon from '../Icon.astro';
+
+const points = [
+  { icon: 'shield-check', label: 'Made in Germany' },
+  { icon: 'circle-slash', label: 'Werbefrei' },
+  { icon: 'wallet', label: 'Kein Bankkonto nötig' },
+  { icon: 'x', label: 'Kein Datenverkauf' },
+];
+---
+
+<section class="trust" aria-label="Vertrauen">
+  <ul class="trust__list mkt-list-reset">
+    {
+      points.map((point) => (
+        <li>
+          <Icon name={point.icon} size={20} color="var(--pepp-ink)" />
+          {point.label}
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .trust {
+    position: relative;
+    z-index: 2;
+    border-top: var(--border-hair) solid var(--border-hairline);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    background: var(--surface-card);
+  }
+
+  .trust__list {
+    margin-inline: auto;
+    padding: var(--space-6) var(--mkt-gutter);
+    max-width: var(--mkt-content-width);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .trust__list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    color: var(--text-secondary);
+  }
+</style>

@@ -1,0 +1,84 @@
+---
+/**
+ * Farbblob — dekorativer Farbschein hinter einer Sektion.
+ *
+ * Nutzt --glow-peach und --glow-pink aus dem Design System. Beide sind dort
+ * als radialer closest-side-Verlauf angelegt und liefen bis jetzt ungenutzt
+ * mit; radial heisst: kein Radius, kein blur(), keine sichtbare Kante.
+ *
+ * Der Blob ist reine Dekoration: aria-hidden, pointer-events none, kein
+ * Textinhalt. Er darf deshalb auch angeschnitten werden — die Reflow-Prüfung
+ * in verify.mjs nimmt aria-hidden-Elemente aus.
+ *
+ * Bewegt wird er per ScrollTrigger mit scrub (siehe MOTION.blob in
+ * motion-config.js). Ohne JavaScript steht er still an seiner Position; die
+ * Sektion sieht dann trotzdem vollständig aus.
+ *
+ * Die aufrufende Sektion braucht `position: relative`. Wenn der Blob nicht
+ * hinausragen soll, zusätzlich `overflow: hidden`.
+ */
+interface Props {
+  /** Welcher Verlauf. peach ist wärmer, pink kräftiger. */
+  ton?: 'peach' | 'pink';
+  /** Kantenlänge des Quadrats, in dem der radiale Verlauf ausläuft. */
+  groesse?: string;
+  /** Positionierung; alles was in inset/top/left passt. */
+  top?: string;
+  left?: string;
+  right?: string;
+  bottom?: string;
+  /** Deckkraft. Die Tokens bringen schon 50-55 % mit, deshalb hier niedrig. */
+  deckkraft?: number;
+  /**
+   * Weg in Pixeln über die gesamte Sektionshöhe. Negativ = wandert nach oben,
+   * also gegen die Scrollrichtung. Unterschiedliche Werte je Blob erzeugen die
+   * Tiefe; gleiche Werte wirken wie ein mitgeschobenes Hintergrundbild.
+   */
+  weg?: number;
+}
+
+const {
+  ton = 'peach',
+  groesse = '560px',
+  top,
+  left,
+  right,
+  bottom,
+  deckkraft = 0.5,
+  weg = -60,
+} = Astro.props;
+
+const stil = [
+  `--blob-groesse:${groesse}`,
+  `--blob-deckkraft:${deckkraft}`,
+  top && `top:${top}`,
+  left && `left:${left}`,
+  right && `right:${right}`,
+  bottom && `bottom:${bottom}`,
+]
+  .filter(Boolean)
+  .join(';');
+---
+
+<div class="blob" class:list={[`blob--${ton}`]} style={stil} data-blob={weg} aria-hidden="true"></div>
+
+<style>
+  .blob {
+    position: absolute;
+    width: var(--blob-groesse);
+    height: var(--blob-groesse);
+    opacity: var(--blob-deckkraft);
+    pointer-events: none;
+    z-index: 0;
+    /* Nur auf Elementen, die sich wirklich bewegen. */
+    will-change: transform;
+  }
+
+  .blob--peach {
+    background: var(--glow-peach);
+  }
+
+  .blob--pink {
+    background: var(--glow-pink);
+  }
+</style>

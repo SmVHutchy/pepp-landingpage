@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import { SITE } from '../data/site.js';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Open-Graph-Titel weicht auf der Startseite bewusst vom <title> ab. */
+  ogTitle?: string;
+  ogDescription?: string;
+  twitterDescription?: string;
+  /** Strukturierte Daten, serverseitig gerendert — nie per JS nachgeschoben. */
+  jsonLd?: unknown[];
+}
+
+const {
+  title,
+  description,
+  ogTitle = title,
+  ogDescription = description,
+  twitterDescription = description,
+  jsonLd,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, SITE.origin).href;
+const ogImage = new URL('/og-image.png', SITE.origin).href;
+---
+
+<!doctype html>
+<html lang={SITE.lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={twitterDescription} />
+
+    {/* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu blockieren. */}
+    <link
+      rel="preload"
+      href="/fonts/Quicksand-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    {
+      jsonLd && (
+        <script
+          type="application/ld+json"
+          set:html={JSON.stringify(jsonLd)}
+        />
+      )
+    }
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <slot />
+  </body>
+</html>

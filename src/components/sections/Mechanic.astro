@@ -1,0 +1,227 @@
+---
+/* Sektion 7 · Die Quest-Mechanik
+   Weiss mit Hairline oben, ohne Radius. Der Screen bleibt links sticky stehen
+   und wechselt, während rechts die Schritte durchlaufen — der Tausch selbst
+   liegt in initMechanicSwap() und läuft nur ab --mkt-breakpoint-desk. */
+import { Image, getImage } from 'astro:assets';
+import Icon from '../Icon.astro';
+
+import anlegen from '../../assets/screens/eltern-06-anlegen-details.png';
+import quests from '../../assets/screens/eltern-03-quests.png';
+import questListe from '../../assets/screens/kind-03-quest-liste.png';
+
+/* Schritt 3 zeigt in der Referenz `eltern-07-pruefen.png`. Diese Datei ist
+   weder im Design-Bundle noch in der Dateiliste des Design-Projekts enthalten
+   — auch die Referenz selbst kann sie nicht laden. Solange sie fehlt, bleibt
+   der Screen auf dem vorherigen Bild stehen: kein Platzhalter, keine
+   Ersatzgrafik. Sobald die Datei in src/assets/screens/ liegt, hier eintragen. */
+/* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
+   getrennt: der erste Satz steht in --text-primary semibold, der Rest in
+   --text-secondary. Gleiche Größe, gleicher Absatz, kein Wort geändert. Diese
+   Sektion trug mit 582 Zeichen Kartenkörper die dichteste Textmenge der Seite;
+   nach der Trennung liest man vier kurze Aussagen statt vier Absätze.
+   Das Muster steht schon in Pot.astro (Zeile 126-129). */
+const steps = [
+  {
+    icon: 'list-checks',
+    tint: 'var(--pepp-peach-tint)',
+    ink: 'var(--ink-peach)',
+    screen: anlegen,
+    title: 'Kategorie, Belohnung, Frist',
+    lead: 'Sieben Kategorien mit Schnellauswahl: Haushalt, Schule, Haustiere, Draußen, Routinen, Medienzeit, Sparen.',
+    body: 'Dann 2,50 € oder 30 Min dranhängen — und eine Frist setzen.',
+  },
+  {
+    icon: 'repeat',
+    tint: 'var(--pepp-lilac-tint)',
+    ink: 'var(--ink-lilac)',
+    screen: quests,
+    title: 'Einmalig, wiederkehrend, Routine',
+    lead: 'Der Müll jeden Dienstag, Hausaufgaben als Routine, Rasen mähen einmal.',
+    body: 'Die Liste sortierst du nach Kind und Zustand.',
+  },
+  {
+    icon: 'camera',
+    tint: 'var(--pepp-blue-tint)',
+    ink: 'var(--ink-blue)',
+    screen: null, // eltern-07-pruefen.png fehlt
+    title: 'Prüfen als Kartenstapel',
+    lead: 'Foto oder Antippen als Nachweis — du entscheidest pro Quest.',
+    body: 'Beweise liegen als Stapel bereit: rechts wischen gibt frei, links schickt zurück.',
+  },
+  {
+    icon: 'users',
+    tint: 'var(--pepp-pink-tint)',
+    ink: 'var(--ink-pink)',
+    screen: questListe,
+    title: 'Zurückschicken, ohne von vorn',
+    lead: 'Beweis unscharf? Zurückschicken heißt nicht neu machen — das Kind liefert nur den Nachweis nach.',
+    body: 'Und eine „Für alle"-Quest gehört dem Kind, das zuerst annimmt.',
+  },
+];
+
+/* Der Tausch per JS lädt genau die Variante, die <Image> auch rendert — sonst
+   käme über den Umweg des Rohpfads das unoptimierte PNG (ein knappes MB). */
+const swapSrc = new Map();
+for (const step of steps) {
+  if (!step.screen) continue;
+  const optimized = await getImage({
+    src: step.screen,
+    width: 320,
+    height: 692,
+    format: 'webp',
+  });
+  swapSrc.set(step.title, optimized.src);
+}
+---
+
+{/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
+<section class="mech mkt-section mkt-section--xl">
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Die Mechanik</p>
+      <h2 class="mkt-h2" data-anim>Eine Quest kann viel &#8212; muss aber nichts.</h2>
+      <p class="mkt-lead mech__lead" data-anim>
+        Kind, Kategorie, Belohnung, Frist. Alles andere ist optional.
+      </p>
+    </div>
+
+    <div class="mech__grid">
+      <div class="mech__sticky">
+        <div class="mech__stage">
+          <Image
+            src={anlegen}
+            alt="Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart"
+            width={320}
+            height={692}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+            data-mech-screen
+          />
+        </div>
+      </div>
+
+      <ol class="mech__steps mkt-list-reset">
+        {
+          steps.map((step) => (
+            <li data-anim="card" data-mech-step={swapSrc.get(step.title)}>
+              <span class="mech__tile" style={`background:${step.tint}`}>
+                <Icon name={step.icon} size={22} color={step.ink} />
+              </span>
+              <div>
+                <h3 class="mech__step-title">{step.title}</h3>
+                <p class="mech__step-body">
+                  <strong>{step.lead}</strong> {step.body}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .mech {
+    background: var(--surface-card);
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+
+  /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
+  .mech__lead {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  .mech__grid {
+    display: grid;
+    /* minmax(0,1fr): der Screen ist 320px breit und würde die Spalte sonst
+       über den Viewport hinaus aufziehen. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 64px);
+    margin-top: clamp(32px, 4vw, 64px);
+    align-items: start;
+  }
+
+  .mech__sticky {
+    position: relative;
+  }
+
+  .mech__stage {
+    /* 104px = Nav-Höhe 72 + 32 Luft */
+    position: sticky;
+    top: 104px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .mech__stage img {
+    width: 320px;
+    height: 692px;
+    display: block;
+    filter: drop-shadow(0 18px 40px rgb(26 26 26 / 0.16));
+    transition: opacity var(--dur-base) var(--ease-standard);
+  }
+
+  .mech__steps {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 3vw, 40px);
+  }
+
+  .mech__steps li {
+    display: flex;
+    gap: var(--space-5);
+  }
+
+  .mech__tile {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mech__step-title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: clamp(20px, 1.8vw, 24px);
+    line-height: 1.25;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .mech__step-body {
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+
+  /* Nur Farbe und Gewicht, ausdrücklich keine Größe: 17px für den ersten Satz
+     plus 15px für den Rest kostet in dieser Sektion +58px pro Schritt. */
+  .mech__step-body strong {
+    color: var(--text-primary);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Ab Desktop steht der Screen neben den Schritten und bleibt sticky.
+     Darunter faellt er ganz weg: ein 320px-Bild, das viermal dasselbe zeigt,
+     kostet auf Mobil nur Hoehe und Datenvolumen. */
+  @media (min-width: 901px) {
+    .mech__grid {
+      grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .mech__sticky {
+      display: none;
+    }
+  }
+</style>

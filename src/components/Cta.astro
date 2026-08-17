@@ -1,0 +1,115 @@
+---
+/**
+ * Cta — der einzige Primär-CTA der Seite.
+ *
+ * Ein Conversion-Ziel: App-Download. Ein CTA-Typ, ein Text, sechs Instanzen
+ * (Nav, Hero, nach „So funktioniert's", Preis, Final, Sticky-Leiste). Der Text
+ * ist hier fest verdrahtet und nicht überschreibbar — genau das verhindert,
+ * dass irgendwo „Mehr erfahren" oder „Absenden" entsteht.
+ *
+ * Immer ein echtes <a> auf den App Store: ohne JavaScript bleibt der CTA
+ * bedienbar. Das Skript hängt nur die Android-Weiche daran (data-cta).
+ *
+ * Fläche ist immer schwarz (--action-primary-bg). Coral ist niemals
+ * Buttonfläche — deshalb gibt es hier keine Farbvariante.
+ */
+import { STORE, PRICING } from '../data/site.js';
+
+interface Props {
+  /** 'hero' = 56px im Fluss · 'nav' = 40px in der Navigation · 'sticky' = 52px in der Leiste */
+  size?: 'hero' | 'nav' | 'sticky';
+  /** Volle Breite — Preis-Karte und Sticky-Leiste. */
+  block?: boolean;
+  /** Nur die Hero-Instanz trägt --shadow-2. */
+  elevated?: boolean;
+  class?: string;
+}
+
+const {
+  size = 'hero',
+  block = false,
+  elevated = false,
+  class: className,
+} = Astro.props;
+
+const label = `${PRICING.trialDays} Tage gratis starten`;
+---
+
+<a
+  href={STORE.ios}
+  data-cta
+  class:list={[
+    'cta',
+    `cta--${size}`,
+    block && 'cta--block',
+    elevated && 'cta--elevated',
+    className,
+  ]}
+>
+  {label}
+</a>
+
+<style>
+  .cta {
+    /* Fläche: schwarz. Keine Variante, kein Coral. */
+    background: var(--action-primary-bg);
+    color: var(--action-primary-fg);
+    font-family: var(--font-ui);
+    font-weight: var(--weight-semibold);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--radius-cta);
+    cursor: pointer;
+    transition:
+      background var(--dur-fast) var(--ease-standard),
+      transform var(--dur-fast) var(--ease-standard);
+  }
+
+  .cta:hover {
+    background: var(--action-primary-hover);
+    color: var(--action-primary-fg);
+  }
+
+  .cta:active {
+    transform: scale(var(--press-scale));
+  }
+
+  .cta--hero {
+    height: var(--height-cta);
+    padding-inline: var(--space-7);
+    font-size: var(--type-bodyl-size);
+  }
+
+  .cta--nav {
+    height: var(--height-cta-nav);
+    padding-inline: 18px;
+    font-size: var(--type-body-size);
+    border-radius: var(--radius-lg);
+  }
+
+  .cta--sticky {
+    height: 52px;
+    font-size: var(--type-bodyl-size);
+  }
+
+  .cta--block {
+    display: flex;
+    width: 100%;
+    /* Preis-Karte: schmaleres Innenpolster, weil die Karte die Breite gibt. */
+    padding-inline: var(--space-7);
+  }
+
+  .cta--elevated {
+    box-shadow: var(--shadow-2);
+  }
+
+  /* Press-Feedback ist Bewegung — bei reduce nur die Fläche wechseln. */
+  @media (prefers-reduced-motion: reduce) {
+    .cta:active {
+      transform: none;
+    }
+  }
+</style>

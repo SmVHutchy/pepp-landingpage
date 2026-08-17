@@ -1,0 +1,176 @@
+---
+/* Sektion 15 · Footer
+   Weiss mit Hairline oben. Die Rechtslinks zeigen auf eigene Seiten dieser
+   Domain — in der Design-Referenz gingen sie noch auf taschengeldapp.com.
+
+   Die Store-Buttons sind bewusst KEINE Cta-Komponente: sie sind sekundär
+   (Off-White auf Weiss, Pill, Hairline) und tragen nicht den CTA-Text.
+   Der einzige Primär-CTA bleibt schwarz und heisst immer gleich. */
+import Icon from '../Icon.astro';
+import { STORE, OPERATOR } from '../../data/site.js';
+
+const product = [
+  { href: '/#funktionen', label: 'Funktionen' },
+  { href: '/#belohnungen', label: 'Belohnungen' },
+  { href: '/#preis', label: 'Preis' },
+  { href: '/#faq', label: 'FAQ' },
+];
+
+const legal = [
+  { href: '/impressum', label: 'Impressum' },
+  { href: '/datenschutz', label: 'Datenschutz' },
+  { href: '/agb', label: 'AGB' },
+  { href: '/barrierefreiheit', label: 'Barrierefreiheit' },
+];
+---
+
+<footer class="foot">
+  <div class="foot__grid">
+    <div>
+      <a href="/" class="foot__brand" aria-label="Pepp &#8212; zur Startseite">
+        <img src="/logo/pepp-snout.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy" />
+        <img src="/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" loading="lazy" />
+      </a>
+      <p class="foot__claim">
+        Die Familien-App, in der aus Aufgaben Quests werden.
+      </p>
+    </div>
+
+    <nav aria-label="Footer-Navigation">
+      <p class="mkt-label foot__head">Produkt</p>
+      <ul class="foot__links mkt-list-reset">
+        {product.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-label="Rechtliches">
+      <p class="mkt-label foot__head">Rechtliches</p>
+      <ul class="foot__links mkt-list-reset">
+        {legal.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div>
+      <p class="mkt-label foot__head">App laden</p>
+      <div class="foot__stores">
+        <a href={STORE.ios} class="foot__store">
+          <Icon name="apple-brand" size={20} color="var(--pepp-ink)" />
+          App Store
+        </a>
+        <a href={STORE.android} class="foot__store">
+          <Icon name="google-brand" size={20} color="var(--pepp-ink)" />
+          Google Play
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot__legal">
+    <p>
+      &#169; {OPERATOR.copyrightYear} Pepp &#183; {OPERATOR.legalName} &#183;
+      {OPERATOR.street}, {OPERATOR.postalCode} {OPERATOR.city}
+    </p>
+  </div>
+</footer>
+
+<style>
+  .foot {
+    background: var(--surface-card);
+    border-top: var(--border-hair) solid var(--border-hairline);
+    padding: clamp(48px, 6vw, 72px) 0 clamp(32px, 4vw, 48px);
+  }
+
+  .foot__grid {
+    max-width: var(--mkt-content-width);
+    margin-inline: auto;
+    padding-inline: var(--mkt-gutter);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: clamp(32px, 4vw, 48px);
+  }
+
+  .foot__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .foot__brand img {
+    display: block;
+  }
+
+  .foot__brand img:last-child {
+    width: 76px;
+    height: auto;
+  }
+
+  .foot__claim {
+    margin: var(--space-5) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: 32ch;
+  }
+
+  .foot__head {
+    margin-bottom: var(--space-4);
+  }
+
+  .foot__links {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .foot__links a {
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+    text-decoration: none;
+  }
+
+  .foot__links a:hover {
+    color: var(--pepp-ink);
+  }
+
+  .foot__stores {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .foot__store {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: var(--radius-pill);
+    border: var(--border-hair) solid var(--border-hairline);
+    background: var(--bg-app);
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    white-space: nowrap;
+    color: var(--pepp-ink);
+    text-decoration: none;
+  }
+
+  .foot__store:hover {
+    background: var(--surface-hover);
+  }
+
+  .foot__legal {
+    max-width: var(--mkt-content-width);
+    margin: clamp(32px, 4vw, 48px) auto 0;
+    padding: var(--space-7) var(--mkt-gutter) 0;
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+
+  .foot__legal p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 20px;
+    color: var(--text-secondary);
+  }
+</style>

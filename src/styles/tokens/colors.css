@@ -1,0 +1,73 @@
+/* CONFIRMED — all hex values below are taken verbatim from
+   Pepp_Styleguide (p. 08) and from the gradient stops inside the UI screen SVGs. */
+:root{
+  /* Core palette */
+  --pepp-pink:#FEA7B6;        /* Mascot / logo pink — asset colour only, NOT a core UI fill */
+  --pepp-pink-gradient:#FF8FB6;/* the pink actually used inside Dawn gradient stops */
+  --pepp-peach:#FFC9A3;       /* warm gradient support */
+  --pepp-lilac:#C4B5FF;       /* cool gradient support */
+  --pepp-blue:#7AA7FF;        /* calm, routine, trust */
+  --pepp-blue-deep:#5B86E8;   /* blue gradient end stop */
+  --pepp-coral:#FC6081;       /* THE brand accent — Pepp's voice, highlights, selection */
+  --pepp-black:#111111;       /* actions & buttons */
+
+  /* Neutrals */
+  --pepp-ink:#1A1A1A;         /* N900 · primary text */
+  --pepp-text-2:#6E6A66;      /* secondary text */
+  --pepp-text-3:#AAA199;      /* tertiary / meta */
+  --pepp-hairline:#EBE3DA;    /* borders, dividers */
+  --pepp-surface:#FFFFFF;     /* cards */
+  --pepp-offwhite:#FBF6F1;    /* app background */
+
+  /* Support */
+  --pepp-success:#1FB55A;
+  --pepp-gold:#F3B53C;        /* Pepp Coin */
+
+  /* RECOMMENDED — tints derived from the core palette for chip / tile backgrounds.
+     Each is its hue mixed into --pepp-offwhite at ~12%. */
+  --pepp-pink-tint:#FFEDF1;
+  --pepp-peach-tint:#FFF1E4;
+  --pepp-lilac-tint:#F1EDFF;
+  --pepp-blue-tint:#EAF1FF;
+  --pepp-green-tint:#E3F6EA;
+  --pepp-gold-tint:#FDF1DC;
+
+  /* Semantic aliases — use these in product code */
+  --bg-app:var(--pepp-offwhite);
+  --surface-card:var(--pepp-surface);
+  --surface-sunken:#F7F1E8;
+  --surface-inverse:var(--pepp-black);
+
+  --text-primary:var(--pepp-ink);
+  --text-secondary:var(--pepp-text-2);
+  --text-tertiary:var(--pepp-text-3);
+  --text-inverse:var(--pepp-offwhite);
+  --text-highlight:var(--pepp-coral);
+  --text-money:var(--pepp-ink);
+
+  --border-hairline:var(--pepp-hairline);
+  --border-selected:var(--pepp-black);
+
+  --action-primary-bg:var(--pepp-black);
+  --action-primary-fg:var(--pepp-offwhite);
+  --action-secondary-bg:var(--pepp-surface);
+  --action-secondary-fg:var(--pepp-ink);
+  --action-tertiary-fg:var(--pepp-text-2);
+  --action-destructive-fg:var(--pepp-coral);
+  --action-disabled-bg:#E7E0D7;
+  --action-disabled-fg:var(--pepp-text-3);
+
+  /* Status system — see guidelines/status-system.md */
+  --status-open:var(--pepp-peach);        --status-open-bg:var(--pepp-peach-tint);
+  --status-active:var(--pepp-coral);      --status-active-bg:var(--pepp-pink-tint);
+  --status-done:var(--pepp-lilac);        --status-done-bg:var(--pepp-lilac-tint);
+  --status-review:var(--pepp-blue);       --status-review-bg:var(--pepp-blue-tint);
+  --status-approved:var(--pepp-success);  --status-approved-bg:var(--pepp-green-tint);
+  --status-payout:var(--pepp-gold);       --status-payout-bg:var(--pepp-gold-tint);
+  --status-paused:var(--pepp-text-3);     --status-paused-bg:#F2ECE4;
+
+  /* Task-type colours (styleguide p.09 + p.19) */
+  --task-once:var(--pepp-coral);
+  --task-repeating:var(--pepp-lilac);
+  --task-routine:var(--pepp-blue);
+}

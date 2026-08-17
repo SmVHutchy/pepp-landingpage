@@ -1,0 +1,16 @@
+/* Base unit 4dp. Page margin = 20dp (source: 58px on the 1080px @3x artboard = 19.3dp). */
+:root{
+  --space-0:0px;--space-1:2px;--space-2:4px;--space-3:8px;--space-4:12px;--space-5:16px;
+  --space-6:20px;--space-7:24px;--space-8:32px;--space-9:40px;--space-10:48px;--space-11:64px;--space-12:80px;
+  --page-margin:20px;          /* left/right screen gutter */
+  --content-width:320px;       /* 360 - 2x20 */
+  --stack-gap:10px;            /* gap between sibling cards (source 29px @3x) */
+  --section-gap:28px;          /* gap between list sections */
+  --card-padding:16px;
+  --card-padding-lg:20px;
+  --safe-top:44px;             /* status bar */
+  --safe-bottom:20px;          /* home indicator */
+  --nav-height:53px;           /* floating bottom nav (source 160px @3x) */
+  --nav-inset:16px;            /* nav side inset (source 48px @3x) */
+  --hit-min:44px;
+}

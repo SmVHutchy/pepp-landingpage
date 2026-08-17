@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>Pepp — Taschengeld & Aufgaben als Quests für Familien</title>
+<meta name="description" content="Pepp macht Familienaufgaben leicht: Kinder erledigen Quests und verdienen Taschengeld oder Medienzeit, Eltern behalten den Überblick. 14 Tage gratis testen — ohne Bankkonto.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aus Aufgaben werden Quests. — Pepp">
+<meta property="og:description" content="Kinder sammeln Rewards. Eltern behalten den Überblick. Taschengeld oder Medienzeit als Belohnung — kein Bankkonto, keine Karte.">
+<meta property="og:url" content="https://taschengeldapp.com/">
+<meta property="og:image" content="https://taschengeldapp.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aus Aufgaben werden Quests. — Pepp">
+<meta name="twitter:description" content="Die Familien-App für Aufgaben, Taschengeld und Medienzeit. 14 Tage gratis.">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/colors.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/gradients.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/typography.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/radius.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/elevation.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/motion.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/tokens/base.css">
+<link rel="stylesheet" href="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/styles.css">
+<script src="_ds/pepp-final-design-system-f45c0cbe-7e42-41a7-9f7f-25a357aab62c/_ds_bundle.js"></script>
+<style>
+  :root{
+    --ink-peach:#A05A28;   /* Peach-Hue abgedunkelt, 4,6:1 auf Peach-Tint */
+    --ink-pink:#B03050;    /* Pink/Coral-Hue abgedunkelt */
+    --ink-blue:#3D6DD0;    /* Blue-Hue abgedunkelt */
+    --ink-lilac:#5B4BB8;   /* Lilac-Hue abgedunkelt */
+    --ink-gold:#A9781A;    /* Gold-Hue abgedunkelt */
+    --surface-hover:#F2ECE4;
+    --action-primary-hover:#252525;
+  }
+  body{background:var(--bg-app)}
+  a{color:var(--pepp-coral)}
+  a:hover{color:#E5375D}
+  :focus-visible{outline:2px solid var(--pepp-black);outline-offset:3px;border-radius:4px}
+  summary::-webkit-details-marker{display:none}
+  summary::marker{content:""}
+  details[open] summary{color:var(--pepp-ink)}
+  @media (max-width:900px){[data-desk]{display:none !important}}
+  @media (min-width:901px){[data-mob]{display:none !important}}
+  @keyframes pepp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @media (min-width:901px){[data-mech-grid="1"]{grid-template-columns:minmax(0,.85fr) minmax(0,1fr) !important}}
+  @media (max-width:900px){[data-mech-sticky="1"]{display:none !important}}
+  @media (min-width:901px){[data-hero-grid="1"]{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr) !important}}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important}}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+</helmet>
+
+<div style="font-family:var(--font-ui);color:var(--text-primary);background:var(--bg-app);min-height:100vh;overflow-x:hidden">
+
+  <a href="#main" style="position:absolute;left:-9999px;top:0;background:var(--pepp-black);color:var(--text-inverse);padding:12px 20px;border-radius:12px;z-index:200;font-weight:600" style-focus="left:16px;top:16px">Zum Inhalt springen</a>
+
+  <!-- 1 · Navigation -->
+  <header ref="{{ navRef }}" style="position:sticky;top:0;z-index:100;background:rgba(251,246,241,0);border-bottom:1px solid rgba(235,227,218,0);transition:background var(--dur-base) var(--ease-standard),border-color var(--dur-base) var(--ease-standard)">
+    <nav aria-label="Hauptnavigation" style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px);height:72px;display:flex;align-items:center;gap:32px">
+      <a href="#main" aria-label="Pepp — zur Startseite" style="display:flex;align-items:center;gap:10px;flex:0 0 auto">
+        <img src="assets/logo/pepp-snout.svg" alt="" aria-hidden="true" width="28" height="28" style="width:28px;height:28px;display:block">
+        <img src="assets/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" style="width:76px;height:auto;display:block">
+      </a>
+      <ul data-desk style="list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:28px;margin-left:8px">
+        <li><a href="#funktionen" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Funktionen</a></li>
+        <li><a href="#belohnungen" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Belohnungen</a></li>
+        <li><a href="#preis" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Preis</a></li>
+        <li><a href="#faq" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">FAQ</a></li>
+      </ul>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+        <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;height:40px;padding:0 18px;border:0;border-radius:12px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:15px;font-weight:600;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard)" style-hover="background:var(--action-primary-hover)" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- 2 · Hero -->
+    <section style="position:relative;overflow:hidden;padding:clamp(24px,4vw,48px) 0 0">
+
+      <div data-hero-grid="1" style="position:relative;max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px);display:grid;grid-template-columns:1fr;gap:clamp(32px,5vw,56px);align-items:center">
+
+        <div style="max-width:560px;padding-bottom:clamp(48px,6vw,80px)">
+          <p style="display:inline-flex;align-items:center;gap:8px;margin:0 0 clamp(16px,2vw,24px);padding:6px 14px 6px 10px;background:var(--pepp-surface);border:1px solid var(--border-hairline);border-radius:999px;font-size:13px;font-weight:600;color:var(--text-secondary)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>
+            In Pepp heißen Aufgaben Quests
+          </p>
+          <h1 style="font-family:var(--font-display);font-weight:700;font-size:clamp(38px,4.8vw,64px);line-height:1.06;letter-spacing:-0.02em;margin:0;max-width:13ch;color:var(--text-primary)">Aus Aufgaben werden Quests.</h1>
+          <p style="font-family:var(--font-ui);font-size:clamp(17px,1.5vw,20px);line-height:1.5;color:var(--text-secondary);margin:clamp(16px,2vw,24px) 0 0;max-width:42ch">Kinder sammeln Rewards. Eltern behalten den Überblick.</p>
+
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-top:clamp(24px,3vw,32px)">
+            <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 28px;border:0;border-radius:14px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:17px;font-weight:600;cursor:pointer;box-shadow:var(--shadow-2);transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard)" style-hover="background:var(--action-primary-hover)" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+            <a href="#funktionen" style="font-size:15px;font-weight:600;color:var(--text-secondary);display:inline-flex;align-items:center;gap:6px" style-hover="color:var(--pepp-ink)">
+              So funktioniert&#8217;s
+              <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </a>
+          </div>
+
+          <ul style="list-style:none;margin:clamp(24px,3vw,32px) 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px 20px">
+            <li style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>14 Tage gratis</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Kein Bankkonto nötig</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Jederzeit kündbar</li>
+          </ul>
+
+          <div data-desk style="display:flex;align-items:center;gap:16px;margin-top:clamp(32px,4vw,48px);padding-top:24px;border-top:1px solid var(--border-hairline)">
+            <div style="width:96px;height:96px;flex:0 0 auto;border-radius:12px;border:1px dashed var(--border-hairline);background:var(--pepp-surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:12px;line-height:1.35;font-weight:600;color:var(--text-secondary);padding:8px"><span>[PLATZHALTER</span><span>QR-Code]</span></div>
+            <p style="margin:0;font-size:14px;line-height:1.5;color:var(--text-secondary);max-width:30ch">Code mit der Handy&#8209;Kamera scannen &#183; die App wartet im Store auf dich.</p>
+          </div>
+        </div>
+
+        <!-- Hero visual: echte Prototyp-Screens, 13. August 2026 -->
+        <div style="position:relative;width:100%;margin-right:calc(-1 * clamp(20px,4vw,32px))">
+          <div data-stage="1" style="position:relative;height:520px;overflow:hidden">
+            <div ref="{{ phonesRef }}" style="position:relative;transform-origin:top left;transform:scale(var(--phone-scale,.6));display:flex;align-items:flex-start;width:820px;padding:44px 0 0 40px">
+              <img data-phone="parent" src="assets/screens/eltern-02-start-beweise.png" alt="Pepp Eltern-App: vier Dinge warten auf dich, Beweise prüfen und zwei offene Auszahlungen" width="360" height="779" style="position:relative;z-index:2;width:360px;height:779px;display:block;filter:drop-shadow(0 18px 40px rgba(26,26,26,.18))">
+              <img data-phone="child" src="assets/screens/kind-01-start-taschengeld.png" alt="Pepp Kinder-App: Pepps Pott ist zu 63 Prozent gefüllt, 12,50 € im Pott" width="360" height="779" loading="lazy" style="position:relative;z-index:1;width:360px;height:779px;display:block;margin-left:-44px;margin-top:64px;filter:drop-shadow(0 18px 40px rgba(26,26,26,.14))">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 · Trust-Bar -->
+    <section aria-label="Vertrauen" style="position:relative;z-index:2;border-top:1px solid var(--border-hairline);border-bottom:1px solid var(--border-hairline);background:var(--surface-card)">
+      <ul style="list-style:none;margin:0 auto;padding:20px clamp(20px,4vw,32px);max-width:1180px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 32px">
+        <li style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>Made in Germany</li>
+        <li style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="9" x2="15" y1="15" y2="9"></line></svg>Werbefrei</li>
+        <li style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>Kein Bankkonto nötig</li>
+        <li style="display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>Kein Datenverkauf</li>
+      </ul>
+    </section>
+    <!-- 4 · Das Problem -->
+    <section style="background:var(--bg-app);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Der Alltag</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:18ch;color:var(--text-primary)">Musst du auch alles 5&#8209;mal sagen?</h2>
+        <ul style="list-style:none;margin:clamp(32px,4vw,56px) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(16px,2vw,24px)">
+          <li data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+            <p style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Der M&#252;ll steht noch da.</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:34ch">Zum dritten Mal erinnert. Und du hast es selbst schon halb gemacht.</p>
+          </li>
+          <li data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h8"></path><path d="M10 19v-3.96 3.15"></path><path d="M7 19h5"></path><rect width="6" height="10" x="16" y="12" rx="2"></rect></svg>
+            <p style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Jeden Abend Handy&#8209;Debatte.</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:34ch">Wie lange noch, wie viel gestern, warum der Bruder mehr darf.</p>
+          </li>
+          <li data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>
+            <p style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">&#8222;Hab ich dir das schon gegeben?&#8220;</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:34ch">Taschengeld nach Gef&#252;hl. Keiner wei&#223; mehr, was offen ist.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5 · So funktioniert's -->
+    <section id="funktionen" style="position:relative;background:var(--surface-card);border-top:1px solid var(--border-hairline);border-radius:clamp(32px,4vw,56px) clamp(32px,4vw,56px) 0 0;padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">So funktioniert&#8217;s</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Vier Schritte, dann l&#228;uft es.</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">Einmal einrichten dauert Minuten. Danach macht die Quest die Diskussion.</p>
+
+        <ol style="list-style:none;margin:clamp(32px,4vw,56px) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:clamp(16px,2vw,24px);counter-reset:step">
+          <li data-anim="1" style="position:relative;background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="width:40px;height:40px;border-radius:12px;background:var(--pepp-peach-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-peach)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg></span>
+              <span style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.02em;color:var(--text-secondary)">01</span>
+            </div>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Quest anlegen</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Aufgabe w&#228;hlen, Belohnung dranh&#228;ngen: 2,50 &#8364; oder 30 Min.</p>
+          </li>
+          <li data-anim="1" style="position:relative;background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="width:40px;height:40px;border-radius:12px;background:var(--pepp-pink-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path><circle cx="12" cy="13" r="3"></circle></svg></span>
+              <span style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.02em;color:var(--text-secondary)">02</span>
+            </div>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Kind erledigt sie</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Quest annehmen, machen, Foto oder Kommentar als Beweis schicken.</p>
+          </li>
+          <li data-anim="1" style="position:relative;background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="width:40px;height:40px;border-radius:12px;background:var(--pepp-blue-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg></span>
+              <span style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.02em;color:var(--text-secondary)">03</span>
+            </div>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Du gibst frei</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Kurz ansehen, freigeben. Oder zur&#252;ckschicken &#8212; ohne Neustart.</p>
+          </li>
+          <li data-anim="1" style="position:relative;background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="width:40px;height:40px;border-radius:12px;background:var(--pepp-gold-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg></span>
+              <span style="font-family:var(--font-display);font-weight:700;font-size:28px;letter-spacing:-0.02em;color:var(--text-secondary)">04</span>
+            </div>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Der Pott f&#252;llt sich</p>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Die Belohnung wandert in den Pott &#8212; sichtbar als Ring um Pepp.</p>
+          </li>
+        </ol>
+
+        <div data-anim="1" style="display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;margin-top:clamp(32px,4vw,48px)">
+          <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;height:56px;padding:0 28px;border:0;border-radius:14px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:17px;font-weight:600;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard)" style-hover="background:var(--action-primary-hover)" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+          <p style="margin:0;font-size:14px;font-weight:500;color:var(--text-secondary)">14 Tage gratis &#183; Kein Bankkonto n&#246;tig &#183; Jederzeit k&#252;ndbar</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6 · Belohnungen: Geld oder Medienzeit -->
+    <section id="belohnungen" style="position:relative;overflow:hidden;background:var(--bg-app);padding:clamp(64px,9vw,140px) 0">
+      <div aria-hidden="true" style="position:absolute;top:-200px;right:-200px;width:min(820px,80vw);height:820px;border-radius:999px;background:var(--gradient-dawn);opacity:.14;filter:blur(30px);pointer-events:none"></div>
+      <div style="position:relative;max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Belohnungen</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Geld oder Medienzeit.</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">Zwei W&#228;hrungen. Du entscheidest, welche zu welcher Aufgabe passt.</p>
+
+        <div data-anim="1" style="position:relative;margin-top:clamp(32px,4vw,56px);border-radius:36px;background:var(--gradient-dawn);padding:clamp(16px,2vw,28px)">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(16px,2vw,24px)">
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(24px,2.6vw,36px);box-shadow:var(--shadow-2)">
+            <span style="width:96px;height:96px;border-radius:999px;background:var(--bg-app);display:block;overflow:hidden"><img src="assets/brand/pepp-coin.png" alt="Pepp Goldm&#252;nze" width="96" height="96" loading="lazy" style="width:96px;height:96px;object-fit:contain;display:block"></span>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:24px;line-height:30px;letter-spacing:-0.01em;color:var(--text-primary)">Goldm&#252;nze &#183; Taschengeld</p>
+            <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:38ch">2,50 &#8364; f&#252;r die Sp&#252;lmaschine. Der Betrag wandert in den Pott &#8212; nicht auf ein Konto.</p>
+            <ul style="list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+              <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.</li>
+              <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Sparziel mit eigenem Bild: der Pott hat ein Ziel.</li>
+            </ul>
+          </div>
+
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(24px,2.6vw,36px);box-shadow:var(--shadow-2)">
+            <span style="width:96px;height:96px;border-radius:999px;background:var(--gradient-lilac);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--text-inverse)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+            <p style="margin:20px 0 0;font-family:var(--font-display);font-weight:700;font-size:24px;line-height:30px;letter-spacing:-0.01em;color:var(--text-primary)">Zeitm&#252;nze &#183; Medienzeit</p>
+            <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:38ch">30 Min extra f&#252;r Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit Wochenziel und Obergrenze.</p>
+            <ul style="list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+              <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>Wochenziel setzen, t&#228;gliche Obergrenze festlegen.</li>
+              <li style="display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="4" width="4" height="16" rx="1"></rect><rect x="6" y="4" width="4" height="16" rx="1"></rect></svg>Ist das Limit voll, l&#228;sst Pepp die Quest nicht annehmen.</li>
+            </ul>
+          </div>
+        </div>
+
+          </div>
+
+        <div data-anim="1" style="margin:clamp(32px,4vw,48px) 0 0;background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(24px,2.6vw,36px);max-width:640px;box-shadow:var(--shadow-1)">
+          <p style="margin:0;font-family:var(--font-display);font-weight:700;font-size:clamp(22px,2.4vw,32px);line-height:1.2;letter-spacing:-0.02em;color:var(--pepp-coral);max-width:22ch">&#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;</p>
+          <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:42ch">Bildschirmzeit ist in vielen Familien der gr&#246;&#223;ere Streitpunkt als Taschengeld. In Pepp ist sie eine Belohnung mit klaren Grenzen.</p>
+        </div>
+      </div>
+    </section>
+    <!-- 7 · Die Quest-Mechanik (mitscrollendes Mockup) -->
+    <section style="background:var(--surface-card);border-top:1px solid var(--border-hairline);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Die Mechanik</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Eine Quest kann viel &#8212; muss aber nichts.</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">Kind, Kategorie, Belohnung, Frist. Alles andere ist optional.</p>
+
+        <div data-mech-grid="1" style="display:grid;grid-template-columns:1fr;gap:clamp(32px,5vw,64px);margin-top:clamp(32px,4vw,64px);align-items:start">
+          <div data-mech-sticky="1" style="position:relative">
+            <div style="position:sticky;top:104px;display:flex;justify-content:center">
+              <div style="position:relative;width:320px;height:692px">
+                <img data-mech-screen="1" src="assets/screens/eltern-06-anlegen-details.png" alt="Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart" width="320" height="692" loading="lazy" style="position:relative;width:320px;height:692px;display:block;filter:drop-shadow(0 18px 40px rgba(26,26,26,.16));transition:opacity var(--dur-base) var(--ease-standard)">
+              </div>
+            </div>
+          </div>
+
+          <ol style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(24px,3vw,40px)">
+            <li data-mech-step="assets/screens/eltern-06-anlegen-details.png" data-anim="1" style="display:flex;gap:16px">
+              <span style="width:44px;height:44px;flex:0 0 auto;border-radius:12px;background:var(--pepp-peach-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-peach)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"></path><path d="m3 7 2 2 4-4"></path><path d="M13 6h8"></path><path d="M13 12h8"></path><path d="M13 18h8"></path></svg></span>
+              <div>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(20px,1.8vw,24px);line-height:1.25;margin:0;color:var(--text-primary)">Kategorie, Belohnung, Frist</h3>
+                <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:42ch">Sieben Kategorien mit Schnellauswahl: Haushalt, Schule, Haustiere, Drau&#223;en, Routinen, Medienzeit, Sparen. Dann 2,50 &#8364; oder 30 Min dranh&#228;ngen &#8212; und eine Frist setzen.</p>
+              </div>
+            </li>
+            <li data-mech-step="assets/screens/eltern-03-quests.png" data-anim="1" style="display:flex;gap:16px">
+              <span style="width:44px;height:44px;flex:0 0 auto;border-radius:12px;background:var(--pepp-lilac-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-lilac)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"></path><path d="M3 11v-1a4 4 0 0 1 4-4h14"></path><path d="m7 22-4-4 4-4"></path><path d="M21 13v1a4 4 0 0 1-4 4H3"></path></svg></span>
+              <div>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(20px,1.8vw,24px);line-height:1.25;margin:0;color:var(--text-primary)">Einmalig, wiederkehrend, Routine</h3>
+                <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:42ch">Der M&#252;ll jeden Dienstag, Hausaufgaben als Routine, Rasen m&#228;hen einmal. Die Liste sortierst du nach Kind und Zustand.</p>
+              </div>
+            </li>
+            <li data-mech-step="assets/screens/eltern-07-pruefen.png" data-anim="1" style="display:flex;gap:16px">
+              <span style="width:44px;height:44px;flex:0 0 auto;border-radius:12px;background:var(--pepp-blue-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path><circle cx="12" cy="13" r="3"></circle></svg></span>
+              <div>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(20px,1.8vw,24px);line-height:1.25;margin:0;color:var(--text-primary)">Pr&#252;fen als Kartenstapel</h3>
+                <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:42ch">Foto oder Antippen als Nachweis &#8212; du entscheidest pro Quest. Beweise liegen als Stapel bereit: rechts wischen gibt frei, links schickt zur&#252;ck.</p>
+              </div>
+            </li>
+            <li data-mech-step="assets/screens/kind-03-quest-liste.png" data-anim="1" style="display:flex;gap:16px">
+              <span style="width:44px;height:44px;flex:0 0 auto;border-radius:12px;background:var(--pepp-pink-tint);display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--ink-pink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span>
+              <div>
+                <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(20px,1.8vw,24px);line-height:1.25;margin:0;color:var(--text-primary)">Zur&#252;ckschicken, ohne von vorn</h3>
+                <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:42ch">Beweis unscharf? Zur&#252;ckschicken hei&#223;t nicht neu machen &#8212; das Kind liefert nur den Nachweis nach. Und eine &#8222;F&#252;r alle&#8220;-Quest geh&#246;rt dem Kind, das zuerst annimmt.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8 · Elternmodus ∥ Kindermodus -->
+    <section style="background:var(--bg-app);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Zwei Seiten</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Eine App, zwei Welten.</h2>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:clamp(16px,2vw,24px);margin-top:clamp(32px,4vw,56px)">
+          <div data-anim="1" style="overflow:hidden;background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:36px;padding:clamp(24px,2.6vw,40px);display:flex;flex-direction:column;gap:24px;box-shadow:var(--shadow-1)">
+            <div>
+              <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Elternmodus</p>
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(24px,2.4vw,32px);line-height:1.15;letter-spacing:-0.01em;margin:8px 0 0;color:var(--text-primary)">Ruhig, klar, entschieden.</h3>
+              <ul style="list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>&#8222;4 Dinge warten auf dich&#8220; &#8212; und sonst nichts.</li>
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Grenzen, W&#252;nsche und Medienzeit pro Kind.</li>
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Nichts wird ausgezahlt, bevor du es best&#228;tigst.</li>
+              </ul>
+            </div>
+            <div style="margin:auto -12px -80px;display:flex;justify-content:center;overflow:hidden;height:300px">
+              <img src="assets/screens/eltern-03-quests.png" alt="Pepp Eltern-App: Quest-&#220;bersicht nach Zustand gruppiert" width="300" height="649" loading="lazy" style="width:300px;height:649px;display:block;filter:drop-shadow(0 16px 32px rgba(26,26,26,.14))">
+            </div>
+          </div>
+
+          <div data-anim="1" style="position:relative;overflow:hidden;border-radius:36px;padding:clamp(24px,2.6vw,40px);display:flex;flex-direction:column;gap:24px;background:var(--gradient-dawn)">
+            <div style="position:relative;background:var(--surface-card);border-radius:28px;padding:clamp(20px,2vw,28px)">
+              <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Kindermodus</p>
+              <h3 style="font-family:var(--font-display);font-weight:700;font-size:clamp(24px,2.4vw,32px);line-height:1.15;letter-spacing:-0.01em;margin:8px 0 0;color:var(--text-primary)">Bunt, belohnend, eigenst&#228;ndig.</h3>
+              <ul style="list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Quests annehmen, Beweis schicken, Pott f&#252;llen.</li>
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Sparziel selbst setzen &#8212; Lego&#8209;Rennwagen, 20,00 &#8364;.</li>
+                <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Kind&#8209;Modus l&#228;uft auch auf deinem Handy, PIN&#8209;gesch&#252;tzt.</li>
+              </ul>
+            </div>
+            <div style="position:relative;margin:auto -12px -80px;display:flex;justify-content:center;overflow:hidden;height:300px">
+              <img src="assets/screens/kind-03-quest-liste.png" alt="Pepp Kinder-App: Quest-Liste nach Dringlichkeit" width="300" height="649" loading="lazy" style="width:300px;height:649px;display:block;filter:drop-shadow(0 16px 32px rgba(26,26,26,.18))">
+            </div>
+          </div>
+        </div>
+
+        <p data-anim="1" style="margin:clamp(24px,3vw,32px) 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:52ch">Pepp soll Kindern nicht das Gef&#252;hl geben, kontrolliert zu werden. Du setzt den Rahmen &#8212; das Kind entscheidet darin.</p>
+      </div>
+    </section>
+
+    <!-- 9 · Der Pott -->
+    <section style="position:relative;overflow:hidden;background:var(--surface-card);border-top:1px solid var(--border-hairline);border-radius:clamp(32px,4vw,56px) clamp(32px,4vw,56px) 0 0;padding:clamp(64px,9vw,132px) 0">
+      <div style="position:relative;max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:clamp(32px,5vw,64px);align-items:center">
+          <div>
+            <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Der Pott</p>
+            <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Warten wird sichtbar.</h2>
+            <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">Jede freigegebene Belohnung f&#252;llt den Ring um Pepp. Kein Zahlenkonto, sondern ein Fortschritt, den man sieht.</p>
+            <ul style="list-style:none;margin:clamp(24px,3vw,32px) 0 0;padding:0;display:flex;flex-direction:column;gap:16px">
+              <li data-anim="1" style="display:flex;gap:14px"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"></circle><path d="M18.09 10.37A6 6 0 1 1 10.34 18"></path><path d="M7 6h1v4"></path><path d="m16.71 13.88.7.71-2.82 2.82"></path></svg><span style="font-size:15px;line-height:22px;color:var(--text-secondary);max-width:40ch"><strong style="color:var(--text-primary);font-weight:600">Verdient statt geschenkt.</strong> 12,50 &#8364; im Pott sind vier erledigte Quests.</span></li>
+              <li data-anim="1" style="display:flex;gap:14px"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg><span style="font-size:15px;line-height:22px;color:var(--text-secondary);max-width:40ch"><strong style="color:var(--text-primary);font-weight:600">Sparziel mit Bild.</strong> Der Lego&#8209;Rennwagen f&#252;r 20,00 &#8364; macht das Ziel greifbar.</span></li>
+              <li data-anim="1" style="display:flex;gap:14px"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"></path><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 16 6 6"></path><circle cx="16" cy="9" r="2.9"></circle><circle cx="6" cy="5" r="3"></circle></svg><span style="font-size:15px;line-height:22px;color:var(--text-secondary);max-width:40ch"><strong style="color:var(--text-primary);font-weight:600">Das Kind knackt selbst.</strong> Bar auf die Hand, aufs Sparkonto oder ein Wunsch &#8212; du best&#228;tigst.</span></li>
+            </ul>
+          </div>
+          <div data-anim="1" style="position:relative;display:flex;justify-content:center;align-items:flex-start;gap:0;height:clamp(380px,42vw,560px);overflow:hidden">
+            <img src="assets/screens/kind-01-start-taschengeld.png" alt="Pepp Kinder-App: der Pott ist zu 63 Prozent voll, 12,50 &#8364; gesammelt" width="320" height="692" loading="lazy" style="position:relative;z-index:2;width:320px;height:692px;display:block;filter:drop-shadow(0 18px 40px rgba(26,26,26,.16))">
+            <img src="assets/screens/kind-12-sparziel.png" alt="Pepp Kinder-App: Sparziel Lego-Rennwagen bearbeiten" width="280" height="606" loading="lazy" style="position:relative;z-index:1;width:280px;height:606px;display:block;margin-left:-88px;margin-top:56px;filter:drop-shadow(0 16px 32px rgba(26,26,26,.12))">
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- 10 · Sicherheit & Vertrauen -->
+    <section style="background:var(--bg-app);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Sicherheit</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Kein Konto. Keine Karte. Kein Datenhandel.</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">Pepp ist keine Banking-App. Durch die App flie&#223;t kein echtes Geld.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:clamp(16px,2vw,24px);margin-top:clamp(32px,4vw,56px)">
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Kein Bankkonto, keine Karte</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:36ch">Dein Kind braucht keine Zahlungsdaten und kein eigenes Konto. Der Pott ist ein Z&#228;hler.</p>
+          </div>
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"></path><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 16 6 6"></path><circle cx="16" cy="9" r="2.9"></circle><circle cx="6" cy="5" r="3"></circle></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Ausgezahlt wird von dir</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:36ch">Die Auszahlung ist eine Anfrage an dich. Bar auf die Hand oder aufs Sparkonto &#8212; au&#223;erhalb der App.</p>
+          </div>
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="9" x2="15" y1="15" y2="9"></line></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Keine Werbung, kein Datenverkauf</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:36ch">Keine Werbe-ID, keine Weitergabe an Dritte. DSGVO-konform, Server in der EU.</p>
+          </div>
+          <div data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px);box-shadow:var(--shadow-1)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Du f&#252;hrst den Familien-Account</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:36ch">Grenzen, Betr&#228;ge, Medienzeit, Kind-Modus: alles liegt bei dir, PIN-gesch&#252;tzt.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 · Für die ganze Familie -->
+    <section style="background:var(--surface-card);border-top:1px solid var(--border-hairline);border-radius:clamp(32px,4vw,56px) clamp(32px,4vw,56px) 0 0;padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Familie</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">F&#252;r alle, die mitziehen.</h2>
+
+        <ul style="list-style:none;margin:clamp(32px,4vw,56px) 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));gap:clamp(16px,2vw,24px)">
+          <li data-anim="1" style="background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Familien-Chat</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Absprachen, Lob und Beweisfotos an einem Ort &#8212; ohne fremde Messenger.</p>
+          </li>
+          <li data-anim="1" style="background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Mehrere Kinder, zweites Elternteil</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Emma und Ben mit eigenen Grenzen. Beide Eltern sehen dasselbe.</p>
+          </li>
+          <li data-anim="1" style="background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Beitreten per QR-Code</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Code zeigen, scannen, dabei. Keine Einladungsmails, keine Codes abtippen.</p>
+          </li>
+          <li data-anim="1" style="background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-ink)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+            <h3 style="margin:16px 0 0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:26px;color:var(--text-primary)">Kein eigenes Handy n&#246;tig</h3>
+            <p style="margin:6px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Der Kind-Modus l&#228;uft auf deinem Ger&#228;t &#8212; umschalten mit PIN.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!--
+      11b · SOCIAL PROOF — bewusst leer.
+      Im Projektmaterial existiert kein belegter Social Proof: keine Nutzerzahlen,
+      keine Store-Bewertungen, keine Testimonials, keine Presse.
+      Format pro Stimme: Zitat (max. 2 Sätze) · Vorname · „Mutter von Mia (9)".
+      Store-Rating: Wert, Anzahl Bewertungen, Store. Nach dem Launch hier eintragen
+      und die [PLATZHALTER]-Texte ersetzen. Nichts erfinden.
+    -->
+    <section aria-label="Stimmen von Eltern" style="background:var(--bg-app);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Stimmen</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Was Eltern sagen</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:46ch">[PLATZHALTER: Diese Sektion wird nach dem Launch mit echten Stimmen bef&#252;llt. Bis dahin bleibt sie leer &#8212; wir erfinden keine Bewertungen.]</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:clamp(16px,2vw,24px);margin-top:clamp(32px,4vw,48px)">
+          <blockquote data-anim="1" style="margin:0;background:var(--surface-card);border:1px dashed var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <p style="margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:28px;color:var(--text-secondary)">&#8222;[PLATZHALTER: Zitat 1, max. zwei S&#228;tze]&#8220;</p>
+            <footer style="margin-top:16px;font-size:14px;font-weight:600;color:var(--text-secondary)">[PLATZHALTER: Vorname] &#183; [PLATZHALTER: Mutter von Mia (9)]</footer>
+          </blockquote>
+          <blockquote data-anim="1" style="margin:0;background:var(--surface-card);border:1px dashed var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <p style="margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:28px;color:var(--text-secondary)">&#8222;[PLATZHALTER: Zitat 2, max. zwei S&#228;tze]&#8220;</p>
+            <footer style="margin-top:16px;font-size:14px;font-weight:600;color:var(--text-secondary)">[PLATZHALTER: Vorname] &#183; [PLATZHALTER: Vater von Ben (11)]</footer>
+          </blockquote>
+          <blockquote data-anim="1" style="margin:0;background:var(--surface-card);border:1px dashed var(--border-hairline);border-radius:28px;padding:clamp(22px,2.2vw,32px)">
+            <p style="margin:0;font-family:var(--font-display);font-weight:700;font-size:20px;line-height:28px;color:var(--text-secondary)">&#8222;[PLATZHALTER: Zitat 3, max. zwei S&#228;tze]&#8220;</p>
+            <footer style="margin-top:16px;font-size:14px;font-weight:600;color:var(--text-secondary)">[PLATZHALTER: Vorname] &#183; [PLATZHALTER: Mutter von zwei Kindern]</footer>
+          </blockquote>
+        </div>
+
+        <div data-anim="1" style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:clamp(24px,3vw,32px);padding:16px 20px;background:var(--surface-card);border:1px dashed var(--border-hairline);border-radius:999px;width:fit-content">
+          <svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-text-2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg>
+          <p style="margin:0;font-size:14px;font-weight:600;color:var(--text-secondary)">[PLATZHALTER: Store-Bewertung, z.&#8239;B. 4,7 aus 128 Bewertungen]</p>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      12 · PREIS — Werte zentral: PRICING im Logik-Block dieser Datei.
+      Ändert sich der Preis, hier UND in PRICING anpassen (JSON-LD liest PRICING).
+      Modular: für ein späteres Free/Pro-Modell reicht eine dritte PlanCard.
+    -->
+    <section id="preis" style="position:relative;overflow:hidden;background:var(--surface-card);border-top:1px solid var(--border-hairline);border-radius:clamp(32px,4vw,56px) clamp(32px,4vw,56px) 0 0;padding:clamp(64px,9vw,132px) 0">
+      <div style="position:relative;max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Preis</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Heute gratis starten. Morgen weniger Stress.</h2>
+        <p data-anim="1" style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:42ch">14 Tage voller Zugriff &#8212; kostenlos. Danach ein Preis, ein Familien-Account.</p>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(16px,2vw,24px);margin-top:clamp(32px,4vw,56px);align-items:start">
+          <div data-anim="1" style="background:var(--bg-app);border:1px solid var(--border-hairline);border-radius:28px;padding:clamp(24px,2.6vw,36px)">
+            <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Monatlich</p>
+            <p style="margin:12px 0 0;font-family:var(--font-display);font-weight:700;font-size:clamp(36px,4vw,56px);line-height:1;letter-spacing:-0.02em;color:var(--text-primary)">2,99 &#8364;</p>
+            <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">pro Monat &#183; monatlich k&#252;ndbar</p>
+          </div>
+
+          <div data-anim="1" style="position:relative;background:var(--bg-app);border:2px solid var(--pepp-black);border-radius:28px;padding:clamp(24px,2.6vw,36px);box-shadow:var(--shadow-2)">
+            <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+              <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">J&#228;hrlich</p>
+              <span style="display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--pepp-pink-tint);font-size:12px;font-weight:600;color:var(--ink-pink)">Beliebt &#183; spart 45&#8239;%</span>
+            </div>
+            <p style="margin:12px 0 0;font-family:var(--font-display);font-weight:700;font-size:clamp(36px,4vw,56px);line-height:1;letter-spacing:-0.02em;color:var(--text-primary)">19,90 &#8364;</p>
+            <p style="margin:8px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">pro Jahr &#183; nur 1,66 &#8364; im Monat</p>
+            <ul style="list-style:none;margin:20px 0 0;padding:0;display:flex;flex-direction:column;gap:10px">
+              <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Quests statt Diskussionen</li>
+              <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Rewards, die wirklich motivieren</li>
+              <li style="display:flex;gap:10px;font-size:15px;line-height:22px;color:var(--text-secondary)"><svg aria-hidden="true" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--pepp-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Die ganze Familie zieht mit</li>
+            </ul>
+            <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:24px;width:100%;height:56px;padding:0 24px;border:0;border-radius:14px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:17px;font-weight:600;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard)" style-hover="background:var(--action-primary-hover)" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+            <p style="margin:12px 0 0;font-size:13px;line-height:18px;color:var(--text-secondary)">0 &#8364; heute &#183; danach 19,90 &#8364; / Jahr &#183; K&#252;ndigung mit einem Tipp</p>
+          </div>
+        </div>
+
+        <p data-anim="1" style="margin:clamp(24px,3vw,32px) 0 0;font-size:14px;font-weight:500;color:var(--text-secondary)">14 Tage gratis &#183; Erinnerung vor Ablauf &#183; jederzeit k&#252;ndbar</p>
+      </div>
+    </section>
+
+    <!-- 13 · FAQ -->
+    <section id="faq" style="background:var(--bg-app);padding:clamp(64px,9vw,132px) 0">
+      <div style="max-width:820px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <p data-anim="1" style="margin:0 0 16px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">FAQ</p>
+        <h2 data-anim="1" style="font-family:var(--font-display);font-weight:700;font-size:clamp(30px,3.8vw,52px);line-height:1.08;letter-spacing:-0.02em;margin:0 0 clamp(24px,3vw,40px);max-width:16ch;color:var(--text-primary)">H&#228;ufige Fragen</h2>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Ist das sicher?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Ja. Dein Kind braucht kein Bankkonto, keine Karte und keine Zahlungsdaten. Durch Pepp flie&#223;t kein echtes Geld &#8212; der Pott ist ein Guthaben-Z&#228;hler, ausgezahlt wird von dir.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Was passiert mit den Daten meines Kindes?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Keine Werbung, keine Werbe-ID, kein Datenverkauf. Pepp ist DSGVO-konform, die Server stehen in der EU.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Was kostet Pepp?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">2,99 &#8364; im Monat oder 19,90 &#8364; im Jahr &#8212; ein Preis f&#252;r die ganze Familie. 14 Tage gratis vorweg, jederzeit k&#252;ndbar.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Lernt mein Kind wirklich etwas?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Es verdient statt geschenkt zu bekommen, es sieht den Fortschritt im Pott und es wartet auf ein Ziel, statt sofort zu bekommen. Genau das ist Belohnungsaufschub.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Kontrolle oder Autonomie?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Beides. Du setzt Betr&#228;ge, Grenzen und Medienzeit. Dein Kind entscheidet darin: welche Quest, wann, und wof&#252;r es den Pott knackt.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Noch eine App f&#252;rs Kind?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Nicht n&#246;tig. Es gibt einen Kind-Modus auf deinem Ger&#228;t, PIN-gesch&#252;tzt. Ein eigenes Handy braucht dein Kind erst, wenn es eines hat.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Ab welchem Alter?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Sobald ein Kind kurze S&#228;tze liest, kommt es allein zurecht &#8212; erfahrungsgem&#228;&#223; ab etwa sechs Jahren. J&#252;ngere Kinder nutzen den Kind-Modus mit dir zusammen.</p>
+          </details>
+          <details data-anim="1" style="background:var(--surface-card);border:1px solid var(--border-hairline);border-radius:20px;padding:20px 24px">
+            <summary style="cursor:pointer;list-style:none;font-family:var(--font-display);font-weight:700;font-size:clamp(17px,1.6vw,20px);line-height:1.35;color:var(--text-primary)">Was passiert nach den 14 Tagen?</summary>
+            <p style="margin:12px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary)">Du bekommst vorher eine Erinnerung. Ohne Abo ruhen die Quests &#8212; deine Familie, Verl&#228;ufe und der Pott bleiben erhalten.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14 · Final CTA -->
+    <section style="background:var(--bg-app);padding:0 0 clamp(64px,9vw,120px)">
+      <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px)">
+        <div data-anim="1" style="position:relative;overflow:hidden;border-radius:36px;background:var(--gradient-dawn);padding:clamp(16px,2vw,24px)">
+          <div style="position:relative;background:var(--surface-card);border-radius:28px;padding:clamp(28px,4vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:clamp(24px,3vw,48px);align-items:center">
+            <div>
+              <h2 style="font-family:var(--font-display);font-weight:700;font-size:clamp(28px,3.6vw,48px);line-height:1.08;letter-spacing:-0.02em;margin:0;max-width:16ch;color:var(--text-primary)">Aus Aufgaben werden Quests.</h2>
+              <p style="margin:16px 0 0;font-size:17px;line-height:24px;color:var(--text-secondary);max-width:38ch">Heute einrichten, morgen weniger erinnern.</p>
+              <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;margin-top:clamp(24px,3vw,32px);height:56px;padding:0 28px;border:0;border-radius:14px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:17px;font-weight:600;cursor:pointer;transition:background var(--dur-fast) var(--ease-standard),transform var(--dur-fast) var(--ease-standard)" style-hover="background:var(--action-primary-hover)" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+              <p style="margin:16px 0 0;font-size:14px;font-weight:500;color:var(--text-secondary)">14 Tage gratis &#183; Kein Bankkonto n&#246;tig &#183; Jederzeit k&#252;ndbar</p>
+            </div>
+            <div style="display:flex;justify-content:center">
+              <img src="assets/mascot/pepp-jump.png" alt="Pepp springt vor Freude" width="260" height="260" loading="lazy" style="width:min(260px,100%);height:auto;display:block">
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 15 · Footer -->
+  <footer style="background:var(--surface-card);border-top:1px solid var(--border-hairline);padding:clamp(48px,6vw,72px) 0 clamp(32px,4vw,48px)">
+    <div style="max-width:1180px;margin:0 auto;padding:0 clamp(20px,4vw,32px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:clamp(32px,4vw,48px)">
+      <div>
+        <a href="#main" aria-label="Pepp &#8212; nach oben" style="display:flex;align-items:center;gap:10px">
+          <img src="assets/logo/pepp-snout.svg" alt="" aria-hidden="true" width="28" height="28" loading="lazy" style="width:28px;height:28px;display:block">
+          <img src="assets/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" loading="lazy" style="width:76px;height:auto;display:block">
+        </a>
+        <p style="margin:16px 0 0;font-size:15px;line-height:22px;color:var(--text-secondary);max-width:32ch">Die Familien-App, in der aus Aufgaben Quests werden.</p>
+      </div>
+
+      <nav aria-label="Footer-Navigation">
+        <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Produkt</p>
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+          <li><a href="#funktionen" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Funktionen</a></li>
+          <li><a href="#belohnungen" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Belohnungen</a></li>
+          <li><a href="#preis" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Preis</a></li>
+          <li><a href="#faq" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">FAQ</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-label="Rechtliches">
+        <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">Rechtliches</p>
+        <!-- Links zeigen auf die bestehende Domain; nach dem Relaunch auf die neue Domain umstellen. -->
+        <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px">
+          <li><a href="https://www.taschengeldapp.com/impressum.html" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Impressum</a></li>
+          <li><a href="https://www.taschengeldapp.com/datenschutz.html" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Datenschutz</a></li>
+          <li><a href="https://www.taschengeldapp.com/agb.html" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">AGB</a></li>
+          <li><a href="#main" style="font-size:15px;font-weight:500;color:var(--text-secondary)" style-hover="color:var(--pepp-ink)">Barrierefreiheitserkl&#228;rung [PLATZHALTER]</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <p style="margin:0 0 12px;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--text-secondary)">App laden</p>
+        <div style="display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+          <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" style="display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--border-hairline);background:var(--bg-app);font-size:15px;font-weight:600;white-space:nowrap;color:var(--pepp-ink)" style-hover="background:var(--surface-hover)">
+            <svg aria-hidden="true" width="20" height="20" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--pepp-ink)"><path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>App Store
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=de.bluebranch.taschengeld&amp;hl=de" style="display:inline-flex;align-items:center;gap:10px;height:44px;padding:0 18px;border-radius:999px;border:1px solid var(--border-hairline);background:var(--bg-app);font-size:15px;font-weight:600;white-space:nowrap;color:var(--pepp-ink)" style-hover="background:var(--surface-hover)">
+            <svg aria-hidden="true" width="20" height="20" style="display:block;flex:0 0 auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="var(--pepp-ink)"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"></path></svg>Google Play
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1180px;margin:clamp(32px,4vw,48px) auto 0;padding:24px clamp(20px,4vw,32px) 0;border-top:1px solid var(--border-hairline)">
+      <p style="margin:0;font-size:13px;line-height:20px;color:var(--text-secondary)">&#169; 2026 Pepp &#183; BlueBranch GmbH &#183; Hans-Vogel-Stra&#223;e 59, 90765 F&#252;rth</p>
+    </div>
+  </footer>
+
+  <!-- Sticky CTA (mobil, ab 25 % Scroll) -->
+  <div data-mob ref="{{ stickyRef }}" style="position:fixed;left:0;right:0;bottom:0;z-index:120;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(251,246,241,.92);backdrop-filter:blur(12px);border-top:1px solid var(--border-hairline);transform:translateY(120%);transition:transform var(--dur-slow) var(--ease-standard)">
+    <a href="https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126" onClick="{{ onCta }}" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;width:100%;height:52px;border:0;border-radius:14px;background:var(--action-primary-bg);color:var(--action-primary-fg);font-family:var(--font-ui);font-size:17px;font-weight:600;cursor:pointer" style-active="transform:scale(.97)">14 Tage gratis starten</a>
+  </div>
+  <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><rect width="240" height="240" fill="#FBF6F1"/><circle cx="120" cy="120" r="64" fill="#FEA7B6"/><ellipse cx="101" cy="116" rx="7" ry="10" fill="#1A1A1A"/><ellipse cx="139" cy="116" rx="7" ry="10" fill="#1A1A1A"/><rect x="104" y="140" width="32" height="8" rx="4" fill="#FC6081"/></svg></template>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ZENTRALE WERTE — Store-URLs und Preise nur hier ändern.
+   Die sichtbaren Preise in Sektion 12 und im FAQ müssen dazu passen. */
+const STORE = {
+  ios: "https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126",
+  android: "https://play.google.com/store/apps/details?id=de.bluebranch.taschengeld&hl=de"
+};
+const PRICING = {
+  currency: "EUR",
+  monthly: 2.99,
+  yearly: 19.90,
+  trialDays: 14
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.navRef = React.createRef();
+    this.phonesRef = React.createRef();
+    this.stickyRef = React.createRef();
+    this.onScroll = this.onScroll.bind(this);
+    this.onCta = this.onCta.bind(this);
+  }
+
+  onScroll() {
+    const nav = this.navRef.current;
+    if (!nav) return;
+    const solid = window.scrollY > 24;
+    nav.style.background = solid ? "rgba(251,246,241,.88)" : "rgba(251,246,241,0)";
+    nav.style.backdropFilter = solid ? "saturate(1.4) blur(12px)" : "none";
+    nav.style.borderBottomColor = solid ? "var(--border-hairline)" : "rgba(235,227,218,0)";
+  }
+
+  /* Ein CTA-Typ, Device-Detection. Ohne JS bleibt der Link auf den App Store —
+     die Buttons sind echte <a>, damit die Seite ohne JS bedienbar ist. */
+  onCta(e) {
+    const ua = navigator.userAgent || "";
+    const target = /Android/i.test(ua) ? STORE.android : STORE.ios;
+    if (e) e.preventDefault();
+    window.open(target, "_blank", "noopener");
+  }
+
+  fitPhones() {
+    const el = this.phonesRef.current;
+    if (!el) return;
+    const stage = el.parentElement;
+    const avail = stage.clientWidth;
+    // sichtbar: 40 Rand + 360 Elternscreen + ~180 des Kinderscreens
+    const scale = Math.min(1.05, Math.max(0.5, avail / 580));
+    el.style.setProperty("--phone-scale", scale);
+    // unten anschneiden: 86 % der skalierten Screenhöhe (44 Rand + 779)
+    stage.style.height = Math.round(823 * scale * 0.86) + "px";
+  }
+
+  injectStructuredData() {
+    if (document.getElementById("pepp-jsonld")) return;
+    const faq = [...document.querySelectorAll("#faq details")].map(d => ({
+      "@type": "Question",
+      name: d.querySelector("summary").textContent.trim(),
+      acceptedAnswer: { "@type": "Answer", text: d.querySelector("p").textContent.trim() }
+    }));
+    const data = [
+      {
+        "@context": "https://schema.org", "@type": "SoftwareApplication",
+        name: "Pepp", applicationCategory: "FinanceApplication",
+        operatingSystem: "iOS, Android", inLanguage: "de",
+        description: "Familien-App für Aufgaben, Taschengeld und Medienzeit. Aus Aufgaben werden Quests.",
+        offers: [
+          { "@type": "Offer", price: PRICING.monthly.toFixed(2), priceCurrency: PRICING.currency, name: "Monatlich" },
+          { "@type": "Offer", price: PRICING.yearly.toFixed(2), priceCurrency: PRICING.currency, name: "Jährlich" }
+        ]
+      },
+      { "@context": "https://schema.org", "@type": "Organization", name: "BlueBranch GmbH",
+        address: { "@type": "PostalAddress", streetAddress: "Hans-Vogel-Straße 59", postalCode: "90765", addressLocality: "Fürth", addressCountry: "DE" } },
+      { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: faq }
+    ];
+    const s = document.createElement("script");
+    s.type = "application/ld+json";
+    s.id = "pepp-jsonld";
+    s.textContent = JSON.stringify(data);
+    document.head.appendChild(s);
+  }
+
+  onStickyScroll() {
+    const el = this.stickyRef.current;
+    if (!el) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const show = max > 0 && window.scrollY / max > 0.25;
+    el.style.transform = show ? "translateY(0)" : "translateY(120%)";
+  }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.onScroll, { passive: true });
+    this._sticky = () => this.onStickyScroll();
+    window.addEventListener("scroll", this._sticky, { passive: true });
+    this.onStickyScroll();
+    this.injectStructuredData();
+    this.onScroll();
+    this.fitPhones();
+    this._fit = () => this.fitPhones();
+    window.addEventListener("resize", this._fit);
+
+    this._t = setTimeout(() => this.initMotion(), 60);
+  }
+
+  initMotion() {
+    const g = window.gsap;
+    if (!g) { this._t = setTimeout(() => this.initMotion(), 120); return; }
+    if (window.ScrollTrigger) g.registerPlugin(window.ScrollTrigger);
+    const mm = g.matchMedia();
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const phones = this.phonesRef.current;
+      if (phones && window.ScrollTrigger) {
+        const parent = phones.querySelector('[data-phone="parent"]');
+        const child = phones.querySelector('[data-phone="child"]');
+        g.to(parent, { y: -24, ease: "none", scrollTrigger: { trigger: phones, start: "top 70%", end: "bottom top", scrub: .6 } });
+        g.to(child, { y: 22, ease: "none", scrollTrigger: { trigger: phones, start: "top 70%", end: "bottom top", scrub: .6 } });
+      }
+      // Sanfte Reveals — Startzustand nur per JS, damit die Seite ohne JS vollständig lesbar bleibt
+      if (window.ScrollTrigger) {
+        document.querySelectorAll("section").forEach(sec => {
+          const items = sec.querySelectorAll("[data-anim]");
+          if (!items.length) return;
+          g.fromTo(items, { y: 24, opacity: 0.001 }, {
+            y: 0, opacity: 1, duration: 0.6, ease: "power2.out", stagger: 0.08,
+            scrollTrigger: { trigger: sec, start: "top 78%", once: true }
+          });
+        });
+      }
+      // Quest-Mechanik: der gepinnte Screen wechselt mit dem aktiven Punkt
+      const mechScreen = document.querySelector("[data-mech-screen]");
+      if (mechScreen && window.ScrollTrigger && window.matchMedia("(min-width:901px)").matches) {
+        mechScreen.removeAttribute("loading");
+        const steps = [...document.querySelectorAll("[data-mech-step]")];
+        // alle vier Screens vorladen, damit beim Wechsel nie eine leere Fläche steht
+        const ready = new Map();
+        steps.forEach(s => {
+          const src = s.getAttribute("data-mech-step");
+          if (ready.has(src)) return;
+          const img = new Image();
+          const done = new Promise(res => { img.onload = res; img.onerror = res; });
+          img.src = src;
+          ready.set(src, Promise.race([done, new Promise(res => setTimeout(res, 800))]));
+        });
+        steps.forEach(step => {
+          const src = step.getAttribute("data-mech-step");
+          const swap = () => {
+            if (mechScreen.dataset.current === src) return;
+            mechScreen.dataset.current = src;
+            g.killTweensOf(mechScreen);
+            g.to(mechScreen, { opacity: 0, duration: .16, ease: "power1.in", overwrite: "auto",
+              onComplete: () => {
+                (ready.get(src) || Promise.resolve()).then(() => {
+                  if (mechScreen.dataset.current !== src) return;
+                  mechScreen.setAttribute("src", src);
+                  g.to(mechScreen, { opacity: 1, duration: .24, ease: "power1.out", overwrite: "auto" });
+                });
+              }});
+          };
+          window.ScrollTrigger.create({ trigger: step, start: "top 55%", end: "bottom 45%",
+            onEnter: swap, onEnterBack: swap });
+        });
+        mechScreen.dataset.current = mechScreen.getAttribute("src");
+      }
+      const ring = document.querySelector("[data-pott-ring]");
+      if (ring) g.fromTo(ring, { strokeDashoffset: 666 }, { strokeDashoffset: 173, duration: 1.4, ease: "power2.out", delay: .25 });
+      return () => {};
+    });
+    this._mm = mm;
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("scroll", this._sticky);
+    window.removeEventListener("resize", this._fit);
+    clearTimeout(this._t);
+    if (this._mm) this._mm.kill();
+  }
+
+  renderVals() {
+    return { navRef: this.navRef, phonesRef: this.phonesRef, stickyRef: this.stickyRef, onCta: this.onCta };
+  }
+}
+</script>
+</body>
+</html>

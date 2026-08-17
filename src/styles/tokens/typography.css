@@ -1,0 +1,38 @@
+/* CONFIRMED — scale from Pepp_Styleguide p.12 (size / line-height in dp @360 base). */
+:root{
+  --font-display:"Quicksand",system-ui,sans-serif;   /* brand voice */
+  --font-ui:"Inter","Inter Tight",system-ui,sans-serif; /* UI voice */
+
+  --weight-light:300;--weight-regular:400;--weight-medium:500;--weight-semibold:600;--weight-bold:700;
+
+  /* App scale */
+  --type-h1-size:32px;   --type-h1-lh:38px;   --type-h1-weight:700; --type-h1-tracking:-0.01em; /* @kind other */
+  /* hero headline — the full-bleed display line on intro and onboarding screens */
+  --type-hero-size:34px;  --type-hero-lh:40px;  --type-hero-weight:700; --type-hero-tracking:-0.01em; /* @kind other */
+  --type-h2-size:24px;   --type-h2-lh:30px;   --type-h2-weight:700; --type-h2-tracking:-0.01em; /* @kind other */
+  --type-h3-size:20px;   --type-h3-lh:26px;   --type-h3-weight:500; --type-h3-tracking:0; /* @kind other */
+  --type-bodyl-size:17px;--type-bodyl-lh:24px;--type-bodyl-weight:400; /* @kind other */
+  --type-body-size:15px; --type-body-lh:22px; --type-body-weight:400; /* @kind other */
+  --type-caption-size:13px;--type-caption-lh:16px;--type-caption-weight:500; /* @kind other */
+  --type-button-size:16px;--type-button-lh:20px;--type-button-weight:600; /* @kind other */
+  --type-highlight-size:17px;--type-highlight-lh:24px;--type-highlight-weight:600; /* @kind other */
+  /* RECOMMENDED — section label (all caps) seen on every list header in the screens */
+  --type-label-size:12px;--type-label-lh:16px;--type-label-weight:700;--type-label-tracking:0.06em; /* @kind other */
+  /* RECOMMENDED — marketing / app-store display sizes */
+  --type-display-xl-size:72px;--type-display-xl-lh:74px;
+  --type-display-l-size:56px; --type-display-l-lh:60px;
+  --type-display-m-size:40px; --type-display-m-lh:46px;
+
+  --measure-headline:16ch; /* @kind other */
+  --measure-body:42ch; /* @kind other */
+}
+.pepp-hero{font-family:var(--font-display);font-weight:700;font-size:var(--type-hero-size);line-height:var(--type-hero-lh);letter-spacing:var(--type-hero-tracking);color:var(--text-primary)}
+.pepp-h1{font-family:var(--font-display);font-weight:700;font-size:var(--type-h1-size);line-height:var(--type-h1-lh);letter-spacing:var(--type-h1-tracking);color:var(--text-primary)}
+.pepp-h2{font-family:var(--font-display);font-weight:700;font-size:var(--type-h2-size);line-height:var(--type-h2-lh);letter-spacing:var(--type-h2-tracking);color:var(--text-primary)}
+.pepp-h3{font-family:var(--font-display);font-weight:500;font-size:var(--type-h3-size);line-height:var(--type-h3-lh);color:var(--text-primary)}
+.pepp-body-l{font-family:var(--font-ui);font-weight:400;font-size:var(--type-bodyl-size);line-height:var(--type-bodyl-lh);color:var(--text-secondary)}
+.pepp-body{font-family:var(--font-ui);font-weight:400;font-size:var(--type-body-size);line-height:var(--type-body-lh);color:var(--text-secondary)}
+.pepp-caption{font-family:var(--font-ui);font-weight:500;font-size:var(--type-caption-size);line-height:var(--type-caption-lh);color:var(--text-tertiary)}
+.pepp-button{font-family:var(--font-ui);font-weight:600;font-size:var(--type-button-size);line-height:var(--type-button-lh)}
+.pepp-highlight{font-family:var(--font-ui);font-weight:600;font-size:var(--type-highlight-size);line-height:var(--type-highlight-lh);color:var(--text-highlight)}
+.pepp-label{font-family:var(--font-ui);font-weight:var(--type-label-weight);font-size:var(--type-label-size);line-height:var(--type-label-lh);letter-spacing:var(--type-label-tracking);text-transform:uppercase;color:var(--text-tertiary)}

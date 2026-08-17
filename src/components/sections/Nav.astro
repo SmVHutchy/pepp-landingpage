@@ -1,0 +1,200 @@
+---
+/* Sektion 1 · Navigation
+   Transparent im Ruhezustand. Ab scrollY > 24 setzt das Skript
+   data-solid="true" und der Hintergrund plus Hairline blenden ein
+   (--dur-base / --ease-standard). Ohne JS bleibt die Navigation
+   transparent und vollständig bedienbar.
+   Unter 901px liegen die Anker in einem aufklappbaren Menü.
+
+   Warum natives <details> und kein JavaScript-Menü: die Seite muss ohne
+   Skript vollständig BEDIENBAR sein, nicht nur lesbar. <details> klappt ohne
+   JS auf, ist per Tastatur erreichbar, braucht kein aria-expanded und meldet
+   sich Vorleseprogrammen korrekt als Ausklappelement. Dasselbe Muster wie im
+   FAQ. Das Skript ergänzt nur Bequemlichkeit: Escape und Klick daneben
+   schliessen, und ein Ankerklick schliesst mit.
+
+   Warum ein Wort statt eines Burger-Symbols: das Icon-Set des Design Systems
+   hat 97 Icons, aber keinen Burger — und nachzeichnen ist ausgeschlossen.
+   „Menü" ist ohnehin eindeutiger als drei Striche. */
+import Cta from '../Cta.astro';
+
+const links = [
+  { href: '/#funktionen', label: 'Funktionen' },
+  { href: '/#belohnungen', label: 'Belohnungen' },
+  { href: '/#preis', label: 'Preis' },
+  { href: '/#faq', label: 'FAQ' },
+];
+---
+
+<header class="nav-root" data-nav>
+  <nav class="nav" aria-label="Hauptnavigation">
+    <a class="nav__brand" href="/" aria-label="Pepp — zur Startseite">
+      <img
+        src="/logo/pepp-snout.svg"
+        alt=""
+        aria-hidden="true"
+        width="28"
+        height="28"
+      />
+      <img src="/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" />
+    </a>
+
+    <ul class="nav__links u-desk">
+      {
+        links.map((link) => (
+          <li>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="nav__actions">
+      <Cta size="nav" />
+
+      <details class="nav__menu u-mob" data-nav-menu>
+        <summary>Menü</summary>
+        <ul class="nav__panel mkt-list-reset">
+          {
+            links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </details>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav-root {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--nav-bg-idle);
+    border-bottom: var(--border-hair) solid var(--nav-border-idle);
+    transition:
+      background var(--dur-base) var(--ease-standard),
+      border-color var(--dur-base) var(--ease-standard);
+  }
+
+  .nav-root[data-solid='true'] {
+    background: var(--nav-bg-solid);
+    backdrop-filter: var(--nav-blur);
+    border-bottom-color: var(--border-hairline);
+  }
+
+  .nav {
+    max-width: var(--mkt-content-width);
+    margin-inline: auto;
+    padding-inline: var(--mkt-gutter);
+    height: var(--height-nav);
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+  }
+
+  .nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+  }
+
+  .nav__brand img {
+    display: block;
+  }
+
+  .nav__brand img:last-child {
+    width: 76px;
+    height: auto;
+  }
+
+  .nav__links {
+    list-style: none;
+    margin: 0 0 0 var(--space-3);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .nav__links a {
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+
+  .nav__links a:hover {
+    color: var(--pepp-ink);
+  }
+
+  .nav__actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  /* ── Aufklappmenü unter 901px ─────────────────────────────────────────── */
+
+  .nav__menu summary {
+    cursor: pointer;
+    /* list-style plus ::-webkit-details-marker: das Dreieck ist in beiden
+       Engines weg. Gleiches Muster wie im FAQ. */
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    /* 40px wie der Nav-CTA daneben, damit beide auf einer Linie sitzen und
+       die Fläche gross genug für einen Daumen ist. */
+    height: var(--height-cta-nav);
+    padding-inline: var(--space-5);
+    border-radius: var(--radius-pill);
+    border: var(--border-hair) solid var(--border-hairline);
+    background: var(--surface-card);
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    color: var(--pepp-ink);
+    white-space: nowrap;
+  }
+
+  .nav__menu summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .nav__menu[open] summary {
+    background: var(--surface-hover);
+  }
+
+  /* Das Panel hängt am Header, nicht am Knopf: so läuft es über die volle
+     Breite und die Anker sind auch bei 320px bequem zu treffen.
+     .nav-root ist sticky und damit positioniert — eigener Bezugspunkt. */
+  .nav__panel {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4) var(--mkt-gutter) var(--space-6);
+    background: var(--surface-card);
+    border-bottom: var(--border-hair) solid var(--border-hairline);
+    box-shadow: var(--shadow-2);
+  }
+
+  .nav__panel a {
+    display: flex;
+    align-items: center;
+    /* 48px: über der 44px-Mindestgröße für Berührungsziele. */
+    min-height: 48px;
+    font-size: var(--type-bodyl-size);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+  }
+
+  .nav__panel li + li a {
+    border-top: var(--border-hair) solid var(--border-hairline);
+  }
+</style>

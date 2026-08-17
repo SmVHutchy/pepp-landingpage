@@ -1,0 +1,201 @@
+---
+/* Sektion 8 · Elternmodus ∥ Kindermodus
+   Off-White. Zwei Panels: links weiss und ruhig, rechts auf Dawn — die beiden
+   Welten unterscheiden sich in der Fläche, nicht im Text. Die Screens sind
+   unten angeschnitten (negativer margin plus overflow:hidden). */
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+
+import eltern from '../../assets/screens/eltern-03-quests.png';
+import kind from '../../assets/screens/kind-03-quest-liste.png';
+
+const parentPoints = [
+  '„4 Dinge warten auf dich“ — und sonst nichts.',
+  'Grenzen, Wünsche und Medienzeit pro Kind.',
+  'Nichts wird ausgezahlt, bevor du es bestätigst.',
+];
+
+const childPoints = [
+  'Quests annehmen, Beweis schicken, Pott füllen.',
+  'Sparziel selbst setzen — Lego‑Rennwagen, 20,00 €.',
+  'Kind‑Modus läuft auch auf deinem Handy, PIN‑geschützt.',
+];
+---
+
+<section class="modes mkt-section mkt-section--ground">
+  <Blob ton="pink" groesse="600px" top="8%" left="-16%" deckkraft={0.38} weg={-90} />
+
+  <div class="mkt-container">
+    {/* Der Satz stand als freistehender Absatz UNTER den Panels und las sich
+        dort als „und noch mehr Text". Inhaltlich ist er die These der Sektion,
+        also der Lead, der ihr fehlte. Wortlaut unverändert, nur verschoben. */}
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Zwei Seiten</p>
+      <h2 class="mkt-h2 mkt-h2--sm" data-anim>Eine App, zwei Welten.</h2>
+      <p class="mkt-lead modes__note" data-anim>
+        Pepp soll Kindern nicht das Gefühl geben, kontrolliert zu werden. Du setzt
+        den Rahmen &#8212; das Kind entscheidet darin.
+      </p>
+    </div>
+
+    <div class="modes__grid">
+      <div class="modes__panel modes__panel--parent" data-anim="side">
+        <div>
+          <p class="mkt-label modes__kicker">Elternmodus</p>
+          <h3 class="modes__title">Ruhig, klar, entschieden.</h3>
+          <ul class="modes__points mkt-list-reset">
+            {
+              parentPoints.map((point) => (
+                <li>
+                  <Icon name="check" size={20} color="var(--pepp-ink)" />
+                  {point}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="modes__stage mkt-fade-edges">
+          <Image
+            src={eltern}
+            alt="Pepp Eltern-App: Quest-Übersicht nach Zustand gruppiert"
+            width={300}
+            height={649}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+          />
+        </div>
+      </div>
+
+      <div class="modes__panel modes__panel--child" data-anim="side">
+        <div class="modes__inset">
+          <p class="mkt-label modes__kicker">Kindermodus</p>
+          <h3 class="modes__title">Bunt, belohnend, eigenständig.</h3>
+          <ul class="modes__points mkt-list-reset">
+            {
+              childPoints.map((point) => (
+                <li>
+                  <Icon name="sparkles" size={20} color="var(--pepp-coral)" />
+                  {point}
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+        <div class="modes__stage modes__stage--child mkt-fade-edges">
+          <Image
+            src={kind}
+            alt="Pepp Kinder-App: Quest-Liste nach Dringlichkeit"
+            width={300}
+            height={649}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .modes__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+    margin-top: var(--mkt-stack-gap);
+  }
+
+  .modes__panel {
+    overflow: hidden;
+    border-radius: var(--radius-panel);
+    padding: clamp(24px, 2.6vw, 40px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-7);
+  }
+
+  .modes__panel--parent {
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    box-shadow: var(--shadow-1);
+  }
+
+  .modes__panel--child {
+    position: relative;
+    background: var(--gradient-dawn);
+  }
+
+  /* Auf Dawn braucht der Text eine eigene weisse Fläche — sonst reicht der
+     Kontrast nicht und Pastell würde zur Textunterlage. */
+  .modes__inset {
+    position: relative;
+    background: var(--surface-card);
+    border-radius: var(--radius-2xl);
+    padding: clamp(20px, 2vw, 28px);
+  }
+
+  .modes__kicker {
+    margin-bottom: 0;
+  }
+
+  .modes__title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: clamp(24px, 2.4vw, 32px);
+    line-height: 1.15;
+    letter-spacing: var(--type-h2-tracking);
+    margin: var(--space-3) 0 0;
+    color: var(--text-primary);
+  }
+
+  .modes__points {
+    margin-top: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .modes__points li {
+    display: flex;
+    gap: 10px;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+  }
+
+  /* Angeschnitten: das Gerät läuft unten aus dem Panel heraus — mit weicher
+     Kante (.mkt-fade-edges), sonst endet es an einer geraden Linie quer durchs
+     Display. Nur unten; seitlich wird hier nichts beschnitten. */
+  .modes__stage {
+    margin: auto -12px -80px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    height: 300px;
+    --fade-b: 76%;
+  }
+
+  .modes__stage--child {
+    position: relative;
+  }
+
+  .modes__stage img {
+    width: 300px;
+    height: 649px;
+    display: block;
+    filter: var(--shadow-screen-small);
+  }
+
+  .modes__stage--child img {
+    filter: drop-shadow(0 16px 32px rgb(26 26 26 / 0.18));
+  }
+
+  /* Steht jetzt im Kopfblock. Kein margin und keine eigene max-width mehr:
+     Abstand kommt aus dem gap von .mkt-head, die Breite aus der Kopfspalte. */
+  .modes__note {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+</style>

@@ -1,0 +1,82 @@
+---
+/* Sektion 13 · FAQ (#faq)
+   Off-White, schmale Spalte (820px). Native <details>: aufklappbar ohne
+   JavaScript, tastaturbedienbar ohne eigenen Code.
+
+   Die Liste ist dieselbe, aus der das JSON-LD FAQPage entsteht — eine Frage
+   kann nicht in der Seite stehen und im Schema fehlen. */
+import { FAQ } from '../../data/faq.js';
+---
+
+<section id="faq" class="mkt-section mkt-section--ground">
+  <div class="faq__container">
+    {/* Ohne Label: „FAQ" war ein Synonym der eigenen H2 „Häufige Fragen" und
+        damit das einzige der elf Sektionslabels ohne Zusatzinformation. Kein
+        .mkt-head hier — bei einer alleinstehenden H2 hätte der Wrapper nichts
+        zu gruppieren. */}
+    <h2 class="mkt-h2 mkt-h2--sm faq__title" data-anim>Häufige Fragen</h2>
+
+    <div class="faq__list">
+      {
+        FAQ.map((entry) => (
+          <details data-anim="card">
+            <summary>{entry.q}</summary>
+            <p>{entry.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__container {
+    max-width: var(--mkt-content-width-narrow);
+    margin-inline: auto;
+    padding-inline: var(--mkt-gutter);
+  }
+
+  .faq__title {
+    margin-bottom: clamp(24px, 3vw, 40px);
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  details {
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6) var(--space-7);
+  }
+
+  summary {
+    cursor: pointer;
+    /* list-style:none plus ::-webkit-details-marker: das Dreieck ist in beiden
+       Engines weg, der Klickbereich bleibt die ganze Zeile. */
+    list-style: none;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: clamp(17px, 1.6vw, 20px);
+    line-height: 1.35;
+    color: var(--text-primary);
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* max-width war die einzige echte Zeilenlängen-Verletzung der Seite: ohne
+     sie läuft die Antwort über 772px, das sind ~103 Zeichen pro Zeile. WCAG
+     1.4.8 nennt 80 als Obergrenze. */
+  details p {
+    margin: var(--space-4) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+</style>

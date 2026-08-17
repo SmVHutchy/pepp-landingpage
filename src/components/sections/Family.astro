@@ -1,0 +1,86 @@
+---
+/* Sektion 11 · Für die ganze Familie
+   Weiss mit Radius oben. Karten in Off-White auf Weiss, ohne Schatten. */
+import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+
+const cards = [
+  {
+    icon: 'message-circle',
+    title: 'Familien-Chat',
+    body: 'Absprachen, Lob und Beweisfotos an einem Ort — ohne fremde Messenger.',
+  },
+  {
+    icon: 'users',
+    title: 'Mehrere Kinder, zweites Elternteil',
+    body: 'Emma und Ben mit eigenen Grenzen. Beide Eltern sehen dasselbe.',
+  },
+  {
+    icon: 'badge-check',
+    title: 'Beitreten per QR-Code',
+    body: 'Code zeigen, scannen, dabei. Keine Einladungsmails, keine Codes abtippen.',
+  },
+  {
+    icon: 'smartphone',
+    title: 'Kein eigenes Handy nötig',
+    body: 'Der Kind-Modus läuft auf deinem Gerät — umschalten mit PIN.',
+  },
+];
+---
+
+<section class="family mkt-section mkt-section--sm mkt-section--card">
+  <Blob ton="peach" groesse="480px" bottom="-10%" right="-8%" deckkraft={0.42} weg={-60} />
+
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Familie</p>
+      <h2 class="mkt-h2 mkt-h2--sm" data-anim>Für alle, die mitziehen.</h2>
+    </div>
+
+    <ul class="fam__cards mkt-list-reset">
+      {
+        cards.map((card) => (
+          <li class="fam__card" data-anim="card">
+            <Icon name={card.icon} size={24} color="var(--pepp-ink)" />
+            <h3 class="fam__title">{card.title}</h3>
+            <p class="fam__body">{card.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .fam__cards {
+    margin-top: var(--mkt-stack-gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+  }
+
+  /* Bewusst ohne box-shadow: die Sektion soll flacher wirken als Sicherheit. */
+  .fam__card {
+    background: var(--bg-app);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-2xl);
+    padding: clamp(22px, 2.2vw, 32px);
+  }
+
+  .fam__title {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-h3-size);
+    line-height: var(--type-h3-lh);
+    color: var(--text-primary);
+  }
+
+  .fam__body {
+    margin: 6px 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+</style>

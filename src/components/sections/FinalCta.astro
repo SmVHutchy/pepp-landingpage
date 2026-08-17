@@ -1,0 +1,100 @@
+---
+/* Sektion 14 · Final CTA
+   Off-White, nur unten Abstand: der Dawn-Rahmen schliesst die Seite ab.
+   Enthält CTA-Instanz 5. Das Maskottchen kommt als gelieferter Render.
+   Die H2 wiederholt die H1 wörtlich — bewusst, es ist derselbe Satz am Ende. */
+import { Image } from 'astro:assets';
+import Cta from '../Cta.astro';
+import jump from '../../assets/mascot/pepp-jump.png';
+---
+
+<section class="final">
+  <div class="mkt-container">
+    <div class="final__frame" data-anim="card">
+      <div class="final__panel">
+        <div>
+          <h2 class="final__title">Aus Aufgaben werden Quests.</h2>
+          <p class="final__lead">Heute einrichten, morgen weniger erinnern.</p>
+          {/* Ohne Trust-Zeile: sie stand byte-identisch schon in „So
+              funktioniert's" unter CTA-Instanz 2, und dort trägt sie mehr —
+              direkt nach der Erklärung, wo die Frage „was kostet mich das"
+              zuerst aufkommt. Die Seite sagte „14 Tage gratis" elfmal und
+              „kündbar" sechsmal; eine Nennung weniger kostet nichts. */}
+          <Cta />
+        </div>
+        <div class="final__mascot">
+          <Image
+            src={jump}
+            alt="Pepp springt vor Freude"
+            width={260}
+            height={462}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    background: var(--bg-app);
+    padding: 0 0 clamp(64px, 9vw, 120px);
+  }
+
+  /* Dawn als Rahmen, nicht als Fläche: 16-24px Rand um die weisse Karte. */
+  .final__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-panel);
+    background: var(--gradient-dawn);
+    padding: clamp(16px, 2vw, 24px);
+  }
+
+  .final__panel {
+    position: relative;
+    background: var(--surface-card);
+    border-radius: var(--radius-2xl);
+    padding: clamp(28px, 4vw, 64px);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: clamp(24px, 3vw, 48px);
+    align-items: center;
+  }
+
+  .final__title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: clamp(28px, 3.6vw, 48px);
+    line-height: var(--type-mkt-h2-lh);
+    letter-spacing: var(--tracking-tight);
+    margin: 0;
+    max-width: 16ch;
+    color: var(--text-primary);
+  }
+
+  .final__lead {
+    margin: var(--space-5) 0 0;
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+    color: var(--text-secondary);
+    max-width: 38ch;
+  }
+
+  .final__panel :global([data-cta]) {
+    margin-top: clamp(24px, 3vw, 32px);
+  }
+
+  .final__mascot {
+    display: flex;
+    justify-content: center;
+  }
+
+  .final__mascot img {
+    width: min(260px, 100%);
+    height: auto;
+    display: block;
+  }
+</style>

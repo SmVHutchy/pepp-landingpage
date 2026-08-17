@@ -1,0 +1,41 @@
+# ── Erzeugtes, nichts davon gehört ins Repo ──────────────────────────────
+node_modules/
+dist/
+.astro/
+
+# Screenshot-Vergleiche gegen die Design-Referenz — lokale Artefakte,
+# erzeugt von scripts/compare.mjs und scripts/measure.mjs
+.compare/
+
+# ── Das gebundene Design System ──────────────────────────────────────────
+# 241 MB, davon 180 MB allein in uploads/. Es ist Nachschlagewerk, keine
+# Build-Abhängigkeit: nichts unter src/ importiert daraus. Die Werte sind
+# bereits nach src/styles/tokens/ übernommen, die Assets nach src/assets/.
+# Ein Klon soll nicht 241 MB ziehen, die niemand zum Bauen braucht.
+# Begründung ausführlich in docs/DECISIONS.md (ADR-002).
+# Wo der Ordner liegt und was drin ist: docs/ARCHITECTURE.md.
+Pepp Final Design System/
+
+# ── Persönliche Werkzeuge, keine Projektkonfiguration ────────────────────
+# .claude/launch.json bleibt drin (Konfiguration des Dev-Servers, siehe
+# docs/SETUP.md). Schreibstil-Skills und Ähnliches sind persönlich.
+.claude/skills/
+
+# ── Betriebssystem und Editoren ──────────────────────────────────────────
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+*.log
+*.swp
+.idea/
+.vscode/
+
+# ── Umgebung ─────────────────────────────────────────────────────────────
+# Die Seite hat heute keine Umgebungsvariablen (siehe docs/ENVIRONMENT.md).
+# Der Eintrag steht vorsorglich, damit ein späteres .env nicht versehentlich
+# eingecheckt wird. .env.example gehört dagegen ins Repo.
+.env
+.env.*
+!.env.example

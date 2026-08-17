@@ -1,0 +1,96 @@
+---
+/**
+ * Icon — rendert die Outline-Icons des Pepp Design Systems inline als SVG.
+ *
+ * Die Quelle ist ausschliesslich `src/icons/`, 1:1 aus dem Design System
+ * (24er-Raster, 2px Strich, runde Enden). Beim finalen Icon-Set wird nur
+ * dieser Ordner getauscht — kein Aufrufer muss sich ändern.
+ *
+ * Die SVGs werden zur Buildzeit von Vite eingelesen (import.meta.glob mit
+ * ?raw), nicht zur Laufzeit von der Platte: nur so überlebt das den Bundle-
+ * Schritt. Ein unbekannter Name bricht den Build ab, statt still nichts zu
+ * rendern — damit fällt sofort auf, wenn ein Icon nachgezeichnet werden müsste.
+ *
+ * `currentColor` in der Quelle wird durch `color` ersetzt, damit ein Token
+ * übergeben werden kann (`var(--pepp-success)`). CSS-Masken wären hier nicht
+ * inlinebar, deshalb echtes Inline-SVG.
+ *
+ * Dekorativ ist der Standard: aria-hidden, kein Name im Accessibility-Tree.
+ * Informativ nur mit `title` — dann role="img" plus <title>, wie im Handoff.
+ */
+const sources = import.meta.glob<string>('../icons/*.svg', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+
+const byName = new Map(
+  Object.entries(sources).map(([path, svg]) => [
+    path.split('/').pop()!.replace('.svg', ''),
+    svg,
+  ])
+);
+
+interface Props {
+  name: string;
+  size?: number;
+  color?: string;
+  /**
+   * Strichstärke im 24er-Raster der Quelle, nicht in gerenderten Pixeln.
+   * Nur setzen, wenn das Icon deutlich grösser als 24px gerendert wird: die
+   * Quelle hat stroke-width="2", also wächst der Strich linear mit. Bei 96px
+   * wären das 8px — aus dem Outline-Icon würde eine Wulst. Mit 1 bleibt der
+   * Strich bei 96px optisch bei 4px, also proportional wie 1px auf 24px.
+   */
+  strokeWidth?: number;
+  /** Nur setzen, wenn das Icon Information trägt, die nicht im Text steht. */
+  title?: string;
+  class?: string;
+}
+
+const {
+  name,
+  size = 24,
+  color = 'currentColor',
+  strokeWidth,
+  title,
+  class: className,
+} = Astro.props;
+
+const raw = byName.get(name);
+if (!raw) {
+  throw new Error(
+    `Icon "${name}" liegt nicht im Design-System-Set (src/icons/).\n` +
+      `Nichts nachzeichnen — verfügbar sind: ${[...byName.keys()].sort().join(', ')}`
+  );
+}
+
+/* Grösse und Farbe setzen; die Quelle bleibt sonst unangetastet.
+   width/height dürfen NUR am Wurzel-<svg> weg: Kinder wie <rect width="4"
+   height="16"> (pause, monitor-smartphone) verschwinden sonst spurlos. */
+let svg = raw
+  .replace(/^\s*<svg[^>]*>/, (openTag) =>
+    openTag
+      .replace(/\s(width|height)="[^"]*"/g, '')
+      .replace(
+        '<svg',
+        `<svg data-pepp-icon width="${size}" height="${size}"` +
+          (title ? ' role="img"' : ' aria-hidden="true" focusable="false"') +
+          (className ? ` class="${className}"` : '')
+      )
+  )
+  .replace(/currentColor/g, color);
+
+/* Strichstärke nur am Wurzel-<svg>: Kinder, die eine eigene tragen, behalten
+   sie. Der Ersatz läuft nach dem Umbau des Open-Tags, damit das Attribut
+   dort sicher noch steht. */
+if (strokeWidth !== undefined) {
+  svg = svg.replace(/^(\s*<svg[^>]*?)\sstroke-width="[^"]*"/, `$1 stroke-width="${strokeWidth}"`);
+}
+
+if (title) {
+  svg = svg.replace('>', `><title>${title}</title>`);
+}
+---
+
+<Fragment set:html={svg} />

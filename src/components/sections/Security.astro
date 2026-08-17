@@ -1,0 +1,83 @@
+---
+/* Sektion 10 · Sicherheit & Vertrauen
+   Off-White. Vier Karten, die ausschliesslich sagen, was Pepp NICHT ist.
+   Keine der verbotenen Begriffe steht hier ohne Verneinung. */
+import Icon from '../Icon.astro';
+
+/* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
+   getrennt — gleiches Muster wie in Mechanic und Pot. */
+const cards = [
+  {
+    icon: 'wallet',
+    title: 'Kein Bankkonto, keine Karte',
+    lead: 'Dein Kind braucht keine Zahlungsdaten und kein eigenes Konto.',
+    body: 'Der Pott ist ein Zähler.',
+  },
+  {
+    icon: 'hand-coins',
+    title: 'Ausgezahlt wird von dir',
+    lead: 'Die Auszahlung ist eine Anfrage an dich.',
+    body: 'Bar auf die Hand oder aufs Sparkonto — außerhalb der App.',
+  },
+  {
+    icon: 'circle-slash',
+    title: 'Keine Werbung, kein Datenverkauf',
+    lead: 'Keine Werbe-ID, keine Weitergabe an Dritte.',
+    body: 'DSGVO-konform, Server in der EU.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'Du führst den Familien-Account',
+    lead: 'Grenzen, Beträge, Medienzeit, Kind-Modus:',
+    body: 'alles liegt bei dir, PIN-geschützt.',
+  },
+];
+---
+
+{/* Kapitelfläche: die einzige Sektion der Seite auf --mkt-surface-chapter.
+    Acht gleich schwache Wechsel zwischen Off-White und Weiß trugen nichts;
+    ein Farbmoment, der ein Kapitel markiert, trägt. SM-Padding, weil diese
+    Sektion beruhigt statt zu verkaufen. */}
+<section class="mkt-section mkt-section--sm mkt-section--chapter">
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Sicherheit</p>
+      <h2 class="mkt-h2 mkt-h2--sm" data-anim>Kein Konto. Keine Karte. Kein Datenhandel.</h2>
+      <p class="mkt-lead sec__lead" data-anim>
+        Pepp ist keine Banking-App. Durch die App fließt kein echtes Geld.
+      </p>
+    </div>
+
+    {/* Kartenrezept „Hairline-Reihen": eine Trennlinie zwischen den Reihen,
+        kein Rahmen um sie herum. Diese Sektion beruhigt, sie verkauft nicht —
+        vier Verkaufskarten wären der falsche Ton. */}
+    <ul class="sec__rows mkt-rows mkt-list-reset">
+      {
+        cards.map((card) => (
+          <li data-anim="card">
+            <Icon name={card.icon} size={24} color="var(--pepp-ink)" />
+            <div>
+              <h3 class="mkt-rows__title">{card.title}</h3>
+              <p class="mkt-rows__body">
+                <strong>{card.lead}</strong> {card.body}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
+  .sec__lead {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  /* Reihen und Typografie kommen aus dem Rezept .mkt-rows in global.css. */
+  .sec__rows {
+    margin-top: var(--mkt-stack-gap);
+  }
+</style>

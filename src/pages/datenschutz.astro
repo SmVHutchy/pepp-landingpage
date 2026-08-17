@@ -1,0 +1,11 @@
+---
+/* /datenschutz — Text wortgleich aus src/content/legal/datenschutz.html. */
+import Legal from '../layouts/Legal.astro';
+import body from '../content/legal/datenschutz.html?raw';
+---
+
+<Legal
+  title="Datenschutzerklärung · Pepp"
+  description="Welche Daten Pepp verarbeitet, auf welcher Rechtsgrundlage und welche Rechte du hast."
+  body={body}
+/>

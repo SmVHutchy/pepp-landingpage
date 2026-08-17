@@ -1,0 +1,81 @@
+---
+/* /barrierefreiheit — TEILWEISE PLATZHALTER.
+   Eine förmliche Erklärung nach BFSG bzw. EU-Richtlinie 2019/882 braucht
+   Angaben, die im Projektmaterial nicht existieren: eine benannte
+   Kontaktstelle, ein Feedback-Verfahren mit Frist, ein Durchsetzungsverfahren
+   und das Datum der letzten Prüfung. Diese Felder stehen als [PLATZHALTER] —
+   erfunden wird hier nichts.
+
+   Was darunter als „umgesetzt" steht, ist dagegen KEIN Platzhalter, sondern
+   der Stand, den scripts/verify.mjs bei jedem Durchlauf nachprüft. Deshalb
+   darf es dort stehen. */
+import Legal from '../layouts/Legal.astro';
+
+/* Die geprüften Punkte kommen aus denselben Regeln, die verify.mjs testet.
+   Ändert sich eine Prüfung, ändert sich diese Liste mit. */
+const geprueft = [
+  'Kontrast: Text unter 24px erreicht mindestens 4,5:1, grosse Schrift 3:1. Auf getönten Flächen wird das je Element gerechnet, nicht geschätzt.',
+  'Der hellste Grauton des Design Systems (#AAA199) wird nirgends als Text verwendet — er erreicht nur 2,5:1 und ist reine Dekoration.',
+  'Keine Schrift unter 12px.',
+  'Volle Tastaturbedienbarkeit, sichtbarer Fokusring mit 2px Stärke und 3px Abstand, Sprunglink zum Inhalt.',
+  'Genau eine H1 pro Seite, durchgehende Überschriftenhierarchie.',
+  'Die Seite ist ohne JavaScript vollständig lesbar und bedienbar. Alle Handlungsaufforderungen sind echte Links.',
+  'Bei aktivierter Systemeinstellung „Bewegung reduzieren" läuft keine Animation; alle Endzustände stehen sofort.',
+  'Umbruch bei 320px Breite ohne waagerechtes Scrollen, Zoom auf 200 % ohne Inhaltsverlust.',
+  'Aufklappbare Inhalte nutzen natives <details> — bedienbar ohne JavaScript, im Quelltext auffindbar.',
+];
+
+const offen = [
+  'Prüfung mit Screenreader (NVDA, VoiceOver) durch eine Person, die täglich damit arbeitet.',
+  'Prüfung der App selbst — diese Erklärung betrifft nur die Website.',
+  'Formale Konformitätsbewertung durch eine unabhängige Stelle.',
+];
+---
+
+<Legal
+  title="Barrierefreiheit · Pepp"
+  description="Stand der Barrierefreiheit dieser Website, was geprüft ist und was noch offen ist."
+>
+  <h1>Barrierefreiheit</h1>
+  <p class="meta">
+    Stand dieser Website. Die förmliche Erklärung nach BFSG ist in Vorbereitung.
+  </p>
+
+  <h2>Angestrebter Standard</h2>
+  <p>
+    Ziel dieser Website ist WCAG 2.1 auf Stufe AA. Die folgenden Punkte werden
+    bei jeder Änderung automatisch nachgeprüft, nicht einmalig abgehakt.
+  </p>
+  <ul>
+    {geprueft.map((punkt) => <li>{punkt}</li>)}
+  </ul>
+
+  <h2>Was noch offen ist</h2>
+  <p>
+    Diese Website ist nach den oben genannten Regeln gebaut und maschinell
+    geprüft. Eine maschinelle Prüfung ersetzt keine Prüfung durch Menschen, die
+    Hilfsmittel tatsächlich benutzen. Offen sind:
+  </p>
+  <ul>
+    {offen.map((punkt) => <li>{punkt}</li>)}
+  </ul>
+
+  <h2>Barrieren melden</h2>
+  <p>
+    [PLATZHALTER: Kontaktstelle für Rückmeldungen zur Barrierefreiheit &#8212;
+    Name, E-Mail-Adresse und zugesagte Antwortfrist. Nach BFSG verpflichtend
+    und im Projektmaterial nicht enthalten.]
+  </p>
+
+  <h2>Durchsetzungsverfahren</h2>
+  <p>
+    [PLATZHALTER: zuständige Durchsetzungsstelle und Verfahren, falls eine
+    Rückmeldung nicht zufriedenstellend beantwortet wird.]
+  </p>
+
+  <h2>Erstellung dieser Erklärung</h2>
+  <p>
+    [PLATZHALTER: Datum der Erstellung, Datum der letzten Prüfung und
+    verwendetes Prüfverfahren &#8212; Selbstbewertung oder Prüfung durch Dritte.]
+  </p>
+</Legal>

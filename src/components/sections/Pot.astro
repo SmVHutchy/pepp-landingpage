@@ -1,0 +1,173 @@
+---
+/* Sektion 9 · Der Pott
+   Weiss mit Radius oben. Zwei Screens überlappend, unten angeschnitten.
+   Die Icons stehen in --pepp-gold: der Pott ist die Auszahlungs-Farbe des
+   Design Systems (--status-payout). */
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+
+import pott from '../../assets/screens/kind-01-start-taschengeld.png';
+import sparziel from '../../assets/screens/kind-12-sparziel.png';
+
+const points = [
+  {
+    icon: 'coins',
+    lead: 'Verdient statt geschenkt.',
+    body: '12,50 € im Pott sind vier erledigte Quests.',
+  },
+  {
+    icon: 'target',
+    lead: 'Sparziel mit Bild.',
+    body: 'Der Lego‑Rennwagen für 20,00 € macht das Ziel greifbar.',
+  },
+  {
+    icon: 'hand-coins',
+    lead: 'Das Kind knackt selbst.',
+    body: 'Bar auf die Hand, aufs Sparkonto oder ein Wunsch — du bestätigst.',
+  },
+];
+---
+
+<section class="pot mkt-section mkt-section--card">
+  <div class="mkt-container pot__inner">
+    <div class="pot__grid">
+      <div>
+        <p class="mkt-label" data-anim>Der Pott</p>
+        <h2 class="mkt-h2 mkt-h2--sm" data-anim>Warten wird sichtbar.</h2>
+        <p class="mkt-lead pot__lead" data-anim>
+          Jede freigegebene Belohnung füllt den Ring um Pepp. Kein Zahlenkonto,
+          sondern ein Fortschritt, den man sieht.
+        </p>
+
+        <ul class="pot__points mkt-list-reset">
+          {
+            points.map((point) => (
+              <li data-anim>
+                {/* --ink-gold statt --pepp-gold: #F3B53C erreicht auf Weiß nur
+                    1,65:1 und ist damit praktisch unsichtbar. --ink-gold ist
+                    derselbe Hue abgedunkelt, 3,9:1 — das ist genau der Zweck,
+                    für den die --ink-*-Tokens angelegt wurden. */}
+                <Icon name={point.icon} size={24} color="var(--ink-gold)" />
+                <span>
+                  <strong>{point.lead}</strong> {point.body}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="pot__stage mkt-fade-edges" data-anim="card">
+        <Image
+          src={pott}
+          alt="Pepp Kinder-App: der Pott ist zu 63 Prozent voll, 12,50 € gesammelt"
+          width={320}
+          height={692}
+          densities={[1, 2]}
+          format="webp"
+          loading="lazy"
+          class="pot__screen pot__screen--front"
+        />
+        <Image
+          src={sparziel}
+          alt="Pepp Kinder-App: Sparziel Lego-Rennwagen bearbeiten"
+          width={280}
+          height={606}
+          densities={[1, 2]}
+          format="webp"
+          loading="lazy"
+          class="pot__screen pot__screen--back"
+        />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .pot {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pot__inner {
+    position: relative;
+  }
+
+  .pot__grid {
+    display: grid;
+    /* minmax(0,1fr): die Bühne ist 512px breit (320 + 280 - 88 Überlappung)
+       und würde die Spalte sonst über den Viewport hinausziehen. */
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 64px);
+    align-items: center;
+  }
+
+  .pot__lead {
+    margin-top: var(--space-5);
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  .pot__points {
+    margin-top: clamp(24px, 3vw, 32px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+  }
+
+  .pot__points li {
+    display: flex;
+    gap: 14px;
+  }
+
+  .pot__points span {
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: 40ch;
+  }
+
+  .pot__points strong {
+    color: var(--text-primary);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Weiche Kante unten (.mkt-fade-edges) statt gerader Schnittlinie durch
+     beide Geräte. */
+  .pot__stage {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: clamp(380px, 42vw, 560px);
+    overflow: hidden;
+    --fade-b: 80%;
+  }
+
+  .pot__screen {
+    display: block;
+    position: relative;
+  }
+
+  .pot__screen--front {
+    z-index: 2;
+    width: 320px;
+    height: 692px;
+    filter: drop-shadow(0 18px 40px rgb(26 26 26 / 0.16));
+  }
+
+  .pot__screen--back {
+    z-index: 1;
+    width: 280px;
+    height: 606px;
+    margin-left: -88px;
+    margin-top: 56px;
+    filter: drop-shadow(0 16px 32px rgb(26 26 26 / 0.12));
+  }
+
+  @media (min-width: 901px) {
+    .pot__grid {
+      grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+/* Sektion 11b · Social Proof — BEWUSST LEER.
+   Im Projektmaterial existiert kein belegter Social Proof: keine Nutzerzahlen,
+   keine Store-Bewertungen, keine Testimonials, keine Presse.
+
+   Bis August 2026 standen hier drei gestrichelte Zitatkarten und ein
+   Rating-Feld, alle mit [PLATZHALTER]-Prosa gefüllt: 523 der damals 6396
+   sichtbaren Zeichen der Seite, in der fünftdichtesten Sektion — ohne einen
+   einzigen echten Inhalt. Auf Wunsch des Auftraggebers eingedampft.
+
+   BEIM BEFÜLLEN NACH DEM LAUNCH das Format hier ablesen, nichts erfinden:
+   - pro Stimme: Zitat (max. 2 Sätze) · Vorname · „Mutter von Mia (9)"
+   - Store-Rating: Wert, Anzahl Bewertungen, Store
+   - drei Stimmen im auto-fit-Grid, minmax(min(280px, 100%), 1fr)
+   - Zitat in --font-display bold, --type-h3-size; Zuschreibung 14px semibold
+   Die Sektion behält ihre Position, damit die Reihenfolge stabil bleibt. */
+---
+
+<section class="mkt-section mkt-section--sm mkt-section--ground" aria-label="Stimmen von Eltern">
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <h2 class="mkt-h2 mkt-h2--sm" data-anim>Was Eltern sagen</h2>
+      <p class="mkt-lead proof__note" data-anim>
+        [PLATZHALTER: Diese Sektion wird nach dem Launch mit echten Stimmen
+        befüllt. Bis dahin bleibt sie leer &#8212; wir erfinden keine Bewertungen.]
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Gestrichelt bleibt als Signal „hier fehlt noch Inhalt" — jetzt am Hinweis
+     selbst statt an drei leeren Kästen. */
+  .proof__note {
+    padding: var(--space-5) var(--space-6);
+    border: var(--border-hair) dashed var(--border-hairline);
+    border-radius: var(--radius-xl);
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+  }
+</style>

@@ -1,0 +1,24 @@
+/* Quicksand = brand voice (headlines, numbers, reward moments, money)
+   Inter    = UI voice (body, labels, buttons, data)
+   Beide sind die vom Design System gelieferten Variable TTFs, self-hosted
+   unter /fonts/ — kein Google-Fonts-Request, kein Fremd-Origin.
+   NOTE: der Styleguide nennt *Inter Tight*; geliefert ist nur Standard-Inter.
+   Siehe README des Design Systems -> „Substitutions to resolve".
+
+   Auslieferung als WOFF2, auf Latin subsettet (deutsche Diakritika, €, „ ", ·, —
+   sind geprüft enthalten, Variable-Achsen unverändert): 978KB TTF -> 236KB.
+   Die Original-TTFs bleiben im Design System die Quelle. */
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/Quicksand-Variable.woff2') format('woff2');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}

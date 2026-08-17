@@ -1,0 +1,140 @@
+---
+/* Sektion 4 · Das Problem
+   Off-White. Spiegelt den Alltag, bevor die Mechanik erklärt wird.
+
+   Kartenrezept „Tint-Figur": das getönte Panel trägt die Grafik, Titel und
+   Body stehen ohne Rahmen und ohne Schatten direkt auf der Off-White-Fläche.
+   Damit ist dies die einzige Sektion der Seite ohne Kastenoptik — und die
+   drei Tints sind der einzige Ort, an dem sie Fläche statt 40px-Tile sind.
+
+   Je Karte ein eigener Tint mit dem passenden abgedunkelten Hue: die
+   --ink-*-Werte erreichen auf ihrem Tint 4,3-5,8:1. */
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+import peek from '../../assets/mascot/pepp-point.png';
+
+const cards = [
+  {
+    icon: 'message-circle',
+    tint: 'var(--pepp-peach-tint)',
+    ink: 'var(--ink-peach)',
+    title: 'Der Müll steht noch da.',
+    body: 'Zum dritten Mal erinnert. Und du hast es selbst schon halb gemacht.',
+  },
+  {
+    icon: 'monitor-smartphone',
+    tint: 'var(--pepp-pink-tint)',
+    ink: 'var(--ink-pink)',
+    title: 'Jeden Abend Handy‑Debatte.',
+    body: 'Wie lange noch, wie viel gestern, warum der Bruder mehr darf.',
+  },
+  {
+    icon: 'wallet',
+    tint: 'var(--pepp-blue-tint)',
+    ink: 'var(--ink-blue)',
+    title: '„Hab ich dir das schon gegeben?“',
+    body: 'Taschengeld nach Gefühl. Keiner weiß mehr, was offen ist.',
+  },
+];
+---
+
+<section class="problem mkt-section mkt-section--ground">
+  <Blob ton="peach" groesse="640px" top="-12%" left="-14%" deckkraft={0.55} weg={-70} />
+  <Blob ton="pink" groesse="520px" top="30%" right="-12%" deckkraft={0.4} weg={-110} />
+
+  <div class="mkt-container">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Der Alltag</p>
+      <h2 class="mkt-h2 problem__title" data-anim>
+        Musst du auch alles 5&#8209;mal sagen?
+      </h2>
+    </div>
+
+    {/* data-anim="side" statt "card": die drei Figuren laufen aus der Richtung
+        herein, in der sie stehen — die linke von links, die rechte von rechts.
+        Die mittlere liegt auf der Sektionsmitte und entscheidet sich nach ihrem
+        Mittelpunkt. */}
+    <ul class="problem__cards mkt-list-reset">
+      {
+        cards.map((card) => (
+          <li data-anim="side">
+            <span class="mkt-figure__panel" style={`background:${card.tint}`}>
+              <Icon name={card.icon} size={96} color={card.ink} strokeWidth={1} />
+            </span>
+            <h3 class="mkt-figure__title">{card.title}</h3>
+            <p class="mkt-figure__body">{card.body}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  {/* Pepp tritt hinter der Kante der nächsten Sektion hervor. Er steht HIER,
+      in der vorherigen Sektion; „So funktioniert's" hat einen deckenden
+      Hintergrund und wird später gezeichnet, verdeckt ihn also von unten.
+      Kein z-index nötig, die Zeichenreihenfolge macht es.
+
+      aria-hidden und leeres alt: reine Dekoration, der Satz daneben trägt die
+      Aussage. Ab 901px, darunter würde die Figur die schmale Spalte zudecken. */}
+  <div class="problem__peek u-desk" data-peek aria-hidden="true">
+    <Image
+      src={peek}
+      alt=""
+      width={200}
+      height={223}
+      densities={[1, 2]}
+      format="webp"
+      loading="lazy"
+    />
+  </div>
+</section>
+
+<style>
+  .problem__title {
+    max-width: 18ch;
+  }
+
+  .problem__cards {
+    margin-top: var(--mkt-stack-gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+  }
+
+  /* Titel und Body kommen aus dem Rezept .mkt-figure__* in global.css. */
+
+  /* Die Blobs dürfen über den Rand hinaus, aber nicht die Seite verbreitern —
+     body hat overflow-x:hidden, das fängt es waagerecht ab. Senkrecht ragen
+     sie in die Nachbarsektionen; das ist gewollt, sie sind ja der Übergang. */
+  .problem {
+    /* isolation: der Blob-Stapel bleibt in dieser Sektion und mischt sich nicht
+       mit dem Dawn-Panel der Belohnungen weiter unten. */
+    isolation: isolate;
+  }
+
+  /* Der Peek steht am unteren Rand und ragt bewusst darüber hinaus: die
+     Kante der Folgesektion schneidet ihn ab. bottom ist negativ um etwa die
+     halbe Figurenhöhe, damit gut die Hälfte sichtbar bleibt.
+
+     z-index: 0 statt des geerbten 1 aus `.mkt-section > *` — der Peek soll
+     UNTER dem Inhalt liegen, nicht darüber. */
+  .problem__peek {
+    position: absolute;
+    z-index: 0;
+    right: clamp(16px, 6vw, 120px);
+    /* -140px, nicht -104: bei -104 reichte der Kopf samt Schatten in die
+       Body-Zeile der dritten Karte. Der Inhalt liegt zwar darüber (z-index),
+       lesbar war es also — aber unruhig. */
+    bottom: -140px;
+    pointer-events: none;
+    will-change: transform;
+  }
+
+  .problem__peek img {
+    display: block;
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(var(--shadow-mascot));
+  }
+</style>

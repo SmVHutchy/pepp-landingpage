@@ -1,0 +1,33 @@
+---
+/* Sticky-CTA-Leiste (mobil, ab 25 % Scrolltiefe) — CTA-Instanz 6.
+
+   Sie fährt per data-visible herein, nicht per opacity-Startzustand im CSS.
+   Ohne JavaScript bleibt sie unten ausserhalb des Sichtfelds stehen; der CTA
+   ist dann trotzdem fünfmal im Fluss erreichbar. */
+import Cta from '../Cta.astro';
+---
+
+<div class="sticky u-mob" data-sticky-cta>
+  <Cta size="sticky" block />
+</div>
+
+<style>
+  .sticky {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 120;
+    padding: var(--space-4) var(--space-5)
+      calc(var(--space-4) + env(safe-area-inset-bottom));
+    background: var(--sticky-bar-bg);
+    backdrop-filter: var(--sticky-bar-blur);
+    border-top: var(--border-hair) solid var(--border-hairline);
+    transform: translateY(120%);
+    transition: transform var(--dur-slow) var(--ease-standard);
+  }
+
+  .sticky[data-visible='true'] {
+    transform: translateY(0);
+  }
+</style>

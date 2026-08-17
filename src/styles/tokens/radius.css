@@ -1,0 +1,14 @@
+/* CONFIRMED — measured off the UI screen SVGs (values @3x /3).
+   Pepp is soft, not bubbly: cards are only lightly rounded, controls are full pills. */
+:root{
+  --radius-xs:4px;    /* micro tiles, progress caps */
+  --radius-sm:7px;    /* list cards, quest cards, panels (source r20 @3x) */
+  --radius-md:9px;    /* chat bubbles, small sheets (source r28 @3x) */
+  --radius-lg:12px;   /* icon tiles, media containers (source r36 @3x) */
+  --radius-xl:20px;   /* bottom sheets, modals (source r61 @3x) */
+  --radius-2xl:28px;  /* marketing cards, hero containers */
+  --radius-pill:999px;/* buttons, chips, nav, avatars, slider track */
+  --border-hair:1px;
+  --border-strong:2px;/* selected states */
+  --stroke-icon:2px; /* @kind other */  /* icon stroke weight, round caps, 24px grid */
+}

@@ -1,0 +1,311 @@
+---
+/* Sektion 6 · Belohnungen (#belohnungen)
+   Off-White. Die zwei Währungen stehen in einem randlosen Dawn-BAND über die
+   volle Sektionsbreite — der einzige Ort, an dem der Gradient echte Fläche
+   wird, nicht nur ein 16-28px-Rahmen wie vorher.
+
+   Warum der Kopf NICHT auf dem Band steht: nachgerechnet erreicht
+   --text-secondary (#6E6A66) auf den Dawn-Stops nur 2,25 bis 3,61:1 und
+   verfehlt 4,5:1 überall. --text-primary läge bei 7,3 bis 11,7:1, wäre für
+   Label und Lead aber zu schwer. Also Text auf Off-White, Fläche darunter.
+
+   Das Band liegt ausserhalb von .mkt-container und hat seinen eigenen
+   Container innen — so reicht es von Kante zu Kante, ohne 100vw und ohne die
+   Seite waagerecht zu verbreitern. */
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+/* Freigestellt aus dem gelieferten Render, siehe scripts/freistellen.mjs.
+   Das runde Off-White-Plättchen von vorher war nur eine Krücke, weil
+   pepp-coin.png keinen Alphakanal hat. */
+import coin from '../../assets/brand/pepp-coin-freigestellt.png';
+import moment from '../../assets/mascot/moment-reward-unlocked.png';
+---
+
+<section id="belohnungen" class="rewards">
+  <div class="rewards__glow" aria-hidden="true"></div>
+
+  <div class="mkt-container rewards__inner">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Belohnungen</p>
+      <h2 class="mkt-h2" data-anim>Geld oder Medienzeit.</h2>
+      <p class="mkt-lead rewards__lead" data-anim>
+        Zwei Währungen. Du entscheidest, welche zu welcher Aufgabe passt.
+      </p>
+    </div>
+  </div>
+
+  <div class="rewards__band">
+      <div class="mkt-container rewards__grid">
+        <div class="rewards__card" data-anim="side">
+          {/* Freie Münze, kein Plättchen mehr. */}
+          <span class="rewards__medal">
+            <Image
+              src={coin}
+              alt="Pepp Goldmünze"
+              width={96}
+              height={96}
+              densities={[1, 2]}
+              format="webp"
+              loading="lazy"
+            />
+          </span>
+          <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
+          <p class="rewards__body">
+            2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212; nicht
+            auf ein Konto.
+          </p>
+          <ul class="rewards__points mkt-list-reset">
+            <li>
+              <Icon name="check" size={20} color="var(--pepp-success)" />
+              Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
+            </li>
+            <li>
+              <Icon name="check" size={20} color="var(--pepp-success)" />
+              Sparziel mit eigenem Bild: der Pott hat ein Ziel.
+            </li>
+          </ul>
+        </div>
+
+        <div class="rewards__card" data-anim="card">
+          <span class="rewards__medal rewards__medal--lilac">
+            <Icon name="clock" size={44} color="var(--text-inverse)" />
+          </span>
+          <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
+          <p class="rewards__body">
+            30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
+            Wochenziel und Obergrenze.
+          </p>
+          <ul class="rewards__points mkt-list-reset">
+            <li>
+              <Icon name="target" size={20} color="var(--pepp-success)" />
+              Wochenziel setzen, tägliche Obergrenze festlegen.
+            </li>
+            <li>
+              <Icon name="pause" size={20} color="var(--pepp-success)" />
+              Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
+            </li>
+          </ul>
+        </div>
+    </div>
+  </div>
+
+  <div class="mkt-container rewards__inner rewards__closing">
+    {/* Die Notiz ist der einzige Absatz der Seite, der redaktioneller
+        Kommentar statt Produktaussage ist — die Aussage selbst steht im Zitat
+        darüber. Natives <details> wie im FAQ: ohne JavaScript bedienbar, per
+        Tastatur erreichbar, im DOM und damit indexierbar. */}
+    <div class="rewards__quote mkt-card" data-anim="card">
+      <p class="rewards__quote-text">
+        &#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;
+      </p>
+      <details class="rewards__quote-more">
+        {/* Die Notiz besteht aus zwei Sätzen: Befund, dann was Pepp daraus
+            macht. Der Befund bleibt sichtbar und wird das <summary>, die
+            Antwort klappt auf. Beide Sätze stehen wortgleich im Handoff — ein
+            eigener Aufklapp-Text wie „Mehr dazu" wäre erfunden gewesen. */}
+        <summary>
+          Bildschirmzeit ist in vielen Familien der größere Streitpunkt als
+          Taschengeld.
+        </summary>
+        <p class="rewards__quote-note">
+          In Pepp ist sie eine Belohnung mit klaren Grenzen.
+        </p>
+      </details>
+    </div>
+
+    {/* moment-reward-unlocked.png: der gelieferte Render zum Augenblick
+        „Belohnung freigeschaltet". Er steht neben dem Zitat, nicht als
+        96px-Medaille in einer Karte — als Medaille wäre von der Szene nichts
+        zu erkennen. Dekoration, deshalb aria-hidden und leeres alt: die
+        Aussage tragen Zitat und Karten. */}
+    <div class="rewards__figure" data-anim="card" aria-hidden="true">
+      <Image
+        src={moment}
+        alt=""
+        width={300}
+        height={294}
+        densities={[1, 2]}
+        format="webp"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .rewards {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-app);
+    padding-block: var(--mkt-section-y);
+  }
+
+  /* Dawn nur als Schein, nicht als Fläche: 14 % hinter 30px Blur. */
+  .rewards__glow {
+    position: absolute;
+    top: -200px;
+    right: -200px;
+    width: min(820px, 80vw);
+    height: 820px;
+    border-radius: var(--radius-pill);
+    background: var(--gradient-dawn);
+    opacity: 0.14;
+    filter: blur(30px);
+    pointer-events: none;
+  }
+
+  .rewards__inner {
+    position: relative;
+  }
+
+  /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
+  .rewards__lead {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  /* Randloses Band über die volle Sektionsbreite. Kein border-radius: ein
+     Radius würde es wieder zu einem Panel machen, und genau das war es vorher.
+     Der eigene Container liegt innen, damit die Karten im Raster bleiben. */
+  .rewards__band {
+    position: relative;
+    margin-top: var(--mkt-stack-gap);
+    background: var(--gradient-dawn);
+    padding-block: clamp(28px, 4vw, 56px);
+  }
+
+  .rewards__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+  }
+
+  .rewards__closing {
+    margin-top: clamp(32px, 4vw, 56px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(24px, 3vw, 40px);
+    align-items: center;
+  }
+
+  .rewards__figure img {
+    display: block;
+    width: min(300px, 100%);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  @media (min-width: 901px) {
+    .rewards__closing {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+  }
+
+  .rewards__card {
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-2xl);
+    padding: clamp(24px, 2.6vw, 36px);
+    box-shadow: var(--shadow-2);
+  }
+
+  .rewards__medal {
+    width: 96px;
+    height: 96px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Kein Plättchen, kein overflow:hidden: die Münze ist freigestellt und
+     schwebt. Der Schatten kommt per CSS, nicht eingebrannt im Bild. */
+  .rewards__medal img {
+    display: block;
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    /* Aus --ink-gold gemischt, nicht als Hex-Literal: der Wert bleibt an das
+       Token gebunden, wenn sich der Goldton im System ändert. */
+    filter: drop-shadow(0 8px 16px color-mix(in srgb, var(--ink-gold) 28%, transparent));
+  }
+
+  .rewards__medal--lilac {
+    border-radius: var(--radius-pill);
+    background: var(--gradient-lilac);
+  }
+
+  .rewards__title {
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-h2-size);
+    line-height: var(--type-h2-lh);
+    letter-spacing: var(--type-h2-tracking);
+    color: var(--text-primary);
+  }
+
+  .rewards__body {
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: 38ch;
+  }
+
+  .rewards__points {
+    margin-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .rewards__points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+  }
+
+  /* Zitat in Coral — als Text erlaubt, Coral ist nie Buttonfläche. */
+  .rewards__quote {
+    margin-top: clamp(32px, 4vw, 48px);
+    padding: clamp(24px, 2.6vw, 36px);
+    max-width: 640px;
+  }
+
+  .rewards__quote-text {
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-mkt-quote);
+    line-height: 1.2;
+    letter-spacing: var(--tracking-tight);
+    color: var(--pepp-coral);
+    max-width: 22ch;
+  }
+
+  .rewards__quote-more {
+    margin-top: var(--space-5);
+  }
+
+  /* Hier bleibt der Marker sichtbar, anders als im FAQ: das <summary> ist ein
+     ganzer Satz und würde sonst wie normaler Fließtext lesen — dass er
+     aufklappbar ist, muss man sehen. */
+  .rewards__quote-more summary {
+    cursor: pointer;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+
+  .rewards__quote-note {
+    margin: var(--space-4) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
+  }
+</style>

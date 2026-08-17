@@ -1,0 +1,16 @@
+/* CONFIRMED — stops read directly out of the UI screen SVGs. */
+:root{
+  /* Dawn — the signature. Always ~135deg, warm top-left to cool bottom-right. */
+  --gradient-dawn:linear-gradient(135deg,#FFC9A3 0%,#FF8FB6 40%,#C4B5FF 72%,#7AA7FF 100%); /* @kind color */
+  --gradient-dawn-soft:linear-gradient(135deg,#FFC9A3 0%,#FF8FB6 40%,#C4B5FF 70%,#7AA7FF 100%); /* @kind color */
+  --gradient-pink-coral:linear-gradient(135deg,#FF8FB6 0%,#FC6081 100%); /* @kind color */
+  --gradient-blue:linear-gradient(135deg,#7AA7FF 0%,#5B86E8 100%); /* @kind color */
+  --gradient-lilac:linear-gradient(135deg,#C4B5FF 0%,#A896FF 100%); /* @kind color */
+  /* Ambient glows behind the mascot (radial, taken from the screens) */
+  --glow-pink:radial-gradient(closest-side,rgba(255,143,182,.5),rgba(255,143,182,0)); /* @kind color */
+  --glow-peach:radial-gradient(closest-side,rgba(255,201,163,.55),rgba(255,201,163,0)); /* @kind color */
+  /* Task-type gradients */
+  --gradient-task-once:var(--gradient-pink-coral); /* @kind color */
+  --gradient-task-repeating:var(--gradient-lilac); /* @kind color */
+  --gradient-task-routine:var(--gradient-blue); /* @kind color */
+}

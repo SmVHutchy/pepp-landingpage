@@ -1,0 +1,187 @@
+---
+/* Sektion 12 · Preis (#preis)
+   Weiss mit Radius oben. Enthält CTA-Instanz 4.
+
+   Kein Preis steht hier als Literal: alles kommt aus PRICING in
+   src/data/site.js. Ändert sich der Preis, ändert sich diese Sektion, das
+   JSON-LD und die FAQ-Antwort in einem Zug. */
+import Cta from '../Cta.astro';
+import Icon from '../Icon.astro';
+import { PRICING, formatEuro, yearlyPerMonth, yearlySavingsPercent } from '../../data/site.js';
+
+const monthly = formatEuro(PRICING.monthly);
+const yearly = formatEuro(PRICING.yearly);
+
+const included = [
+  'Quests statt Diskussionen',
+  'Rewards, die wirklich motivieren',
+  'Die ganze Familie zieht mit',
+];
+---
+
+{/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
+<section id="preis" class="price mkt-section mkt-section--xl mkt-section--card">
+  <div class="mkt-container price__inner">
+    <div class="mkt-head">
+      <p class="mkt-label" data-anim>Preis</p>
+      <h2 class="mkt-h2" data-anim>Heute gratis starten. Morgen weniger Stress.</h2>
+      <p class="mkt-lead price__lead" data-anim>
+        {PRICING.trialDays} Tage voller Zugriff &#8212; kostenlos. Danach ein Preis,
+        ein Familien-Account.
+      </p>
+    </div>
+
+    <div class="price__plans">
+      <div class="price__plan" data-anim="card">
+        <h3 class="mkt-label price__kicker">Monatlich</h3>
+        <p class="price__amount">{monthly}</p>
+        <p class="price__meta">pro Monat &#183; monatlich kündbar</p>
+      </div>
+
+      <div class="price__plan price__plan--featured" data-anim="card">
+        <div class="price__head">
+          <h3 class="mkt-label price__kicker">Jährlich</h3>
+          <span class="price__badge">
+            Beliebt &#183; spart {yearlySavingsPercent()}&#8239;%
+          </span>
+        </div>
+        <p class="price__amount">{yearly}</p>
+        <p class="price__meta">pro Jahr &#183; nur {yearlyPerMonth()} im Monat</p>
+
+        <ul class="price__list mkt-list-reset">
+          {
+            included.map((item) => (
+              <li>
+                <Icon name="check" size={20} color="var(--pepp-success)" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+
+        <Cta block />
+
+        <p class="price__fine">
+          0 &#8364; heute &#183; danach {yearly} / Jahr &#183; Kündigung mit einem Tipp
+        </p>
+      </div>
+    </div>
+
+    <p class="price__trust" data-anim>
+      {PRICING.trialDays} Tage gratis &#183; Erinnerung vor Ablauf &#183; jederzeit kündbar
+    </p>
+  </div>
+</section>
+
+<style>
+  .price {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .price__inner {
+    position: relative;
+  }
+
+  /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
+  .price__lead {
+    font-size: var(--type-bodyl-size);
+    line-height: var(--type-bodyl-lh);
+  }
+
+  .price__plans {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+    margin-top: var(--mkt-stack-gap);
+    align-items: start;
+  }
+
+  .price__plan {
+    background: var(--bg-app);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-2xl);
+    padding: clamp(24px, 2.6vw, 36px);
+  }
+
+  /* Der empfohlene Plan wird über einen 2px-Rahmen in Schwarz markiert, nicht
+     über eine Farbfläche: Schwarz nie als grosse Fläche. */
+  .price__plan--featured {
+    position: relative;
+    border: var(--border-strong) solid var(--pepp-black);
+    box-shadow: var(--shadow-2);
+  }
+
+  .price__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .price__kicker {
+    margin-bottom: 0;
+  }
+
+  .price__badge {
+    display: inline-flex;
+    align-items: center;
+    height: var(--space-7);
+    padding: 0 10px;
+    border-radius: var(--radius-pill);
+    background: var(--pepp-pink-tint);
+    font-size: var(--type-label-size);
+    font-weight: var(--weight-semibold);
+    color: var(--ink-pink);
+  }
+
+  .price__amount {
+    margin: var(--space-4) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-mkt-price);
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--text-primary);
+  }
+
+  .price__meta {
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+  }
+
+  .price__list {
+    margin-top: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .price__list li {
+    display: flex;
+    gap: 10px;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+  }
+
+  .price__plan--featured :global([data-cta]) {
+    margin-top: var(--space-7);
+  }
+
+  .price__fine {
+    margin: var(--space-4) 0 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--text-secondary);
+  }
+
+  .price__trust {
+    margin: clamp(24px, 3vw, 32px) 0 0;
+    font-size: 14px;
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+</style>

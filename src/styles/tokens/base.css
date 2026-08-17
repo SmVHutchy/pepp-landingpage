@@ -1,0 +1,9 @@
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg-app);color:var(--text-primary);font-family:var(--font-ui);font-size:var(--type-body-size);line-height:var(--type-body-lh);-webkit-font-smoothing:antialiased;text-wrap:pretty}
+h1,h2,h3{font-family:var(--font-display);margin:0}
+a{color:var(--pepp-coral);text-decoration:none;font-weight:600}
+a:hover{color:#E5375D}
+a:active{color:#CC2F52}
+*,*::before,*::after{box-sizing:border-box}
+button{font-family:var(--font-ui)}
+::selection{background:var(--pepp-pink-tint)}
