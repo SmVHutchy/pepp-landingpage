@@ -3,6 +3,7 @@
    Weiss mit Radius oben — der erste Sektionsübergang. Enthält CTA-Instanz 2. */
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
+import { PRICING } from '../../data/site.js';
 
 const steps = [
   {
@@ -71,7 +72,8 @@ const steps = [
     <div class="how__cta" data-anim>
       <Cta />
       <p class="how__cta-note">
-        14 Tage gratis &#183; Kein Bankkonto nötig &#183; Jederzeit kündbar
+        {PRICING.trialDays} Tage gratis &#183; Kein Bankkonto nötig &#183; Jederzeit
+        kündbar
       </p>
     </div>
   </div>

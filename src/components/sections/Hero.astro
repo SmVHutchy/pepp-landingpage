@@ -13,10 +13,19 @@ import { Image } from 'astro:assets';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 
+import { PRICING } from '../../data/site.js';
+
 import mascot from '../../assets/mascot/pepp-wave.png';
 import coin from '../../assets/brand/pepp-coin-freigestellt.png';
 
-const microTrust = ['14 Tage gratis', 'Kein Bankkonto nötig', 'Jederzeit kündbar'];
+/* Testdauer aus PRICING statt als Text. Sonst steht die Zahl an einer
+   weiteren Stelle und läuft bei einer Änderung auseinander — Fund 8 aus
+   docs/AUDIT-2026-08-17.md. */
+const microTrust = [
+  `${PRICING.trialDays} Tage gratis`,
+  'Kein Bankkonto nötig',
+  'Jederzeit kündbar',
+];
 ---
 
 <section class="hero">

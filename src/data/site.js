@@ -1,6 +1,27 @@
-/* ZENTRALE WERTE — Store-URLs, Preise und Domain nur hier ändern.
-   Sektion 12 (Preis) und die FAQ-Antwort zum Preis lesen PRICING, das JSON-LD ebenfalls.
-   Es gibt bewusst keine zweite Stelle im Code, an der ein Preis oder eine Store-URL steht. */
+/* ZENTRALE WERTE — Store-URLs, Preise, Betreiberdaten und Domain.
+
+   Was von hier liest und automatisch mitzieht:
+     PRICING   Preissektion, FAQ (Antwort 3 und 8), JSON-LD, CTA-Beschriftung,
+               Micro-Trust-Zeile im Hero, Trust-Zeile unter „So funktioniert's",
+               Meta-Description und Twitter-Description
+     STORE     alle sechs CTA-Instanzen, Store-Links im Footer
+     OPERATOR  Footer und JSON-LD
+     SITE      Canonical, Open-Graph-URL
+
+   EINE AUSNAHME, und sie ist ein offener Fehler: Die Rechtstexte in
+   src/content/legal/ sind wortgleich übernommener Fremdtext und lesen nichts
+   von hier. src/content/legal/agb.html:58-60 führt eigene Preise — heute
+   23,88 € im Jahr und einen Lifetime-Tarif für 79,99 €, während hier 19,90 €
+   und kein Lifetime steht. Welcher Wert gilt, ist ungeklärt.
+   Siehe Blocker B3 in docs/AUDIT-2026-08-17.md.
+
+   Deshalb gilt bei jeder Preisänderung: hier ändern UND die AGB von Hand
+   nachziehen. Die Pflege-Checkliste steht in docs/CONTENT.md.
+
+   Frühere Fassung dieses Kommentars sicherte zu, es gebe „bewusst keine
+   zweite Stelle im Code, an der ein Preis oder eine Store-URL steht". Für
+   Store-URLs stimmt das. Für Preise verdeckte die Zusicherung den Widerspruch
+   oben — Fund 8 aus docs/AUDIT-2026-08-17.md. */
 
 export const STORE = {
   ios: 'https://apps.apple.com/de/app/pepp-taschengeld-aufgaben/id6761885126',
