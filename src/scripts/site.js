@@ -387,6 +387,11 @@ function initMechanicSwap() {
       img.onload = resolve;
       img.onerror = resolve;
     });
+    /* srcset zuerst, dann src: der Browser wählt daraus die Dichte, die er
+       gleich auch anzeigen wird. Nur src vorzuladen würde auf einem
+       2x-Display die falsche Datei wärmen, und der Tausch käme trotzdem mit
+       Verzögerung. */
+    if (step.dataset.mechSrcset) img.srcset = step.dataset.mechSrcset;
     img.src = src;
     // Nie länger als 800ms auf ein Bild warten
     ready.set(
@@ -397,6 +402,7 @@ function initMechanicSwap() {
 
   for (const step of steps) {
     const src = step.dataset.mechStep;
+    const srcset = step.dataset.mechSrcset;
 
     const swap = () => {
       if (screen.dataset.current === src) return;
@@ -412,6 +418,12 @@ function initMechanicSwap() {
           (ready.get(src) ?? Promise.resolve()).then(() => {
             // Zwischenzeitlich weitergescrollt? Dann gilt der neuere Schritt.
             if (screen.dataset.current !== src) return;
+            /* srcset MUSS mitgesetzt werden. Das <Image> rendert wegen
+               densities={[1,2]} ein srcset, und bei der Bildauswahl gewinnt
+               srcset gegen src — ein Tausch, der nur src setzt, blieb ohne
+               Wirkung: currentSrc stand über alle Schritte auf dem ersten
+               Bild. Das war Fund 14 aus docs/AUDIT-2026-08-17.md. */
+            if (srcset) screen.setAttribute('srcset', srcset);
             screen.setAttribute('src', src);
             gsap.to(screen, {
               opacity: 1,

@@ -61,17 +61,28 @@ const steps = [
 ];
 
 /* Der Tausch per JS lädt genau die Variante, die <Image> auch rendert — sonst
-   käme über den Umweg des Rohpfads das unoptimierte PNG (ein knappes MB). */
+   käme über den Umweg des Rohpfads das unoptimierte PNG (ein knappes MB).
+
+   Es werden BEIDE Dichten erzeugt, nicht nur 1x. Grund: das <Image> unten
+   trägt densities={[1,2]} und rendert damit ein srcset. Bei der Bildauswahl
+   gewinnt srcset gegen src — ein Tausch, der nur src setzt, ist wirkungslos.
+   Genau das war Fund 14: über alle vier Schritte blieb currentSrc auf
+   eltern-06-anlegen-details stehen, während src und data-current korrekt
+   weiterwanderten. Sichtbar war eine Aus- und Einblendung ohne Bildwechsel.
+
+   Deshalb wandert das vollständige srcset mit ins Markup, und site.js setzt
+   beim Tausch beides. Behebt Fund 14 aus docs/AUDIT-2026-08-17.md. */
 const swapSrc = new Map();
 for (const step of steps) {
   if (!step.screen) continue;
-  const optimized = await getImage({
-    src: step.screen,
-    width: 320,
-    height: 692,
-    format: 'webp',
+  const [x1, x2] = await Promise.all([
+    getImage({ src: step.screen, width: 320, height: 692, format: 'webp' }),
+    getImage({ src: step.screen, width: 640, height: 1384, format: 'webp' }),
+  ]);
+  swapSrc.set(step.title, {
+    src: x1.src,
+    srcset: `${x1.src} 1x, ${x2.src} 2x`,
   });
-  swapSrc.set(step.title, optimized.src);
 }
 ---
 
@@ -105,7 +116,11 @@ for (const step of steps) {
       <ol class="mech__steps mkt-list-reset">
         {
           steps.map((step) => (
-            <li data-anim="card" data-mech-step={swapSrc.get(step.title)}>
+            <li
+              data-anim="card"
+              data-mech-step={swapSrc.get(step.title)?.src}
+              data-mech-srcset={swapSrc.get(step.title)?.srcset}
+            >
               <span class="mech__tile" style={`background:${step.tint}`}>
                 <Icon name={step.icon} size={22} color={step.ink} />
               </span>
