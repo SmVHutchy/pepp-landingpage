@@ -40,13 +40,15 @@ keine `.env` — siehe [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Drei Befehle,
 | Befehl            | Was er tut                         | Status                               |
 | ----------------- | ---------------------------------- | ------------------------------------ |
 | `npm run dev`     | Dev-Server auf Port 4321           | funktioniert                         |
-| `npm run build`   | Baut nach `dist/` — 5 Seiten, ~5 s | funktioniert                         |
+| `npm run build`   | Baut nach `dist/` — 6 Seiten, ~7 s | funktioniert                         |
 | `npm run preview` | Serviert `dist/` lokal             | funktioniert, siehe Fallstrick unten |
-| `npm run check`   | `astro check`                      | **kaputt**, siehe Fallstricke        |
+| `npm run check`   | `astro check` (strict)             | funktioniert, 0 Fehler               |
+| `npm run format`  | Prettier über das ganze Projekt    | funktioniert                         |
+| `npm run verify`  | **Abnahme-Prüfung**, 19 Regeln     | funktioniert, 19/19                  |
 
 ### Werkzeuge in `scripts/`
 
-Sechs Playwright-Werkzeuge, die **nicht** in `package.json` hinterlegt sind. Sie brauchen einen
+Acht Werkzeuge, alle als npm-Skript hinterlegt. Die Playwright-basierten brauchen einen
 laufenden Dev-Server.
 
 | Befehl                                         | Was er tut                                                                                                                                                             |
@@ -65,16 +67,14 @@ npm run dev &          # muss laufen
 node scripts/verify.mjs
 ```
 
-Stand 17.08.2026: **17 bestanden, 2 Fehler** — beide bei 320 px in der Navigation
-(`summary` und `ul.nav__panel` ragen je 20 px über den rechten Rand). Das Tor ist also rot.
-Details als Blocker B1 im Auditbericht.
+Stand 17.08.2026: **19 bestanden, 0 Fehler.** Das Tor ist grün — die beiden Fehler bei
+320 px sind mit Blocker B1 behoben. Jeder neue Fehler gehört dir.
 
 ## Fallstricke
 
-**`npm run check` läuft nicht.** `astro check` fordert `@astrojs/check` und `typescript`, beide
-fehlen in den `devDependencies`. Der Befehl bleibt an einer interaktiven Abfrage stehen — in
-einer CI hängt er. Reparatur: `npm i -D @astrojs/check typescript`. Bewusst noch nicht gemacht,
-damit die Baseline unverändert bleibt.
+**Der Dev-Server hängt sich nach vielen Dateiänderungen auf.** `npm run verify` meldet dann
+Fehler, die der echte Build nicht hat — zweimal reproduziert. Dev-Server neu starten, dann
+noch einmal messen.
 
 **`npm run preview` lauscht nur auf IPv6.** Der Server bindet `[::1]`, nicht `127.0.0.1`. Wenn
 `curl http://localhost:4321` nichts liefert, ist der Server trotzdem da:

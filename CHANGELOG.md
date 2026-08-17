@@ -5,6 +5,52 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 
 ## [Unveröffentlicht]
 
+### Behoben — Nacht vom 17.08.2026
+
+- **B1** Der Nav-CTA brach unter 412 px aus seiner Fläche und war dort weiss auf
+  Off-White unlesbar. Unter 480 px trägt die Navigation ihn nicht mehr; Hero-CTA und
+  Sticky-Leiste decken den Download-Weg ab. (`29a4df5`)
+- **Fund 15** Die Pott-Screens hatten feste Pixelmaße und wurden bei 320 px je 116 px
+  links und rechts beschnitten. Jetzt prozentual mit den Verhältnissen aus dem Entwurf.
+  (`4c9eb75`)
+- **Fund 14** Der Bildtausch der Mechanik-Sektion setzte nur `src`; das `srcset` gewann
+  und es war über alle Schritte dasselbe Bild zu sehen. (`0707e70`)
+- **Fund 9, 10** Die vier Rechtsseiten luden kein Skript: die klebende Navigation blieb
+  durchsichtig und die Android-Weiche lief dort nicht. Navigation, Store-Weiche und Menü
+  liegen jetzt in `src/scripts/nav.js` ohne GSAP. (`ad9713d`)
+- **Fund 8** Die Testdauer stand an drei Stellen als Text und kommt jetzt aus `PRICING`.
+  (`31cb1c8`)
+- **Fund 16** Die Social-Proof-Sektion lieferte eine sichtbare Platzhalterbox aus und ist
+  aus dem Fluss genommen. Die Komponente bleibt erhalten. (`5f3f397`)
+
+### Hinzugefügt — Nacht vom 17.08.2026
+
+- Favicon-Set, Web-Manifest, `apple-touch-icon`, Maskable-Icon (`npm run brand-assets`)
+- `og-image.png` 1200×630, aus HTML gerendert (`npm run og-image`)
+- Echter QR-Code im Hero statt Platzhalterbox (`npm run qr-code`)
+- `robots.txt`, `sitemap.xml`, `site.webmanifest` als Astro-Endpunkte aus `SITE.origin`
+- Eigene 404-Seite
+- Werkzeugkette: `astro check` lauffähig, `tsconfig.json` auf strict, Prettier,
+  `.editorconfig`, `.nvmrc`, `engines`, Pre-Commit-Hook, npm-Skripte für alle Werkzeuge
+- `docs/NACHTARBEIT-2026-08-17.md` mit dem vollständigen Bericht
+
+### Geändert
+
+- `src/content/legal/` heisst jetzt `src/legal/` — der alte Pfad ist von Astro für
+  Content Collections belegt und erzeugte eine Deprecation-Warnung.
+- Formatierer einmal projektweit gelaufen (51 Dateien). Ausgenommen: Rechtstexte,
+  Design-Tokens, Icon-Set, Design-Bundle.
+
+### Stand der Qualitätstore
+
+|                               | vorher                 | jetzt                      |
+| ----------------------------- | ---------------------- | -------------------------- |
+| `npm run verify`              | 17 bestanden, 2 Fehler | **19 bestanden, 0 Fehler** |
+| `npm run check`               | kaputt                 | **0 Fehler, 0 Warnungen**  |
+| Sichtbare Platzhalter auf `/` | 6                      | **0**                      |
+
+---
+
 ### Hinzugefügt
 
 - Versionskontrolle. Das Projekt wurde ohne Git-Repo übernommen; der Zustand vom 17.08.2026
@@ -24,7 +70,10 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 
 ---
 
-## Erhoben, nicht behoben — Stand 17.08.2026
+## Erhoben am 17.08.2026 — Stand bei der Übernahme
+
+> Historischer Abschnitt. Was davon inzwischen behoben ist, steht oben unter
+> [Unveröffentlicht]. Vollständige Liste in `docs/AUDIT-2026-08-17.md`.
 
 Der Audit hat 238 Rohfunde erhoben, davon 153 bestätigt und nach Deduplizierung
 127 Positionen. Sie sind **offen**. Vollständige Liste in

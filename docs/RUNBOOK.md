@@ -18,16 +18,17 @@ abstürzen kann. Das begrenzt die Fehlerbilder erheblich:
 
 ## Häufige Fehler in der Entwicklung
 
-| Symptom                                                  | Ursache                                                         | Lösung                                                                                   |
-| -------------------------------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `npm run check` hängt an einer Abfrage                   | `@astrojs/check` und `typescript` fehlen                        | `npm i -D @astrojs/check typescript`                                                     |
-| `curl localhost:4321` liefert nichts, Browser aber schon | Server lauscht nur auf IPv6                                     | `curl http://[::1]:4321/`                                                                |
-| Playwright-Werkzeuge brechen sofort ab                   | keine Browser installiert                                       | `npx playwright install chromium`                                                        |
-| Bilder fehlen nach dem Build                             | `sharp` nicht sauber installiert                                | `rm -rf node_modules && npm install`                                                     |
-| `dist/` enthält alte Stände                              | Build-Cache                                                     | `rm -rf dist .astro && npm run build`                                                    |
-| Ein Screen bleibt halbtransparent hängen                 | `killTweensOf` oder `overwrite:'auto'` beim Bildtausch entfernt | [`site.js:372`](../src/scripts/site.js:372) prüfen                                       |
-| Elemente bleiben unsichtbar                              | jemand hat `opacity: 0` ins CSS geschrieben                     | verboten, siehe [ADR-005](DECISIONS.md). `node scripts/verify.mjs` findet es             |
-| Die Headline bricht falsch um                            | `splitIntoLines` misst vor dem Laden der Schrift                | die Messung hängt an `document.fonts.ready`, [`site.js:356`](../src/scripts/site.js:356) |
+| Symptom                                                         | Ursache                                                                  | Lösung                                                                                                        |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `verify.mjs` meldet einen Fehler, den der echte Build nicht hat | der Dev-Server lädt nach vielen Dateiänderungen Module nicht sauber nach | Dev-Server neu starten, dann erneut messen. Zweimal reproduziert, zuletzt als „Navigation bleibt transparent" |
+| QR-Code im Hero zeigt auf die falsche Domain                    | er ist gegen `SITE.origin` erzeugt und zieht nicht automatisch mit       | `npm run qr-code`                                                                                             |
+| `curl localhost:4321` liefert nichts, Browser aber schon        | Server lauscht nur auf IPv6                                              | `curl http://[::1]:4321/`                                                                                     |
+| Playwright-Werkzeuge brechen sofort ab                          | keine Browser installiert                                                | `npx playwright install chromium`                                                                             |
+| Bilder fehlen nach dem Build                                    | `sharp` nicht sauber installiert                                         | `rm -rf node_modules && npm install`                                                                          |
+| `dist/` enthält alte Stände                                     | Build-Cache                                                              | `rm -rf dist .astro && npm run build`                                                                         |
+| Ein Screen bleibt halbtransparent hängen                        | `killTweensOf` oder `overwrite:'auto'` beim Bildtausch entfernt          | [`site.js:372`](../src/scripts/site.js:372) prüfen                                                            |
+| Elemente bleiben unsichtbar                                     | jemand hat `opacity: 0` ins CSS geschrieben                              | verboten, siehe [ADR-005](DECISIONS.md). `node scripts/verify.mjs` findet es                                  |
+| Die Headline bricht falsch um                                   | `splitIntoLines` misst vor dem Laden der Schrift                         | die Messung hängt an `document.fonts.ready`, [`site.js:356`](../src/scripts/site.js:356)                      |
 
 ## Wenn ein Text falsch aussieht
 
@@ -56,8 +57,8 @@ npm run dev &
 node scripts/verify.mjs
 ```
 
-19 Regeln, jede mit Klartextmeldung. Stand 17.08.2026: 17 bestanden, 2 FEHLER bei 320 px
-in der Navigation (bekannt, Blocker B1). Mehr als zwei Fehler heißt: neu dazugekommen.
+19 Regeln, jede mit Klartextmeldung. Stand 17.08.2026 nach der Nachtarbeit:
+**19 bestanden, 0 Fehler.** Jeder Fehler ist ab jetzt neu dazugekommen.
 
 ---
 

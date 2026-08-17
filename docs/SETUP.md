@@ -74,9 +74,8 @@ node scripts/verify.mjs
 Prüft 19 harte Regeln automatisch: CTA-Disziplin, verbotene Begriffe, Kontrast,
 genau eine `<h1>`, Bedienbarkeit ohne JavaScript, Reduced Motion, Reflow bei 320 px.
 
-**Erwarteter Stand heute: 17 bestanden, 2 FEHLER.** Beide Fehler betreffen die Navigation bei
-320 px und sind bekannt (Blocker B1). Wenn du mehr als zwei Fehler siehst, hast du etwas kaputt
-gemacht.
+**Erwarteter Stand: 19 bestanden, 0 Fehler.** Siehst du einen Fehler, hast du entweder etwas
+kaputt gemacht — oder der Dev-Server hängt. Erst neu starten, dann noch einmal messen.
 
 Brauchen die Playwright-Werkzeuge Browser:
 
@@ -116,10 +115,10 @@ der Code; die bekannten Abweichungen stehen im [Auditbericht](AUDIT-2026-08-17.m
 
 ## Bekannte Fallstricke
 
-| Symptom                                | Ursache                                  | Lösung                                |
-| -------------------------------------- | ---------------------------------------- | ------------------------------------- |
-| `npm run check` hängt an einer Abfrage | `@astrojs/check` und `typescript` fehlen | `npm i -D @astrojs/check typescript`  |
-| `curl localhost:4321` liefert nichts   | Server lauscht nur auf IPv6              | `curl http://[::1]:4321/`             |
-| Playwright-Werkzeuge brechen ab        | keine Browser installiert                | `npx playwright install chromium`     |
-| Bilder fehlen nach dem Build           | `sharp` nicht sauber installiert         | `rm -rf node_modules && npm install`  |
-| `dist/` enthält alte Stände            | Build-Cache                              | `rm -rf dist .astro && npm run build` |
+| Symptom                                                   | Ursache                                      | Lösung                                     |
+| --------------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
+| `verify.mjs` meldet Fehler, die der echte Build nicht hat | Dev-Server hängt nach vielen Dateiänderungen | Dev-Server neu starten, dann erneut messen |
+| `curl localhost:4321` liefert nichts                      | Server lauscht nur auf IPv6                  | `curl http://[::1]:4321/`                  |
+| Playwright-Werkzeuge brechen ab                           | keine Browser installiert                    | `npx playwright install chromium`          |
+| Bilder fehlen nach dem Build                              | `sharp` nicht sauber installiert             | `rm -rf node_modules && npm install`       |
+| `dist/` enthält alte Stände                               | Build-Cache                                  | `rm -rf dist .astro && npm run build`      |
