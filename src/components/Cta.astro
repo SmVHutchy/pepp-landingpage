@@ -88,6 +88,15 @@ const label = `${PRICING.trialDays} Tage gratis starten`;
     padding-inline: 18px;
     font-size: var(--type-body-size);
     border-radius: var(--radius-lg);
+    /* Der Text bricht nie um, und der Knopf lässt sich nicht stauchen.
+       Ohne beides drückte .nav__actions ihn als Flex-Item auf min-content:
+       bei 320px auf 88px Breite. Der Text lief dann auf vier Zeilen aus der
+       40px hohen Fläche heraus und stand dort in --action-primary-fg
+       (#FBF6F1) auf --bg-app (#FBF6F1) — Kontrast 1:1, also unsichtbar.
+       Im Knopf blieb sichtbar nur „Tage gratis".
+       Behebt B1 aus docs/AUDIT-2026-08-17.md. */
+    white-space: nowrap;
+    flex: 0 0 auto;
   }
 
   .cta--sticky {

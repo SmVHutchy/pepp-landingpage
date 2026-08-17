@@ -390,6 +390,30 @@ svg[data-pepp-icon] {
   }
 }
 
+/* Zweiter Bruchpunkt, nur für die Navigationszeile.
+   Bei 320px stehen 280px Inhaltsbreite zur Verfügung, gebraucht werden 393px:
+   Marke 114 + Lücke 32 + CTA 160 + Lücke 12 + „Menü" 75. Das passt auch mit
+   null Abständen nicht — eines der drei Elemente muss weichen.
+
+   Es ist der CTA, und zwar ohne Verlust am Conversion-Weg: der Hero-CTA steht
+   direkt darunter im ersten Bildschirm, und ab 25% Scrolltiefe fährt die
+   Sticky-Leiste mit demselben Knopf herein (nur unter 901px). Der Download ist
+   auf Mobil durchgehend einen Daumen entfernt.
+
+   display:none statt Weglassen im Markup: die sechs CTA-Instanzen bleiben im
+   HTML, scripts/verify.mjs zählt sie weiter, und ohne CSS ist der Knopf da.
+
+   Die Regel steht hier und nicht in Nav.astro, weil Astros Scoping nicht in
+   eine Kindkomponente reicht — <Cta> rendert sein eigenes <a>, das der
+   Elternregel nicht unterliegt. Gleiches Muster wie .u-desk und .u-mob.
+
+   Behebt B1 und Fund 5 aus docs/AUDIT-2026-08-17.md. */
+@media (max-width: 479px) {
+  .u-hide-xs {
+    display: none !important;
+  }
+}
+
 /* ── Reduced Motion: jede Bewegung aus, Endzustände stehen sofort ─────── */
 @media (prefers-reduced-motion: reduce) {
   *,
