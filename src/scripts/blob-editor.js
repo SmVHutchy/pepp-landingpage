@@ -51,6 +51,8 @@ function lesen(el) {
     groesse: parseFloat(s.getPropertyValue('--blob-groesse')) || 560,
     deckkraft: parseFloat(s.getPropertyValue('--blob-deckkraft')) || 0.5,
     weich: parseFloat(s.getPropertyValue('--blob-weich')) || 48,
+    winkel: parseFloat(s.getPropertyValue('--blob-winkel')) || 0,
+    saettigung: parseFloat(s.getPropertyValue('--blob-saettigung')) || 1,
     weg: Number(el.dataset.blob) || 0,
     top: zahl(s.top),
     bottom: zahl(s.bottom),
@@ -66,6 +68,8 @@ function schreiben(el, w) {
   s.setProperty('--blob-groesse', `${Math.round(w.groesse)}px`);
   s.setProperty('--blob-deckkraft', String(w.deckkraft));
   s.setProperty('--blob-weich', `${Math.round(w.weich)}px`);
+  s.setProperty('--blob-winkel', `${Math.round(w.winkel)}deg`);
+  s.setProperty('--blob-saettigung', String(Math.round(w.saettigung * 100) / 100));
   s.setProperty('--blob-maske', maskeVon(w.form));
   s.setProperty('--blob-verhaeltnis', String(FORM_VERHAELTNIS));
   for (const seite of [...SENKRECHT, ...WAAGERECHT]) {
@@ -126,6 +130,18 @@ const REGLER = [
   { key: 'groesse', label: 'Grösse', min: 120, max: 1800, step: 10, einheit: 'px' },
   { key: 'deckkraft', label: 'Deckkraft', min: 0, max: 1, step: 0.01, einheit: '' },
   { key: 'weich', label: 'Weichzeichnen', min: 0, max: 160, step: 2, einheit: 'px' },
+  /* Die beiden Regler für die Farbigkeit. Sie ändern nicht den Verlauf — der
+     ist der Token —, sondern welcher Teil davon im sichtbaren Ausschnitt
+     landet und wie kräftig er dort steht. Siehe Blob.astro. */
+  { key: 'winkel', label: 'Verlauf drehen', min: 0, max: 360, step: 5, einheit: '°' },
+  {
+    key: 'saettigung',
+    label: 'Sättigung',
+    min: 0.4,
+    max: 2.4,
+    step: 0.05,
+    einheit: '',
+  },
   { key: 'weg', label: 'Parallaxe', min: -240, max: 240, step: 5, einheit: 'px' },
 ];
 
@@ -461,6 +477,11 @@ export function mountBlobEditor() {
         attr.push(`deckkraft={${Math.round(w.deckkraft * 100) / 100}}`);
         attr.push(`weichzeichnen={${Math.round(w.weich)}}`);
         attr.push(`weg={${Math.round(w.weg)}}`);
+        /* Nur ausgeben, wenn sie vom Standard abweichen — sonst stehen in
+           jeder Sektion zwei Zeilen, die nichts tun. */
+        if (Math.round(w.winkel)) attr.push(`winkel={${Math.round(w.winkel)}}`);
+        const saet = Math.round(w.saettigung * 100) / 100;
+        if (saet !== 1) attr.push(`saettigung={${saet}}`);
         zeilen.push('  <Blob');
         for (const a of attr) zeilen.push(`    ${a}`);
         zeilen.push('  />');

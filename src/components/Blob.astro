@@ -60,6 +60,27 @@ interface Props {
   weichzeichnen?: number;
   /** Welcher Verlauf. peach ist wärmer, pink kräftiger. */
   ton?: 'peach' | 'pink';
+  /**
+   * Dreht den Verlauf IM Blob, nur für `form`. 0 = wie der Token (135°).
+   *
+   * Warum es diesen Regler braucht: ein Blob, der in einer Ecke sitzt, liegt
+   * zu einem guten Teil ausserhalb der Sektion. Sichtbar bleibt dann nur ein
+   * Abschnitt des Bogens — meist das Pfirsich-Rosa-Ende —, und die Fläche
+   * liest sich als einfarbiger Schleier statt als Dawn. Gedreht wandern
+   * Flieder und Blau in den sichtbaren Ausschnitt.
+   *
+   * Gedreht wird die Ebene, auf der der Verlauf liegt, nicht die Stop-Liste:
+   * --gradient-dawn bleibt unangetastet der Token.
+   */
+  winkel?: number;
+  /**
+   * Sättigung des Verlaufs, nur für `form`. 1 = unverändert.
+   *
+   * Hebt die Farbigkeit, ohne die Deckkraft anzufassen — und das ist der
+   * Unterschied, der zählt: mehr Deckkraft verdunkelt die Fläche und frisst
+   * den Textkontrast darüber, mehr Sättigung nicht.
+   */
+  saettigung?: number;
   /** Kantenlänge des Quadrats, in dem der radiale Verlauf ausläuft. */
   groesse?: string;
   /** Positionierung; alles was in inset/top/left passt. */
@@ -81,6 +102,8 @@ const {
   form,
   weichzeichnen = 48,
   ton = 'peach',
+  winkel = 0,
+  saettigung = 1,
   groesse = '560px',
   top,
   left,
@@ -96,6 +119,8 @@ const stil = [
   form && `--blob-maske:${maskeVon(form)}`,
   form && `--blob-weich:${weichzeichnen}px`,
   form && `--blob-verhaeltnis:${FORM_VERHAELTNIS}`,
+  form && `--blob-winkel:${winkel}deg`,
+  form && `--blob-saettigung:${saettigung}`,
   top && `top:${top}`,
   left && `left:${left}`,
   right && `right:${right}`,
@@ -149,7 +174,6 @@ const stil = [
      Kasten. */
   .blob--dawn {
     height: calc(var(--blob-groesse) * var(--blob-verhaeltnis));
-    background: var(--gradient-dawn);
     filter: blur(var(--blob-weich));
     mask-image: var(--blob-maske);
     mask-repeat: no-repeat;
@@ -157,5 +181,23 @@ const stil = [
     -webkit-mask-image: var(--blob-maske);
     -webkit-mask-repeat: no-repeat;
     -webkit-mask-size: 100% 100%;
+  }
+
+  /* Der Verlauf liegt auf einer eigenen Ebene, nicht auf dem Blob selbst —
+     nur so lässt er sich drehen, ohne die Form mitzudrehen. Die Maske des
+     Elternteils beschneidet das Pseudoelement mit, die Form bleibt also
+     genau die gezeichnete.
+
+     inset: -50% ist kein geschätzter Wert: gedreht braucht eine Fläche das
+     √2-fache ihrer Kantenlänge, um den Ausschnitt bei jedem Winkel noch zu
+     decken. Bei -50% ist sie doppelt so gross, damit auch bei 45° keine
+     leere Ecke auftaucht. */
+  .blob--dawn::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: var(--gradient-dawn);
+    rotate: var(--blob-winkel, 0deg);
+    filter: saturate(var(--blob-saettigung, 1));
   }
 </style>
