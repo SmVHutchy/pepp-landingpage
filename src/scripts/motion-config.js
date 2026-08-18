@@ -131,6 +131,39 @@ export const MOTION = {
     end: 'bottom 40%',
   },
 
+  /* Der Sprung. Eine Figur kommt von unten ins Bild und wächst dabei auf ihre
+     gesetzte Grösse — sie springt herein, statt einzublenden. Genau eine Figur
+     trägt das: pepp-jump im Alltag.
+
+     WARUM VON 0,62 UND NICHT VON 0. Bei 0 wäre der Anfang ein Punkt, und die
+     ersten Frames sähen nach Einblenden aus statt nach Anlauf. 0,62 ist gross
+     genug, dass man die Figur von Anfang an als Figur liest — 490px × 0,62
+     sind 304px —, und klein genug, dass das Wachsen die Bewegung trägt.
+
+     y ist POSITIV: der Startpunkt liegt unter der Endlage, die Figur schiebt
+     sich nach oben. 280px sind rund ein Drittel der Figurenhöhe (490 × 1,777
+     = 871px) — die Strecke, über die ein Sprung glaubhaft ist.
+
+     transformOrigin unten: gewachsen wird von den Füssen aus. Aus der Mitte
+     heraus sänke die Standlinie beim Wachsen mit nach unten, und die Figur
+     wirkte, als würde sie einsinken statt abzuspringen.
+
+     back.out gibt den Überschwung am Scheitel — kurz über die Endgrösse hinaus
+     und zurück. Das ist der Unterschied zwischen „wird grösser" und „springt".
+     Mit ease:'none' wie beim Peek war es eine Zoomfahrt.
+
+     Das Ende liegt bei „center 55%", also kurz nachdem die Figur ihre
+     Bildmitte erreicht: der Sprung ist fertig, während sie noch steigt, nicht
+     erst wenn sie das Bild wieder verlässt. */
+  sprung: {
+    von: 0.62,
+    y: 280,
+    ease: 'back.out(1.4)',
+    scrub: 0.6,
+    start: 'top bottom',
+    end: 'center 55%',
+  },
+
   /* Snout Trail über den vier Schritten in „Vier Schritte, dann läuft es".
      Die Geste stammt aus dem Design System (components/brand/SnoutTrail.jsx):
      die Schnauze ist der Stift, die Linie entsteht hinter ihr. Dort läuft sie

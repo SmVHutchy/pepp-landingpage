@@ -94,6 +94,17 @@ interface Props {
    * hier gesetzt ist, statt beides auszugeben und auf Glück zu hoffen.
    */
   heben?: boolean;
+  /**
+   * Der Sprung: die Figur kommt von unten ins Bild und wächst dabei auf ihre
+   * gesetzte Grösse (initSprung in site.js, Werte aus MOTION.sprung).
+   *
+   * SCHLIESST `weg` UND `heben` AUS — aus demselben Grund wie die beiden
+   * untereinander: drei Gesten, ein `transform`. Es gilt die zuletzt
+   * geschriebene, und welche das pro Frame ist, entscheidet die Reihenfolge
+   * der ScrollTrigger. Deshalb gibt die Komponente genau eines der drei
+   * Attribute aus, nie zwei.
+   */
+  springt?: boolean;
   /** Zusätzliche Klassen, z. B. u-desk für „erst ab 901px". */
   class?: string;
 }
@@ -110,6 +121,7 @@ const {
   spiegeln = false,
   weg = 0,
   heben = false,
+  springt = false,
   class: className,
 } = Astro.props;
 
@@ -160,8 +172,9 @@ const stil = [
 
 <div
   class:list={['maskottchen', className]}
-  data-blob={heben ? undefined : weg}
-  data-peek={heben ? '' : undefined}
+  data-blob={heben || springt ? undefined : weg}
+  data-peek={heben && !springt ? '' : undefined}
+  data-sprung={springt ? '' : undefined}
   data-figur={figur}
   style={stil}
   {...zahlen}

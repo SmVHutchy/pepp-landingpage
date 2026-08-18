@@ -4,6 +4,7 @@
    Welten unterscheiden sich in der Fläche, nicht im Text. Die Screens sind
    unten angeschnitten (negativer margin plus overflow:hidden). */
 import { Image } from 'astro:assets';
+import Maskottchen from '../Maskottchen.astro';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
@@ -33,7 +34,7 @@ const childPoints = [
       groesse="1190px"
       top="-1.7%"
       left="25.5%"
-      deckkraft={0.85}
+      deckkraft={0.8}
       weg={-60}
     />
     <Blob
@@ -47,14 +48,27 @@ const childPoints = [
     <Blob
       form="blob1"
       groesse="1800px"
-      top="-62.5%"
-      left="-24.9%"
-      deckkraft={0.27}
+      top="-63.1%"
+      left="-22.9%"
+      deckkraft={0.55}
       weichzeichnen={136}
       winkel={120}
       weg={-60}
     />
   </BlobFeld>
+
+  {
+    /* Von Liam im Editor gesetzt.
+
+      ACHTUNG, DIESE FIGUR IST NICHT ZU SEHEN. right="804.4%" heisst 804,4 %
+      der eigenen Breite: bei 230px sind das 1850px vom rechten Sektionsrand
+      nach innen — auf einem 1440er Fenster steht sie damit weit links
+      ausserhalb, und bottom="349.4%" hebt sie zusätzlich 898px über die
+      Unterkante. Gemessen liegt sie zu 0 % in ihrer Sektion.
+      Sie steht hier, weil sie so gesetzt wurde, nicht weil sie so gedacht
+      ist — wer sie sucht, findet sie im Editor unter „modes". */
+  }
+  <Maskottchen figur="pepp-coin-play" groesse="230px" bottom="349.4%" right="804.4%" />
 
   <div class="mkt-container">
     {

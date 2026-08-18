@@ -479,6 +479,47 @@ function initPeek() {
   }
 }
 
+/* Der Sprung. Die Figur kommt von unten ins Bild und wächst dabei auf ihre
+   gesetzte Grösse — sie springt herein, statt sich einzublenden.
+
+   fromTo und nicht to: der Anfangszustand muss ausdrücklich dastehen. Sonst
+   nimmt GSAP den aktuellen als Start, und nach einem ScrollTrigger.refresh()
+   ist das der Endzustand — die Figur bliebe gross stehen. Dieselbe Falle hat
+   die Tiefenwirkung der haftenden Sektionen schon einmal unbrauchbar gemacht.
+
+   immediateRender: false, weil der Startzustand erst gelten soll, wenn der
+   Trigger greift. Ohne das stünde die Figur beim Laden verkleinert und
+   verschoben da, auch wenn sie noch gar nicht an der Reihe ist.
+
+   KEIN opacity. Die Hausregel verbietet opacity:0 als Startzustand, und hier
+   hätte es auch keinen Zweck: was von unten kommt, muss nicht zusätzlich
+   eingeblendet werden.
+
+   Der Trigger ist die FIGUR, nicht die Sektion. Der Alltag ist eine volle
+   Bildschirmhöhe hoch und haftet zusätzlich; an der Sektion gemessen wäre der
+   Sprung vorbei, bevor die Figur überhaupt zu sehen ist. */
+function initSprung() {
+  for (const figur of document.querySelectorAll('[data-sprung]')) {
+    gsap.fromTo(
+      figur,
+      { scale: MOTION.sprung.von, y: MOTION.sprung.y },
+      {
+        scale: 1,
+        y: 0,
+        ease: MOTION.sprung.ease,
+        transformOrigin: '50% 100%',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: figur,
+          start: MOTION.sprung.start,
+          end: MOTION.sprung.end,
+          scrub: MOTION.sprung.scrub,
+        },
+      }
+    );
+  }
+}
+
 /* Snout Trail: die Schnauze läuft die Linie entlang und zeichnet sie dabei.
    Die Geste steht im Design System (components/brand/SnoutTrail.jsx) und läuft
    dort einmal auf Zeit ab. Hier hängt sie am Scroll: der Fortschritt der
@@ -660,6 +701,7 @@ function buildReveals() {
   initStickyTiefe();
   initBlobs();
   initPeek();
+  initSprung();
   initQuestRun();
   initMechanicCarousel();
 
@@ -677,7 +719,7 @@ function buildReveals() {
 export function replayMotion() {
   for (const trigger of ScrollTrigger.getAll()) trigger.kill();
   const animated = document.querySelectorAll(
-    '[data-anim], [data-hero-figure], [data-blob], [data-peek], [data-quest-proof]'
+    '[data-anim], [data-hero-figure], [data-blob], [data-peek], [data-sprung], [data-quest-proof]'
   );
   gsap.killTweensOf(animated);
   /* visibility mit zurücksetzen: revealSides nutzt autoAlpha, das setzt

@@ -122,36 +122,25 @@ const cards = [
   </div>
 
   {
-    /* Pepp tritt hinter der Kante der nächsten Sektion hervor. Er steht HIER,
-      in der vorherigen Sektion; „So funktioniert's" hat einen deckenden
-      Hintergrund und wird später gezeichnet, verdeckt ihn also von unten.
-      Kein z-index nötig, die Zeichenreihenfolge macht es.
+    /* Von Liam im Editor gesetzt.
 
-      aria-hidden: reine Dekoration, der Satz daneben trägt die Aussage.
-      u-desk — ab 901px, darunter würde die Figur die schmale Spalte zudecken.
+      HIER STAND BIS 18.08.2026 DER PEEK: pepp-point, 200px, halb unter der
+      Kante der Folgesektion, mit `heben` (der Scrub aus initPeek) und u-desk.
+      Liam hat ihn durch diese Figur ersetzt — pepp-jump, doppelt so gross und
+      ganz innerhalb der Sektion. Damit trägt die Seite keine Peek-Geste mehr;
+      initPeek() in site.js findet kein [data-peek] und läuft leer. Das ist
+      kein Fehler, nur eine Funktion ohne Anwendungsfall.
 
-      Als <Maskottchen> statt als eigener Block, damit er im Blob-Editor
-      greifbar ist. Vorher war er die einzige Figur der Seite, die sich nur
-      über handgeschriebene Pixel bewegen liess.
+      Ohne u-desk steht die Figur jetzt auch unter 901px. --mk-skala macht aus
+      den 490px dort 270 beziehungsweise 206 Pixel.
 
-      DIE ZAHLEN SIND UMGERECHNET, NICHT NEU GESETZT. Vorher standen dort
-      `bottom: -140px` und `right: clamp(16px, 6vw, 120px)` bei 200px Breite.
-      Die Komponente rechnet in Prozent der EIGENEN Kante:
-        Höhe  = 200 × 1,113 (Verhältnis von pepp-point) = 222,6px
-        -140 / 222,6 = -62,9 %
-        right bei 1440px Fenster = 6vw = 86,4px, davon 200px = 43,2 %
-      Das clamp ist damit weg: aus einer mit dem Fenster wandernden Kante
-      wird eine feste. Der alte Kommentar zu -140px gilt weiter — bei -104
-      reichte der Kopf samt Schatten in die Body-Zeile der dritten Karte. */
+      `springt` ist die einzige eigene Scroll-Bewegung einer Figur auf der
+      Seite: sie kommt von unten ins Bild und wächst dabei auf ihre Grösse.
+      Werte in MOTION.sprung, Mechanik in initSprung() (site.js). Gemessen bei
+      1440x1080: Skala 0,62 mit 280px Versatz am Anfang, kurzer Überschwung auf
+      1,03 am Scheitel, dann 1,0 bei 0. */
   }
-  <Maskottchen
-    figur="pepp-point"
-    groesse="200px"
-    bottom="-62.9%"
-    right="43.2%"
-    heben
-    class="u-desk"
-  />
+  <Maskottchen figur="pepp-jump" groesse="490px" bottom="36.1%" right="62.8%" springt />
 </section>
 
 <style>
