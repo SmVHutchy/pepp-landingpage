@@ -40,8 +40,8 @@ davon ist der weit überwiegende Teil GSAP selbst. Die vier Rechtsseiten laden
 
 | Pfad                               | Zweck                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/pages/`                       | Die fünf Routen. `index.astro` komponiert 14 Sektionen und baut das JSON-LD; die vier Rechtsseiten sind 6–14 Zeilen Hülle.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| `src/layouts/`                     | `Base.astro` = `<head>`, Meta, Canonical, Font-Preload, JSON-LD-Slot. `Legal.astro` = Typografie der Rechtsseiten, `is:global`, weil der Text über `set:html` kommt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `src/pages/`                       | Sechs HTML-Routen (Startseite, vier Rechtsseiten, 404) und vier generierte Text-Routen (`robots.txt.js`, `sitemap.xml.js`, `llms.txt.js`, `site.webmanifest.js`). `index.astro` komponiert 14 Sektionen und baut den seitenspezifischen Teil des JSON-LD; die vier Rechtsseiten sind 6–14 Zeilen Hülle.                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `src/layouts/`                     | `Base.astro` = `<head>`, Meta, Canonical, Font-Preload, `noindex`-Schalter und der JSON-LD-`@graph` samt `WebSite` und `Organization`. `Legal.astro` = Typografie der Rechtsseiten, `is:global`, weil der Text über `set:html` kommt.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `src/components/`                  | Drei Bausteine: `Cta.astro` (der einzige Primär-CTA), `Icon.astro` (Inline-SVG-Renderer), `Blob.astro` (dekorativer Farbschein).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | `src/components/sections/`         | 17 Sektionskomponenten, je eine pro Seitenabschnitt. Die Nummerierung im Dateikopf entspricht der Sektionstabelle des Handoff-README.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `src/data/`                        | `site.js` — Preise, Store-URLs, Betreiber, Domain. `faq.js` — die acht FAQ-Einträge. Die einzigen Datenquellen des Projekts.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
@@ -86,8 +86,8 @@ Definiert in `src/data/site.js:10-15` (`currency: 'EUR'`, `monthly: 2.99`,
 | `src/components/sections/Pricing.astro:71` | Trust-Zeile: „14 Tage gratis · Erinnerung vor Ablauf · jederzeit kündbar".                                                                |
 | `src/data/faq.js:23`                       | FAQ-Antwort 3: Monats- und Jahrespreis plus Testdauer als Template-String.                                                                |
 | `src/data/faq.js:42`                       | FAQ-**Frage** 8: „Was passiert nach den 14 Tagen?"                                                                                        |
-| `src/pages/index.astro:38-39`              | JSON-LD `SoftwareApplication.offers[0]`: `price: "2.99"`, `priceCurrency: "EUR"`.                                                         |
-| `src/pages/index.astro:44-45`              | JSON-LD `SoftwareApplication.offers[1]`: `price: "19.90"`, `priceCurrency: "EUR"`.                                                        |
+| `src/pages/index.astro:74`                 | JSON-LD `MobileApplication.offers[0]`: `price: "2.99"`, `priceCurrency: "EUR"`.                                                           |
+| `src/pages/index.astro:81`                 | JSON-LD `MobileApplication.offers[1]`: `price: "19.90"`, `priceCurrency: "EUR"`.                                                          |
 
 Es gibt **kein** Preisliteral im Markup — mit einer Ausnahme ausserhalb dieses Flusses:
 `src/content/legal/agb.html` nennt eigene Beträge als Fremdtext (die AUDIT-Datei führt
@@ -118,12 +118,17 @@ Sonst würde `verify.mjs:58-61` sie als CTA mit abweichendem Text melden.
 
 Definiert in `src/data/site.js:27-39`.
 
-| Stelle                                       | Was daraus wird                                                                                     |
-| -------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| `src/components/sections/Footer.astro:70-71` | Die Copyright-Zeile: `copyrightYear`, `legalName`, `street`, `postalCode`, `city`.                  |
-| `src/pages/index.astro:53-59`                | JSON-LD `Organization` mit `PostalAddress`: `legalName`, `street`, `postalCode`, `city`, `country`. |
+| Stelle                                       | Was daraus wird                                                                                                                                                                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/sections/Footer.astro:70-71` | Die Copyright-Zeile: `copyrightYear`, `legalName`, `street`, `postalCode`, `city`.                                                                                                                              |
+| `src/layouts/Base.astro:66-88`               | JSON-LD `Organization` mit `PostalAddress`: `legalName`, `email`, `phone`, `vatId`, `street`, `postalCode`, `city`, `country`. Liegt in `Base`, nicht in `index` — die Organisation gilt für alle sechs Seiten. |
+| `src/pages/llms.txt.js:76-78`                | Anbieterblock am Ende der Datei: `legalName`, `street`, `postalCode`, `city`, `managingDirector`, `register`, `vatId`, `email`.                                                                                 |
 
-`email`, `phone`, `managingDirector`, `register`, `vatId` werden **nirgends gelesen**.
+`copyrightYear` wird nur im Footer gelesen. Alle übrigen Felder haben inzwischen
+mindestens einen Konsumenten — frühere Fassungen dieses Abschnitts sagten, `email`,
+`phone`, `managingDirector`, `register` und `vatId` würden **nirgends gelesen**; das
+gilt seit dem Organization-Graph und `/llms.txt` nicht mehr.
+
 Die Rechtstexte enthalten dieselben Angaben als Literale
 (`src/content/legal/impressum.html:6-30`, `agb.html:11-16`, `datenschutz.html:7-12`) und
 sind nicht an `OPERATOR` gekoppelt. Eine Adressänderung ist deshalb an vier Stellen
@@ -136,20 +141,28 @@ Widerspruch — aber eine Falle.
 Definiert in `src/data/site.js:21-25` (`origin: 'https://taschengeldapp.com'`,
 `locale: 'de-DE'`, `lang: 'de'`).
 
-| Stelle                      | Was daraus wird                                                                                                                 |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `astro.config.mjs:6`        | `site: SITE.origin` — Basis für alle absoluten URLs im Build. Das ist der einzige Import aus `src/` in die Astro-Konfiguration. |
-| `src/layouts/Base.astro:25` | `canonical` = `new URL(Astro.url.pathname, SITE.origin)`.                                                                       |
-| `src/layouts/Base.astro:26` | `ogImage` = `SITE.origin + '/og-image.png'`.                                                                                    |
-| `src/layouts/Base.astro:30` | `<html lang={SITE.lang}>`.                                                                                                      |
-| `src/layouts/Base.astro:40` | `<meta property="og:locale" content={SITE.locale}>`.                                                                            |
+| Stelle                         | Was daraus wird                                                                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `astro.config.mjs:6`           | `site: SITE.origin` — Basis für alle absoluten URLs im Build. Das ist der einzige Import aus `src/` in die Astro-Konfiguration. |
+| `src/layouts/Base.astro:37`    | `canonical` = `new URL(Astro.url.pathname, SITE.origin)`.                                                                       |
+| `src/layouts/Base.astro:38`    | `ogImage` = `SITE.origin + '/og-image.png'`.                                                                                    |
+| `src/layouts/Base.astro:56-89` | `basisGraph`: die `@id` von `WebSite` und `Organization` sind URL-Fragmente auf `SITE.origin`.                                  |
+| `src/layouts/Base.astro:98`    | `<html lang={SITE.lang}>`.                                                                                                      |
+| `src/layouts/Base.astro:130`   | `<meta property="og:locale" content={SITE.locale}>`.                                                                            |
+| `src/pages/robots.txt.js:35`   | Die `llms.txt`-Zeile als Kommentar.                                                                                             |
+| `src/pages/sitemap.xml.js:64`  | `<loc>` je Route.                                                                                                               |
+| `src/pages/llms.txt.js:23`     | `url()`-Helfer: alle Links in `/llms.txt`.                                                                                      |
 
 Der Kommentar in `site.js:17-20` sagt: sobald die finale Domain feststeht, nur `origin`
-ändern. Das stimmt für Canonical, OG-URL und Sitemap.
+ändern. Das stimmt für Canonical, OG-URL, Sitemap, robots.txt, `/llms.txt` und die
+`@id` des JSON-LD-Graphen. Bei einem Domainwechsel ändern sich damit auch die `@id`;
+das ist unvermeidlich und für Suchmaschinen ein normaler Umzug, kein Datenverlust.
 
-**Befund:** `public/og-image.png` existiert nicht. Der Ordner `public/` enthält nur
-`fonts/` und `logo/`; `dist/` entsprechend auch nicht. `dist/index.html` liefert
-`<meta property="og:image" content="https://taschengeldapp.com/og-image.png">` auf eine 404. Zu beheben, bevor die Seite geteilt wird.
+`public/og-image.png` existiert (1200×630, erzeugt von `scripts/og-image.mjs`). Seine
+Maße stehen zusätzlich als `og:image:width`/`og:image:height` im Head
+(`Base.astro:141-142`), damit Dienste den Platz reservieren können, bevor das Bild
+geladen ist. Eine frühere Fassung dieses Abschnitts meldete die Datei als fehlend und
+den `og:image`-Verweis als 404 — behoben in Commit `16f3f20`.
 
 ### 3.5 `FAQ` → Sektion 13 und JSON-LD
 
@@ -157,19 +170,21 @@ Definiert in `src/data/faq.js:12-45`, acht Einträge mit `{q, a}`. `faq.js:1` im
 `PRICING` und `formatEuro` aus `site.js` — die Preisdaten fliessen also durch die FAQ
 hindurch (siehe 3.1).
 
-Zwei Konsumenten, und nur zwei:
+Drei Konsumenten:
 
 1. `src/components/sections/Faq.astro:8` importiert `FAQ`, `:21-27` rendert je Eintrag
    ein `<details data-anim="card">` mit `<summary>{entry.q}</summary>` und `<p>{entry.a}</p>`.
-2. `src/pages/index.astro:21` importiert `FAQ`, `:62-70` baut daraus das JSON-LD
+2. `src/pages/index.astro:22` importiert `FAQ`, `:88-97` baut daraus das JSON-LD
    `FAQPage`: `mainEntity: FAQ.map(entry => ({ '@type': 'Question', name: entry.q,
 acceptedAnswer: { '@type': 'Answer', text: entry.a } }))`.
+3. `src/pages/llms.txt.js:61` schreibt dieselben acht Paare als Markdown-Überschriften
+   mit Fliesstext in `/llms.txt`.
 
-Beide lesen dieselbe Liste. Eine Frage kann damit nicht sichtbar stehen und im Schema
-fehlen, und die strukturierte Antwort kann nicht von der sichtbaren abweichen
+Alle drei lesen dieselbe Liste. Eine Frage kann damit nicht sichtbar stehen und im
+Schema fehlen, und die strukturierte Antwort kann nicht von der sichtbaren abweichen
 (`faq.js:5-8`, `Faq.astro:6-7`). Das JSON-LD wird serverseitig gerendert und über
-`Base.astro:58-65` per `set:html` in den `<head>` geschrieben — nicht per JS aus dem DOM
-gebaut (`Base.astro:12`, `index.astro:23`).
+`Base.astro:176` per `set:html` in den `<head>` geschrieben — nicht per JS aus dem DOM
+gebaut (`Base.astro:12`, `index.astro:41`).
 
 ### 3.6 `MOTION` → `src/scripts/site.js`
 
@@ -321,22 +336,26 @@ und erscheinen daher nicht in `dist/`.
    │ STORE                    PRICING│        │SITE                OPERATOR│
    ▼                                 ▼        ▼                            ▼
 Cta.astro:39 ──┐          Pricing.astro    astro.config:6           Footer:70-71
-Footer:56,60   │          :12,13,29,45,    Base.astro:25,26,30,40   index.astro:53-59
-site.js:44 ────┘          :49,71                  │                        │
+Footer:56,60   │          :12,13,29,45,    Base.astro:37,38,98,130  Base.astro:66-88
+site.js:44 ────┘          :49,71           sitemap/robots/llms      llms.txt.js:76-78
 (Android-Weiche)               │                  │                        │
                                │                  ▼                        ▼
                                │           <link canonical>          Copyright-Zeile
                                │           <meta og:*>              JSON-LD Organization
+                               │           /sitemap.xml /robots.txt  Anbieterblock
+                               │           /llms.txt                 in /llms.txt
                                │
                                ├──────────────► src/data/faq.js:1,23,42
                                │                       │
-                               │            ┌──────────┴───────────┐
-                               │            ▼                      ▼
-                               │      Faq.astro:8,21-27      index.astro:21,62-70
-                               │      <details> Sektion 13   JSON-LD FAQPage
+                               │            ┌──────────┼───────────────────┐
+                               │            ▼          ▼                   ▼
+                               │      Faq.astro:      index.astro:      llms.txt.js:61
+                               │      8,21-27         22,88-97          acht Q/A-Paare
+                               │      <details>       JSON-LD           als Markdown
+                               │      Sektion 13      FAQPage
                                │
-                               └──────────────► index.astro:38-39,44-45
-                                                JSON-LD SoftwareApplication.offers
+                               └──────────────► index.astro:74,81
+                                                JSON-LD MobileApplication.offers
 
   ┌───────────────────────────┐        ┌──────────────────────────────────┐
   │ motion-config.js:14-99    │        │ Pepp Final Design System/tokens/ │
@@ -588,20 +607,35 @@ Ergebnis in `dist/` (1,2 MB gesamt):
 
 ```
 dist/
-├── index.html              98 KB   (inkl. 42 KB Inline-CSS + JSON-LD)
-├── impressum.html          32 KB
-├── datenschutz.html        41 KB
-├── agb.html                40 KB
-├── barrierefreiheit.html   30 KB
+├── index.html             108 KB   (inkl. Inline-CSS + JSON-LD-Graph)
+├── impressum.html          34 KB
+├── datenschutz.html        43 KB
+├── agb.html                42 KB
+├── barrierefreiheit.html   32 KB
+├── 404.html                32 KB
+├── robots.txt             < 1 KB   generiert, src/pages/robots.txt.js
+├── sitemap.xml            < 1 KB   generiert, src/pages/sitemap.xml.js
+├── llms.txt                 4 KB   generiert, src/pages/llms.txt.js
+├── site.webmanifest         1 KB   generiert, src/pages/site.webmanifest.js
+├── og-image.png                    aus public/, erzeugt von scripts/og-image.mjs
 ├── _astro/
 │   ├── index.astro_...js  119 KB   (site.js + GSAP + ScrollTrigger)
-│   └── *.webp              25 Dateien, 700 KB gesamt
+│   └── *.webp              die Bildvarianten
 ├── fonts/                  2 WOFF2, aus public/
 └── logo/                   2 SVG, aus public/
 ```
 
-Keine `.css`-Datei, keine `.png`, kein Sourcemap, kein `sitemap.xml`, kein
-`robots.txt`, kein `og-image.png`.
+Keine `.css`-Datei und kein Sourcemap: das CSS steht inline
+(`astro.config.mjs:12`, `inlineStylesheets: 'always'`), Sourcemaps baut Astro im
+Produktionsmodus nicht.
+
+Vier der Dateien sind **Routen, keine statischen Dateien**: `robots.txt`,
+`sitemap.xml`, `llms.txt` und `site.webmanifest` entstehen aus `.js`-Endpunkten in
+`src/pages/`, weil sie alle die absolute Domain brauchen und die an genau einer Stelle
+steht (`SITE.origin`). Als Dateien in `public/` müsste man sie beim Domainwechsel von
+Hand nachziehen. Eine frühere Fassung dieses Abschnitts sagte, es gebe weder
+`sitemap.xml` noch `robots.txt` noch `og-image.png` — alle drei existieren seit den
+Commits `16f3f20` und `00c18ed`.
 
 ### `trailingSlash: 'never'` + `build.format: 'file'`
 

@@ -5,6 +5,47 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 
 ## [Unveröffentlicht]
 
+### Behoben — 18.08.2026
+
+- **Indexierung stand verkehrt herum.** `/barrierefreiheit` war per `Disallow` in
+  `robots.txt` ausgeschlossen. Das verhindert das Crawlen, nicht das Indexieren: die
+  Seite ist im Footer verlinkt und konnte ohne Snippet in den Index geraten, während der
+  Crawler den Ausschluss nie zu sehen bekam. Die 404 hatte gar keinen Ausschluss und
+  wäre bei Status 200 als Soft-404 aufgenommen worden. Beide tragen jetzt
+  `noindex, follow` im Head, `robots.txt` gibt alles frei. Begründung als ADR-014 in
+  [DECISIONS.md](docs/DECISIONS.md). (`00c18ed`)
+
+### Hinzugefügt — 18.08.2026
+
+- **JSON-LD als `@graph`** statt drei unverknüpfter Objekte. `WebSite` und
+  `Organization` liegen in `Base.astro` und tragen damit alle sechs Seiten;
+  `MobileApplication` und `FAQPage` verweisen per `@id` dorthin. `sameAs` verankert die
+  Marke an beiden Store-Einträgen. Kein `aggregateRating` — es gibt keine Bewertungen.
+  (`00c18ed`)
+- **`/llms.txt`** als generierte Route, gespeist aus `SITE`, `PRICING`, `STORE`,
+  `OPERATOR` und derselben `FAQ`-Liste wie die sichtbare Sektion. Ob die grossen Crawler
+  das Format lesen, ist nicht belegt; der Preis sind achtzig Zeilen ohne zweite
+  Wahrheit. (`00c18ed`)
+- **`lastmod` in der Sitemap**, aus dem letzten Commit der jeweiligen Route. Der
+  Grundsatz bleibt: kein erfundenes Datum. (`00c18ed`)
+- `og:site_name`, `og:image:alt`, `og:image:width/height` (nachgemessen 1200×630),
+  `twitter:image`. (`00c18ed`)
+
+### Offen — 18.08.2026
+
+- **Hero-Bild.** `widths`/`sizes` statt `densities` am LCP-Bild spart auf dem Handy
+  30 kB (22 statt 52). Liegt fertig im Arbeitsbaum, aber nicht committet: die Änderung
+  hängt im selben Diff wie ein laufender Maskottchen-Tausch.
+- **`apple-itunes-app`.** Die iOS-App-ID ist bekannt. Das Meta blendet auf iOS-Safari
+  eine Leiste über der Seite ein und ist damit eine Design- und Produktentscheidung,
+  keine Metadatenfrage. Bewusst nicht ausgeführt.
+- **Astro 5 → 7.** Installiert ist 5.18.2, aktuell ist 7.2.2. Die Upgrade-Guides von v6
+  und v7 listen kein Metadaten-, Crawler- oder Strukturdaten-Feature — für SEO bringt
+  das Update nichts. Es kostet: v6 dreht die Reihenfolge mehrfacher `<style>`-Blöcke auf
+  Quelltextreihenfolge, v7 ändert die Whitespace-Behandlung zwischen Inline-Elementen.
+  Beides trifft ein Design, das pixelweise gegen Referenzbilder gehalten wird. Eigener
+  Durchgang nach dem Release, mit `npm run compare` als Netz.
+
 ### Behoben — Nacht vom 17.08.2026
 
 - **B1** Der Nav-CTA brach unter 412 px aus seiner Fläche und war dort weiss auf

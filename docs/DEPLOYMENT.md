@@ -18,7 +18,7 @@ npm run build   # erzeugt dist/
 | Build-Befehl       | `npm run build`                 |
 | Ausgabeverzeichnis | `dist/`                         |
 | Node-Version       | 22 (verifiziert mit v22.22.3)   |
-| Bauzeit            | ~5 s für 5 Seiten               |
+| Bauzeit            | ~15 s für 6 Seiten              |
 | Laufzeit           | keine — reine statische Dateien |
 
 Es sind **keine Umgebungsvariablen** beim Hoster zu hinterlegen. Siehe
@@ -28,17 +28,25 @@ Es sind **keine Umgebungsvariablen** beim Hoster zu hinterlegen. Siehe
 
 ```
 dist/
-├── index.html              96,0 KB  (davon 40,7 KB inline-CSS)
-├── impressum.html          31,9 KB
-├── datenschutz.html        40,7 KB
-├── agb.html                40,0 KB
-├── barrierefreiheit.html   30,3 KB
-├── _astro/                 JS-Bündel (117 KB) und optimierte WebP-Bilder
+├── index.html              108 KB   (inkl. inline-CSS und JSON-LD-Graph)
+├── impressum.html           34 KB
+├── datenschutz.html         43 KB
+├── agb.html                 42 KB
+├── barrierefreiheit.html    32 KB
+├── 404.html                 32 KB
+├── robots.txt              < 1 KB   generiert
+├── sitemap.xml             < 1 KB   generiert
+├── llms.txt                  4 KB   generiert
+├── site.webmanifest          1 KB   generiert
+├── og-image.png, favicon-Set          aus public/
+├── _astro/                 JS-Bündel (119 KB) und optimierte WebP-Bilder
 ├── fonts/                  Inter und Quicksand als .woff2
 └── logo/                   zwei SVG
 ```
 
-Alle Rechtsseiten tragen dasselbe inline-CSS von 21,6 KB.
+Alle Rechtsseiten tragen dasselbe inline-CSS. Die vier Textdateien sind **Routen**, keine
+Dateien aus `public/`: sie entstehen aus `.js`-Endpunkten in `src/pages/`, weil sie alle
+die absolute Domain brauchen und die an genau einer Stelle steht.
 
 ## Die eine Frage, die vor dem Deploy zu klären ist
 
@@ -67,18 +75,26 @@ curl -o /dev/null -w "%{http_code}\n" https://<domain>/impressum
 
 200 heißt gut. 404 heißt: Konfiguration nachziehen.
 
-## Fehlende Dateien, die vor dem Livegang existieren müssen
+## Dateien, die vor dem Livegang existieren müssen
 
-Gegen den echten Build geprüft, alle vier liefern **404**:
+Eine frühere Fassung dieses Abschnitts meldete vier fehlende Dateien und eine fehlende
+404-Seite. **Alle liegen inzwischen vor**, gegen den Build geprüft:
 
-| Pfad            | Warum er gebraucht wird                                                                                                                |
-| --------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `/og-image.png` | wird in [`Base.astro:31`](../src/layouts/Base.astro:31) als `og:image` referenziert. Jeder geteilte Link zeigt heute kein Vorschaubild |
-| `/robots.txt`   | fehlt vollständig                                                                                                                      |
-| `/sitemap.xml`  | fehlt vollständig                                                                                                                      |
-| `/favicon.ico`  | fehlt, ebenso das übrige Favicon-Set und das Web-Manifest                                                                              |
+| Pfad                | Herkunft                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------- |
+| `/og-image.png`     | `public/`, erzeugt von `scripts/og-image.mjs` (1200×630). Commit `16f3f20`                |
+| `/favicon.ico`      | `public/`, samt SVG, PNG-Set, Apple-Touch-Icon und Maskable. Commit `16f3f20`             |
+| `/site.webmanifest` | generiert aus `src/pages/site.webmanifest.js`. Commit `16f3f20`                           |
+| `/robots.txt`       | generiert aus `src/pages/robots.txt.js`. Commits `16f3f20`, `00c18ed`                     |
+| `/sitemap.xml`      | generiert aus `src/pages/sitemap.xml.js`, `lastmod` aus git. Commits `16f3f20`, `00c18ed` |
+| `/llms.txt`         | generiert aus `src/pages/llms.txt.js`. Commit `00c18ed`                                   |
+| `/404.html`         | `src/pages/404.astro`, trägt `noindex`. Commit `16f3f20`                                  |
 
-Dazu fehlt eine eigene 404-Seite: `/nichtvorhanden` liefert die nackte Hoster-Standardseite.
+**Was der Hoster dazu noch tun muss:** `404.html` als Fehlerseite eintragen. Eine
+statische Seite kann den 404-Status nicht selbst setzen; ohne diesen Eintrag antwortet
+der Hoster mit seiner eigenen Seite und die Datei liegt ungenutzt herum. Der
+`noindex`-Hinweis im Head fängt nur den zweiten Teil des Problems ab — die Aufnahme als
+Soft-404 bei Status 200 — er ersetzt die Hoster-Konfiguration nicht.
 
 ## Security-Header — Vorschlag, hostersyntaxfrei
 
@@ -148,10 +164,12 @@ Erst abhaken, wenn tatsächlich geprüft:
 - [ ] Die drei Blocker aus [AUDIT-2026-08-17.md](AUDIT-2026-08-17.md) sind erledigt
 - [ ] `node scripts/verify.mjs` meldet **keine** FEHLER
 - [ ] `npm run build` läuft in einer sauberen Umgebung durch (`rm -rf node_modules dist .astro && npm ci && npm run build`)
-- [ ] `og-image.png`, `robots.txt`, `sitemap.xml`, Favicon-Set liegen vor und liefern 200
-- [ ] 404-Seite vorhanden und erreichbar
+- [ ] `og-image.png`, `robots.txt`, `sitemap.xml`, `llms.txt`, Favicon-Set liefern 200
+- [ ] `404.html` ist beim Hoster als Fehlerseite eingetragen und antwortet mit Status 404
 - [ ] Die finale Domain steht in `SITE.origin`
 - [ ] Canonical-URLs zeigen auf die finale Domain
+- [ ] `/barrierefreiheit` und `/404` tragen `noindex`, `robots.txt` enthält kein `Disallow`
+- [ ] `sitemap.xml` wurde in der Google Search Console eingereicht
 - [ ] Rechtstexte sind anwaltlich freigegeben
 - [ ] Lighthouse mobil und Desktop gemessen und protokolliert
 - [ ] Auf echten Geräten geprüft, mindestens iOS Safari und Android Chrome

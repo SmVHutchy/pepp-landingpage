@@ -238,3 +238,36 @@ erweiterte `.gitignore`.
 zurücknehmbar.
 
 **Preis.** Die Historie vor dem 17.08.2026 ist verloren und nicht rekonstruierbar.
+
+---
+
+## ADR-014 · Ausschluss aus dem Index per `noindex`, nicht per `Disallow`
+
+**Kontext.** Zwei Seiten sollen erreichbar, aber nicht suchbar sein: `/barrierefreiheit`,
+solange dort BFSG-Pflichtangaben als Platzhalter stehen (Blocker B2), und `/404`, weil
+statisches Hosting keinen 404-Status setzen kann und die Seite mit 200 antwortet.
+
+Bis Commit `00c18ed` löste `robots.txt` das mit `Disallow: /barrierefreiheit`. Das war
+falsch, und zwar auf eine Art, die man nur beim Nachlesen der Spezifikation bemerkt: ein
+`Disallow` verhindert das **Crawlen**, nicht das **Indexieren**. Eine URL, die
+irgendwo verlinkt ist — und diese ist es, im Footer — kann trotzdem in den Index
+geraten, dann ohne Snippet und ohne dass die Suchmaschine je erfährt, dass die Seite
+dort nicht hingehört. Die 404 hatte überhaupt keinen Ausschluss und wäre als Soft-404
+aufgenommen worden.
+
+**Entscheidung.** Der Ausschluss steht als `<meta name="robots" content="noindex, follow">`
+im Head der betroffenen Seite. `Base.astro` trägt dafür ein `noindex`-Prop
+(`Base.astro:23-34`, `:109`), `Legal.astro` reicht es durch. `robots.txt` gibt alles
+frei, ausnahmslos.
+
+`follow` und nicht `none`: die Links dieser Seiten sollen weiter zählen, nur die Seiten
+selbst nicht im Index stehen.
+
+**Konsequenz.** Die beiden Regeln bedingen sich: `noindex` wirkt nur, wenn der Crawler
+die Seite lesen darf. Wer später ein `Disallow` für eine dieser Seiten in `robots.txt`
+einträgt, schaltet den Ausschluss damit ab, statt ihn zu verstärken. Der Hinweis steht
+deshalb an beiden Stellen im Code.
+
+**Preis.** Der Ausschluss ist nicht mehr an einer Stelle zentral ablesbar, sondern liegt
+bei der jeweiligen Seite. Das ist die richtige Seite der Abwägung — die Bedingung, unter
+der er entfällt, steht damit direkt neben dem Grund, aus dem er existiert.
