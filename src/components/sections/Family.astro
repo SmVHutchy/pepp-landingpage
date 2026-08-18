@@ -1,27 +1,41 @@
 ---
 /* Sektion 11 · Für die ganze Familie
    Weiss mit Radius oben. Karten in Off-White auf Weiss, ohne Schatten. */
+import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
+import quest from '../../assets/mascot/pepp-quest.png';
 
+/* Farbtöne wie in „So funktioniert's": dieselben Tile-Tints, andere Reihenfolge.
+   Die Icons standen vorher nackt auf der Karte — als einzige Icons der Seite
+   ohne Fläche. Die Sektion bleibt trotzdem flach: ein Tint ist Farbe, kein
+   Schatten. */
 const cards = [
   {
     icon: 'message-circle',
+    tint: 'var(--pepp-pink-tint)',
+    ink: 'var(--ink-pink)',
     title: 'Familien-Chat',
     body: 'Absprachen, Lob und Beweisfotos an einem Ort — ohne fremde Messenger.',
   },
   {
     icon: 'users',
+    tint: 'var(--pepp-lilac-tint)',
+    ink: 'var(--ink-lilac)',
     title: 'Mehrere Kinder, zweites Elternteil',
     body: 'Emma und Ben mit eigenen Grenzen. Beide Eltern sehen dasselbe.',
   },
   {
     icon: 'badge-check',
+    tint: 'var(--pepp-blue-tint)',
+    ink: 'var(--ink-blue)',
     title: 'Beitreten per QR-Code',
     body: 'Code zeigen, scannen, dabei. Keine Einladungsmails, keine Codes abtippen.',
   },
   {
     icon: 'smartphone',
+    tint: 'var(--pepp-peach-tint)',
+    ink: 'var(--ink-peach)',
     title: 'Kein eigenes Handy nötig',
     body: 'Der Kind-Modus läuft auf deinem Gerät — umschalten mit PIN.',
   },
@@ -34,21 +48,52 @@ const cards = [
     groesse="480px"
     bottom="-10%"
     right="-8%"
-    deckkraft={0.42}
+    deckkraft={0.32}
     weg={-60}
   />
 
   <div class="mkt-container">
-    <div class="mkt-head">
+    {
+      /* Der Kopf trägt hier zwei Spalten ohne Lead: links Label und H2, rechts
+        Pepp. Die H2 ist zwei Wörter kurz, und rechts davon standen bisher gut
+        700px leere Fläche — die grösste unbespielte Fläche der Seite.
+
+        Der Render ist der einzige mit Fahne und Rucksack: „Für alle, die
+        mitziehen" — er zieht voran. Er steht auf einem eigenen radialen Schein
+        (Vorgabe aus guidelines/mascot-and-coin.md: nie auf einer harten Form,
+        nie in einer Karte mit Fliesstext) und nicht in einer der vier Karten.
+
+        data-anim="side" statt "card": die Figur steht in der rechten Hälfte
+        und läuft von rechts ein — unter 901px fällt revealSides von selbst auf
+        den Karten-Reveal zurück (siehe src/scripts/site.js). */
+    }
+    <div class="mkt-head fam__head">
       <p class="mkt-label" data-anim>Familie</p>
       <h2 class="mkt-h2 mkt-h2--sm" data-anim>Für alle, die mitziehen.</h2>
+
+      <div class="fam__figure" aria-hidden="true" data-anim="side">
+        <div class="fam__aura">
+          <Blob ton="pink" groesse="100%" deckkraft={0.45} weg={-30} />
+        </div>
+        <Image
+          src={quest}
+          alt=""
+          width={300}
+          height={280}
+          densities={[1, 2]}
+          format="webp"
+          loading="lazy"
+        />
+      </div>
     </div>
 
     <ul class="fam__cards mkt-list-reset">
       {
         cards.map((card) => (
           <li class="fam__card" data-anim="card">
-            <Icon name={card.icon} size={24} color="var(--pepp-ink)" />
+            <span class="mkt-tile" style={`background:${card.tint}`}>
+              <Icon name={card.icon} size={22} color={card.ink} />
+            </span>
             <h3 class="fam__title">{card.title}</h3>
             <p class="fam__body">{card.body}</p>
           </li>
@@ -59,6 +104,82 @@ const cards = [
 </section>
 
 <style>
+  /* Der Schein der Figur läuft über den Sektionsrand hinaus; ohne Beschnitt
+     liesse sich die Seite nach rechts schieben. */
+  .family {
+    overflow: hidden;
+  }
+
+  /* Zweispaltiger Kopf ohne Lead. Das globale Rezept in global.css hängt an
+     :has(.mkt-lead) — hier gibt es keinen Lead, also steht die Aufteilung
+     lokal. Gleiche Spaltenverhältnisse und gleicher Spaltenabstand wie dort,
+     damit die Sektion im selben Raster sitzt wie Sicherheit und Preis. */
+  @media (min-width: 901px) {
+    .fam__head {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      /* auto/1fr statt auto/auto: die Figur spannt beide Zeilen und ist höher
+         als Label plus H2. Bei zwei auto-Zeilen verteilt das Raster den
+         Überschuss auf beide — dann stand das Label allein oben und die H2
+         weit darunter. Mit 1fr nimmt die zweite Zeile den Rest auf, und die
+         H2 bleibt am Label. */
+      grid-template-rows: auto 1fr;
+      column-gap: var(--mkt-head-gap);
+      row-gap: var(--space-4);
+      align-items: start;
+    }
+
+    .fam__head > .mkt-label {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .fam__head > h2 {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    /* Über beide Zeilen und unten ausgerichtet: die Figur steht auf derselben
+       Linie, auf der die Karten beginnen, statt neben der Headline zu schweben. */
+    .fam__figure {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: end;
+    }
+  }
+
+  .fam__figure {
+    position: relative;
+    justify-self: center;
+    /* Die Figur darf sich in den Abstand zur Kartenreihe legen: sie ist
+       Dekoration und verlängert die Sektion so um keine eigene Zeile. */
+    margin-bottom: calc(var(--mkt-stack-gap) * -0.5);
+    pointer-events: none;
+  }
+
+  .fam__figure img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: clamp(180px, 24vw, 300px);
+    height: auto;
+    /* Der Render bringt keinen Bodenschatten mit — --shadow-mascot ist im
+       Design System genau dieser Wert. */
+    filter: drop-shadow(var(--shadow-mascot));
+  }
+
+  /* Der Schein. <Blob> bringt den radialen --glow-pink mit und hängt am
+     Scroll-Scrub, deshalb steht hier nur die Position. */
+  .fam__aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: 150%;
+    aspect-ratio: 1;
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .fam__cards {
     margin-top: var(--mkt-stack-gap);
     display: grid;
@@ -68,6 +189,8 @@ const cards = [
 
   /* Bewusst ohne box-shadow: die Sektion soll flacher wirken als Sicherheit. */
   .fam__card {
+    position: relative;
+    z-index: 1;
     background: var(--bg-app);
     border: var(--border-hair) solid var(--border-hairline);
     border-radius: var(--radius-2xl);
