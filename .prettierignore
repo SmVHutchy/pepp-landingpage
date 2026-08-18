@@ -30,3 +30,9 @@ src/styles/tokens/
 public/*.png
 public/*.ico
 public/*.svg
+
+# Wegwerf-Messskripte von Agenten. Sie landen im Projektstamm statt im
+# Scratchpad und haben schon einmal das Formatier-Tor blockiert, obwohl sie
+# nie eingecheckt werden sollen. Aufräumen: rm _*.mjs scripts/_tmp_*.mjs
+_*.mjs
+scripts/_tmp_*.mjs

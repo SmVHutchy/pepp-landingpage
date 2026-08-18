@@ -43,3 +43,7 @@ Thumbs.db
 # Sicherungskopien, die scripts/fonts.mjs vor dem Ersetzen anlegt.
 # Die Quellschriften liegen im Design System, nicht hier.
 public/fonts/*.woff2.vorher
+
+# Wegwerf-Messskripte von Agenten (siehe .prettierignore)
+_*.mjs
+scripts/_tmp_*.mjs
