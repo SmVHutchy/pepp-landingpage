@@ -371,7 +371,13 @@ export function mountBlobEditor() {
       const zeile = document.createElement('div');
       zeile.className = 'pbe__eintrag';
       zeile.setAttribute('role', 'option');
-      zeile.innerHTML = `<span>${sektionName(sektionVon(el))}</span><span>${w.art} · ${Math.round(w.groesse)}${w.einheit}</span>`;
+      /* Element-Scheine als solche kennzeichnen: sie sind bearbeitbar wie
+         alle anderen, gehen aber nicht in die Sektionsausgabe. */
+      const amElement = !feldVon(el);
+      zeile.innerHTML =
+        `<span>${amElement ? '↳ ' : ''}${sektionName(sektionVon(el))}</span>` +
+        `<span>${w.art} · ${Math.round(w.groesse)}${w.einheit}</span>`;
+      if (amElement) zeile.title = 'haengt an einem Element, nicht an der Sektion';
       zeile.addEventListener('click', () => waehlen(el, true));
       zeile._el = el;
       liste.append(zeile);
@@ -613,13 +619,25 @@ export function mountBlobEditor() {
   /* ── Ausgabe ───────────────────────────────────────────────────────── */
 
   function alsCode() {
+    /* NUR WAS IN EINER CLIP-EBENE LIEGT, GEHOERT IN DIE AUSGABE.
+       Drei Blobs auf der Seite stehen woanders: in .how__aura, .rewards__aura
+       und .fam__aura, also hinter einem Screen oder einer Figur statt hinter
+       der Sektion. Sie sind dieselbe Komponente und tauchen deshalb in der
+       Liste auf — in die Ausgabe kopiert waeren sie danach doppelt auf der
+       Seite, einmal an ihrem Platz und einmal in der Clip-Ebene. Genau das ist
+       zweimal passiert und musste beide Male von Hand aussortiert werden. */
     const proSektion = new Map();
+    const anElementen = [];
     for (const el of alleBlobs()) {
+      if (!feldVon(el)) {
+        anElementen.push(el);
+        continue;
+      }
       const name = sektionName(sektionVon(el));
       if (!proSektion.has(name)) proSektion.set(name, []);
       proSektion.get(name).push(lesen(el));
     }
-    if (!proSektion.size) return '// keine Blobs auf der Seite';
+    if (!proSektion.size) return '// keine Blobs in einer Clip-Ebene';
 
     const zeilen = [];
     for (const [name, blobs] of proSektion) {
@@ -661,6 +679,19 @@ export function mountBlobEditor() {
         "// import Blob from '../Blob.astro';",
         "// import BlobFeld from '../BlobFeld.astro';",
         ''
+      );
+    }
+    /* Die Element-Scheine kommen als Notiz, nicht als Markup: sie stehen
+       schon im Code, nur an einer anderen Stelle. */
+    if (anElementen.length) {
+      zeilen.push(
+        `// Nicht in der Ausgabe, weil sie an einem Element haengen und nicht`,
+        `// an der Sektion — sie stehen bereits im Code:`,
+        ...anElementen.map((el) => {
+          const w = lesen(el);
+          const traeger = el.parentElement?.className || '?';
+          return `//   .${traeger}  ${w.art} · ${Math.round(w.groesse)}${w.einheit}`;
+        })
       );
     }
     return zeilen.join('\n');

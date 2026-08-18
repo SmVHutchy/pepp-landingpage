@@ -320,3 +320,34 @@ aus Verkleinerung und Ausblendung.
 prüfen. Wer das tut, findet Verstösse und muss diesen Eintrag kennen, um sie einzuordnen.
 Der Verweis steht deshalb auch im Code, bei `MOTION.sticky` in
 `src/scripts/motion-config.js`.
+
+## ADR-016 · `content-visibility: auto` gehört nicht auf die Blob-Ebenen
+
+**Verworfen.** 18. August 2026.
+
+Die Seite trägt 33 Farbblobs mit zusammen 42 Bildschirmflächen und 600px Weichzeichner
+in Summe. Gemessen kosten sie 169ms Blockierzeit beim Laden — genug, um die Frage zu
+stellen, ob man die Zeichenarbeit für alles ausserhalb des Bildes sparen kann.
+`content-visibility: auto` auf `.blob-feld` ist dafür der naheliegende Griff, und die
+Ebene erfüllt auch die Bedingung, unter der er sicher ist: sie bekommt ihre Grösse von
+`inset: 0` und nicht von ihrem Inhalt, das Grössen-Containment ändert an ihrem Kasten
+also nichts und es springt nichts.
+
+Gegen den Dev-Server gemessen sah es nach dem richtigen Griff aus: 554ms statt 646ms
+Blockierzeit, das meiste der Strecke zur Untergrenze von 535ms.
+
+**Gegen `dist` gemessen war es das Gegenteil: TBT sprang von 134ms auf 1277ms, über drei
+Läufe reproduzierbar.** Der Grund ist der Unterschied zwischen den beiden Messungen. Der
+Dev-Lauf lädt und wartet; `scripts/perf.mjs` scrollt die Seite. `content-visibility: auto`
+spart nichts, es verschiebt — und wenn 33 grosse, weichgezeichnete Flächen innerhalb
+weniger hundert Millisekunden alle relevant werden, holt der Hauptthread die gesamte
+gesparte Arbeit auf einmal nach. Auf einer Seite, die man von oben nach unten liest, ist
+das genau der falsche Zeitpunkt.
+
+**Was daraus bleibt.** `will-change: transform` auf den Blobs bleibt, obwohl es nach
+verschwendeter Ebenenspeicher aussieht: ohne die Zeile steigt die Blockierzeit auf 690ms
+statt 646ms. Der Weichzeichner wird dann in jedem Bild neu gerechnet statt einmal.
+
+Und die Regel für alles Weitere an dieser Stelle: gemessen wird gegen `dist` mit
+`npm run perf`, nicht gegen den Dev-Server. Der Dev-Server sagt in dieser Frage
+das Gegenteil der Wahrheit.
