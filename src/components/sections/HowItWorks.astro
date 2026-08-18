@@ -1,9 +1,11 @@
 ---
 /* Sektion 5 · So funktioniert's (#funktionen)
    Weiss mit Radius oben — der erste Sektionsübergang. Enthält CTA-Instanz 2. */
+import { Image } from 'astro:assets';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 import { PRICING } from '../../data/site.js';
+import roll from '../../assets/mascot/pepp-on-a-roll.png';
 
 const steps = [
   {
@@ -42,7 +44,7 @@ const steps = [
 ---
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
-<section id="funktionen" class="mkt-section mkt-section--xl mkt-section--card">
+<section id="funktionen" class="how mkt-section mkt-section--xl mkt-section--card">
   <div class="mkt-container">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>So funktioniert’s</p>
@@ -76,9 +78,50 @@ const steps = [
       </p>
     </div>
   </div>
+
+  {
+    /* „Vier Schritte, dann läuft es" — und rechts unten läuft Pepp. Der Render
+      steht in der leeren Ecke, die das Padding dieser XL-Sektion ohnehin
+      offenlässt: er legt sich also nicht über Inhalt und verlängert die Seite
+      nicht. Deshalb absolut und nicht in der CTA-Zeile.
+
+      data-ride statt data-anim="card": er kommt von rechts hereingefahren und
+      bremst aus, statt wie eine Karte von unten aufzutauchen. Werte in
+      MOTION.ride, Ablauf in initRide() — siehe src/scripts/motion-config.js.
+
+      aria-hidden und leeres alt: die Figur wiederholt nur, was die H2 sagt.
+      Ab 901px — darunter steht der CTA allein in der Spalte und die Figur
+      hätte keine Ecke mehr, in die sie passt. */
+  }
+  <div class="how__roll u-desk" aria-hidden="true" data-ride>
+    <Image
+      src={roll}
+      alt=""
+      width={248}
+      height={219}
+      densities={[1, 2]}
+      format="webp"
+      loading="lazy"
+    />
+  </div>
 </section>
 
 <style>
+  /* .mkt-section setzt bewusst kein overflow — jede Sektion entscheidet das
+     selbst. Diese muss beschneiden: der Surf-Pepp startet 260px rechts neben
+     seinem Platz, also ausserhalb des Viewports. Ohne diese Zeile liess sich
+     die Seite bis zum Auslösen der Animation 191px nach rechts schieben.
+
+     body{overflow-x:hidden} fängt das nicht ab: liegt am Wurzelelement
+     `visible`, wird der Wert des body auf den Viewport übertragen statt den
+     body selbst beschneiden zu lassen — die Fläche ragt weiter hinaus.
+
+     Beschnitten wird hier nichts sonst: der Peek aus „Der Alltag" steht in
+     JENER Sektion und wird von dieser hier nur verdeckt. */
+  .how {
+    overflow: hidden;
+  }
+
   /* Kein margin-top: den Abstand setzt .mkt-head als gap. Sonst addieren sich
      gap und Margin, und welcher gewinnt, entscheidet die Ladereihenfolge der
      Astro-Scoped-Styles gegen global.css. */
@@ -138,5 +181,25 @@ const steps = [
     font-size: 14px;
     font-weight: var(--weight-medium);
     color: var(--text-secondary);
+  }
+
+  /* z-index 0 statt des geerbten 1 aus `.mkt-section > *`: die Figur ist
+     Dekoration und liegt unter dem Inhalt. Der Rand ist derselbe wie beim Peek
+     in „Der Alltag", damit beide auf derselben Linie stehen.
+
+     Kein eigener drop-shadow: der Render bringt seinen Schweif in Farbe mit,
+     ein Schlagschatten darunter würde ihn nur trüben. */
+  .how__roll {
+    position: absolute;
+    z-index: 0;
+    right: clamp(16px, 6vw, 120px);
+    bottom: clamp(20px, 3vw, 40px);
+    pointer-events: none;
+  }
+
+  .how__roll img {
+    display: block;
+    width: 248px;
+    height: auto;
   }
 </style>

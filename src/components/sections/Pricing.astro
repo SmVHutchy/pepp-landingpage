@@ -5,8 +5,10 @@
    Kein Preis steht hier als Literal: alles kommt aus PRICING in
    src/data/site.js. Ändert sich der Preis, ändert sich diese Sektion, das
    JSON-LD und die FAQ-Antwort in einem Zug. */
+import { Image } from 'astro:assets';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
+import wave from '../../assets/mascot/pepp-wave.png';
 import {
   PRICING,
   formatEuro,
@@ -36,10 +38,33 @@ const included = [
     </div>
 
     <div class="price__plans">
-      <div class="price__plan" data-anim="card">
-        <h3 class="mkt-label price__kicker">Monatlich</h3>
-        <p class="price__amount">{monthly}</p>
-        <p class="price__meta">pro Monat &#183; monatlich kündbar</p>
+      {
+        /* Die Monatskarte trägt drei Zeilen, die Jahreskarte zwölf — links
+          blieben dadurch gut 200px weisse Fläche stehen, die grösste Lücke der
+          Seite. Da steht jetzt Pepp und winkt zur empfohlenen Karte hinüber.
+
+          In der Spalte statt absolut: die Lücke ist genau so hoch, wie die
+          Karte kurz ist, und das ändert sich mit jeder Zeile im Jahresplan.
+          Ein absoluter Wert wäre bei der nächsten Textänderung falsch. */
+      }
+      <div class="price__col">
+        <div class="price__plan" data-anim="card">
+          <h3 class="mkt-label price__kicker">Monatlich</h3>
+          <p class="price__amount">{monthly}</p>
+          <p class="price__meta">pro Monat &#183; monatlich kündbar</p>
+        </div>
+
+        <div class="price__wave u-desk" aria-hidden="true" data-anim="card">
+          <Image
+            src={wave}
+            alt=""
+            width={196}
+            height={230}
+            densities={[1, 2]}
+            format="webp"
+            loading="lazy"
+          />
+        </div>
       </div>
 
       <div class="price__plan price__plan--featured" data-anim="card">
@@ -99,6 +124,38 @@ const included = [
     gap: var(--mkt-card-gap);
     margin-top: var(--mkt-stack-gap);
     align-items: start;
+  }
+
+  /* Die Spalte ist nur eine Klammer um Karte und Figur — sie darf im Raster
+     nicht als Karte wirken, also kein Hintergrund und kein Rahmen. */
+  .price__col {
+    display: flex;
+    flex-direction: column;
+    /* Das Raster steht auf align-items:start, damit die kurze Monatskarte
+       nicht auf Jahreskartenhöhe gezogen wird. Die Klammer darum muss aber
+       voll durchlaufen — sonst hat das margin-top:auto der Figur nichts, wogegen
+       es drückt. Die Karte darin bleibt trotzdem inhaltshoch. */
+    align-self: stretch;
+  }
+
+  /* margin-top:auto schiebt die Figur an den Fuss der Spalte, egal wie hoch
+     die Jahreskarte daneben gerade ist. justify-content:center stellt sie
+     unter die Mitte der Monatskarte statt an deren linke Kante. */
+  .price__wave {
+    margin-top: auto;
+    padding-top: clamp(24px, 3vw, 40px);
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Ohne drop-shadow, anders als der Peek in „Der Alltag": --shadow-mascot ist
+     ein 48px weicher rosa Schein. Auf der Off-White-Fläche dort trägt er, auf
+     dem reinen Weiss hier stand ein rosa Schmierfleck um die Figur. */
+  .price__wave img {
+    display: block;
+    width: 196px;
+    height: auto;
   }
 
   .price__plan {

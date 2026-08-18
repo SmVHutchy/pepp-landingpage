@@ -4,8 +4,17 @@
    auch kein data-anim und kein Startzustand.
 
    Statt zwei angeschnittener App-Screens steht hier das Maskottchen: der
-   gelieferte Render pepp-wave.png, 1022x1200 mit Alphakanal, aus dem Character
-   Sheet die Hero-Pose. Nichts nachgezeichnet, nichts umgefärbt.
+   gelieferte Render pepp-coin-play.png mit Alphakanal, aus dem Character Sheet.
+   Nichts nachgezeichnet, nichts umgefärbt.
+
+   Die Pose mit der Münze statt der winkenden: die Münze ist das Zeichen der
+   Seite — sie steht im Logo, im Loader hier daneben und in „Geld oder
+   Medienzeit". Winken sagt hallo, die Münze sagt worum es geht. pepp-wave
+   steht dafür jetzt in der Preis-Sektion, in der Lücke unter der Monatskarte.
+
+   Der Render kam mit rund 240px durchsichtigem Rand (1280x1280 quadratisch).
+   Der ist beim Kopieren weggeschnitten — 1043x1167 —, sonst füllt der Rand die
+   Bühne mit und die Figur wirkt kleiner, als sie ist.
 
    Die App-Screens sind damit erst ab „Die Mechanik" zu sehen. Das ist bewusst
    so entschieden: die Startseite zeigt die Marke, nicht das Interface. */
@@ -15,7 +24,7 @@ import Icon from '../Icon.astro';
 
 import { PRICING } from '../../data/site.js';
 
-import mascot from '../../assets/mascot/pepp-wave.png';
+import mascot from '../../assets/mascot/pepp-coin-play.png';
 import coin from '../../assets/brand/pepp-coin-freigestellt.png';
 
 /* Testdauer aus PRICING statt als Text. Sonst steht die Zahl an einer
@@ -98,12 +107,33 @@ const microTrust = [
       <div class="hero__glow" aria-hidden="true"></div>
 
       <div class="hero__figure" data-hero-figure>
+        {
+          /* widths + sizes statt densities, und das ist hier kein Feinschliff:
+            die Figur ist breitenvariabel (`width: clamp(240px, 40vw, 580px)`
+            weiter unten), und sie ist auf dem Handy das LCP-Bild.
+
+            Mit `densities={[1, 2]}` bot der Browser nur 580px und 1043px an.
+            Auf einem Retina-Handy ist die Box 240px breit, gebraucht werden
+            also 480px — geladen wurde die 1043px-Datei mit 58 kB. Für das
+            Bild, auf das die Messung des Largest Contentful Paint zeigt.
+
+            sizes bildet die clamp-Kurve in Media Queries ab, weil clamp() im
+            sizes-Attribut noch nicht überall trägt: unter 600px Viewport
+            gewinnt der Boden (40vw ≤ 240px), ab 1450px die Decke
+            (40vw ≥ 580px), dazwischen gilt 40vw.
+
+            ÄNDERT SICH DIE CLAMP-ZEILE IM CSS, muss sizes mit. Die beiden
+            Stellen sind die einzige Kopplung in dieser Datei, deshalb steht
+            der Hinweis an beiden. 1043 ist die Breite der Quelldatei —
+            grösser hat keinen Zweck. */
+        }
         <Image
           src={mascot}
-          alt="Pepp, das Sparschwein-Maskottchen, winkt"
-          width={520}
-          height={611}
-          densities={[1, 2]}
+          alt="Pepp, das Sparschwein-Maskottchen, hält eine Goldmünze hoch"
+          width={580}
+          height={649}
+          widths={[240, 360, 480, 580, 760, 1043]}
+          sizes="(max-width: 600px) 240px, (min-width: 1450px) 580px, 40vw"
           format="webp"
           loading="eager"
           fetchpriority="high"
@@ -287,7 +317,15 @@ const microTrust = [
   /* Feste Breite über clamp und aspect-ratio aus width/height am <Image>:
      die Höhe steht damit vor dem Laden und CLS bleibt 0. */
   .hero__mascot {
-    width: clamp(220px, 34vw, 520px);
+    /* Grösser als der Vorgänger (34vw/520px): auf 1440px sind das 576 statt
+       490 Pixel. Die Bühnenspalte ist rund 517px breit, die Figur ragt also
+       links und rechts je ~30px darüber hinaus — in die Spalten-Lücke, nicht
+       in die Copy. Die Sektion hat overflow:hidden, mehr braucht es nicht.
+
+       DIESE ZEILE IST AN DAS sizes-ATTRIBUT DES <Image> OBEN GEKOPPELT.
+       Ändert sich der Boden (240px), die Steigung (40vw) oder die Decke
+       (580px), lädt der Browser sonst die falsche Auflösung. */
+    width: clamp(240px, 40vw, 580px);
     height: auto;
     display: block;
     /* --shadow-mascot ist im Design System genau dieser Wert. Ich hatte ihn
