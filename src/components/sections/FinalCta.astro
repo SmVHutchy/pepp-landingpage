@@ -4,11 +4,25 @@
    Enthält CTA-Instanz 5. Das Maskottchen kommt als gelieferter Render.
    Die H2 wiederholt die H1 wörtlich — bewusst, es ist derselbe Satz am Ende. */
 import { Image } from 'astro:assets';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import Cta from '../Cta.astro';
 import jump from '../../assets/mascot/pepp-jump.png';
 ---
 
 <section class="final">
+  {/* Von Liam im Blob-Editor gesetzt. */}
+  <BlobFeld>
+    <Blob
+      ton="peach"
+      groesse="1800px"
+      top="-39.9%"
+      left="-10.6%"
+      deckkraft={1}
+      weg={-60}
+    />
+    <Blob ton="pink" groesse="1750px" top="-29.8%" left="30%" deckkraft={1} weg={-60} />
+  </BlobFeld>
   <div class="mkt-container">
     <div class="final__frame" data-anim="card">
       <div class="final__panel">
@@ -42,6 +56,9 @@ import jump from '../../assets/mascot/pepp-jump.png';
 
 <style>
   .final {
+    /* Fuer die Clip-Ebene: sie liegt auf inset:0 und misst sich am naechsten
+       positionierten Vorfahren. Ohne das waere das <main>. */
+    position: relative;
     background: var(--bg-app);
     padding: 0 0 clamp(64px, 9vw, 120px);
   }

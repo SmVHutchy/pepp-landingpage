@@ -4,6 +4,7 @@
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import quest from '../../assets/mascot/pepp-quest.png';
 
 /* Farbtöne wie in „So funktioniert's": dieselben Tile-Tints, andere Reihenfolge.
@@ -43,14 +44,36 @@ const cards = [
 ---
 
 <section class="family mkt-section mkt-section--sm mkt-section--card">
-  <Blob
-    ton="peach"
-    groesse="480px"
-    bottom="-10%"
-    right="-8%"
-    deckkraft={0.32}
-    weg={-60}
-  />
+  {
+    /* Von Liam im Blob-Editor gesetzt. Der Schein in .fam__aura weiter unten
+     gehoert nicht dazu — der liegt hinter der Figur, nicht hinter der Sektion. */
+  }
+  <BlobFeld>
+    <Blob
+      ton="pink"
+      groesse="1800px"
+      top="-34.6%"
+      left="12.4%"
+      deckkraft={0.76}
+      weg={-60}
+    />
+    <Blob
+      ton="peach"
+      groesse="1800px"
+      top="-29.3%"
+      left="90%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+    <Blob
+      ton="peach"
+      groesse="1450px"
+      bottom="-11.9%"
+      right="109.2%"
+      deckkraft={1}
+      weg={-60}
+    />
+  </BlobFeld>
 
   <div class="mkt-container">
     {
