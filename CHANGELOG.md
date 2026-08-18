@@ -31,11 +31,14 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 - `og:site_name`, `og:image:alt`, `og:image:width/height` (nachgemessen 1200×630),
   `twitter:image`. (`00c18ed`)
 
+- **Hero-Bild lädt die passende Auflösung.** Die Figur ist breitenvariabel
+  (`clamp(240px, 40vw, 580px)`) und auf dem Handy das LCP-Bild. Mit `densities={[1, 2]}`
+  bot der Browser nur 580 px und 1043 px an und lud für eine 240-px-Box die 1043-px-Datei.
+  Jetzt `widths` + `sizes`; über sechs Viewport/DPR-Kombinationen nachgemessen, jede holt
+  die kleinste passende Variante. Handy bei 2x: 22 kB statt 52 kB. (`95b5f5f`)
+
 ### Offen — 18.08.2026
 
-- **Hero-Bild.** `widths`/`sizes` statt `densities` am LCP-Bild spart auf dem Handy
-  30 kB (22 statt 52). Liegt fertig im Arbeitsbaum, aber nicht committet: die Änderung
-  hängt im selben Diff wie ein laufender Maskottchen-Tausch.
 - **`apple-itunes-app`.** Die iOS-App-ID ist bekannt. Das Meta blendet auf iOS-Safari
   eine Leiste über der Seite ein und ist damit eine Design- und Produktentscheidung,
   keine Metadatenfrage. Bewusst nicht ausgeführt.
