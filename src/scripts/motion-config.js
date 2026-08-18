@@ -99,26 +99,35 @@ export const MOTION = {
     end: 'bottom 40%',
   },
 
-  /* Einflug. Genau eine Figur der Seite fährt ihn: der Surf-Pepp in „Vier
-     Schritte, dann läuft es". Er steht auf einem Brett und zieht seinen
-     Schweif nach rechts hinten weg — also kommt er von rechts hereingefahren
-     und bremst auf seinem Platz aus. Ein Reveal von unten wie bei den Karten
-     würde die Pose verleugnen.
+  /* Snout Trail über den vier Schritten in „Vier Schritte, dann läuft es".
+     Die Geste stammt aus dem Design System (components/brand/SnoutTrail.jsx):
+     die Schnauze ist der Stift, die Linie entsteht hinter ihr. Dort läuft sie
+     einmal beim Screen-Eintritt ab; hier hängt sie am Scroll — der Weg ist
+     die Sektion, nicht eine Dauer. Deshalb scrub und kein duration.
 
-     Die Drehung läuft mit: beim Anfahren leicht zurückgekippt, im Stand
-     gerade. `--ease-out-soft` und nicht overshoot — ein Brett, das am Ende
-     zurückfedert, sieht nach Gummi aus.
+     `start` und `end` beziehen sich auf den Block aus Linie und Karten, nicht
+     auf die ganze Sektion: gemessen wird die Strecke, in der die Karten
+     wirklich im Bild stehen. Über die ganze XL-Sektion gerechnet wäre die
+     Linie schon fertig, bevor die erste Karte oben ist.
 
-     x ist grösser als der Abstand zum Sektionsrand: der Startpunkt liegt
-     ausserhalb, er fährt also wirklich herein. Beschnitten wird das von
-     body{overflow-x:hidden} — die Sektion selbst bleibt ohne overflow, sonst
-     würde sie den Peek der Vorgängersektion mit abschneiden. */
-  ride: {
-    x: 260,
-    rotate: -10,
-    duration: 0.9,
+     Das Ende liegt bei halber Viewporthöhe und nicht höher: die Linie soll
+     ankommen, während alle vier Karten im Bild stehen. Mit `bottom 72%` war
+     sie fertig, sobald der Block zu zwei Dritteln zu sehen war — gezeichnet
+     wurde dann in der unteren Bildschirmhälfte, wo die vierte Karte noch gar
+     nicht stand.
+
+     `swap` ist der Kartenwechsel an Pepp — der einzige Teil, der auf Zeit
+     läuft: ein Wechsel am Scrub würde beim Zurückrollen rückwärts blenden.
+
+     runFrom wie mechanic.pinFrom: darunter stehen die Karten untereinander,
+     eine waagerechte Welle hätte dort nichts zu verbinden. */
+  quest: {
+    runFrom: 901,
+    start: 'top 88%',
+    end: 'bottom 52%',
+    scrub: 0.8,
+    swap: 0.45,
     ease: '--ease-out-soft',
-    start: 'top 72%',
   },
 
   /* Mechanik-Sektion: das Gerät als Karussell. Greift erst ab Desktop-Breite;

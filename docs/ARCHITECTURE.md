@@ -189,8 +189,8 @@ gebaut (`Base.astro:12`, `index.astro:41`).
 ### 3.6 `MOTION` → `src/scripts/site.js`
 
 `src/scripts/motion-config.js:14-99` ist die einzige Stelle mit Bewegungsparametern,
-gegliedert in acht Gruppen: `text`, `card`, `headline`, `heroParallax`, `side`, `blob`,
-`peek`, `mechanic`.
+gegliedert in neun Gruppen: `text`, `card`, `headline`, `heroParallax`, `side`, `blob`,
+`peek`, `quest`, `mechanic`.
 
 | Gruppe                | Gelesen in                                                                                   |
 | --------------------- | -------------------------------------------------------------------------------------------- |
@@ -201,6 +201,7 @@ gegliedert in acht Gruppen: `text`, `card`, `headline`, `heroParallax`, `side`, 
 | `MOTION.heroParallax` | `site.js:326-331`                                                                            |
 | `MOTION.blob`         | `site.js:253-255`                                                                            |
 | `MOTION.peek`         | `site.js:272-276`                                                                            |
+| `MOTION.quest`        | `site.js:261` (`runFrom`), `:317-318` (`swap`/`ease`), `:326-328` (`start`/`end`/`scrub`)    |
 | `MOTION.mechanic`     | `site.js:375` (`pinFrom`), `:409` (`fadeOut`), `:418` (`fadeIn`), `:429-430` (`start`/`end`) |
 
 Easing-Werte in `MOTION` sind entweder GSAP-Namen (`'power2.out'`) oder Token-Namen mit

@@ -1,12 +1,31 @@
 ---
 /* Sektion 5 · So funktioniert's (#funktionen)
-   Weiss mit Radius oben — der erste Sektionsübergang. Enthält CTA-Instanz 2. */
+   Weiss mit Radius oben — der erste Sektionsübergang. Enthält CTA-Instanz 2.
+
+   Aufbau in zwei Teilen:
+
+   1. Der Kopf steht links, rechts steht Pepp gross auf einem Peach-Schein,
+      mit einer Nachweis-Karte davor. Dieselbe Komposition wie im Hero, nur
+      gespiegelt zur Mechanik-Sektion, die ihre Bühne links hat.
+   2. Darunter zeichnet die Schnauze die Linie über die vier Schritte. Der
+      Snout Trail ist eine Geste aus dem Design System
+      (components/brand/SnoutTrail.jsx): die Schnauze ist der Stift, die Linie
+      entsteht hinter ihr. Dort läuft sie einmal beim Screen-Eintritt ab, hier
+      hängt sie am Scroll — Werte in MOTION.quest, Ablauf in initQuestRun().
+
+   Der Surf-Pepp, der vorher in der rechten unteren Ecke hereinfuhr, ist raus.
+   Er stand neben dem Inhalt und wiederholte nur die H2; die Figur trägt jetzt
+   die Bühne und die Schritte tragen die Bewegung. */
 import { Image } from 'astro:assets';
+import Blob from '../Blob.astro';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 import { PRICING } from '../../data/site.js';
-import roll from '../../assets/mascot/pepp-on-a-roll.png';
+import mascot from '../../assets/mascot/pepp-quest.png';
 
+/* `proof` ist die Karte, die im selben Schritt vor Pepp steht: ein Ausschnitt
+   aus der App, nicht der Schritttext ein zweites Mal. Sie liegt in der Bühne
+   und damit hinter aria-hidden — vorgelesen wird der Schritt daneben. */
 const steps = [
   {
     number: '01',
@@ -15,6 +34,7 @@ const steps = [
     ink: 'var(--ink-peach)',
     title: 'Quest anlegen',
     body: 'Aufgabe wählen, Belohnung dranhängen: 2,50 € oder 30 Min.',
+    proof: { title: 'Tisch decken', meta: 'Neue Quest · 2,50 €' },
   },
   {
     number: '02',
@@ -23,6 +43,7 @@ const steps = [
     ink: 'var(--ink-pink)',
     title: 'Kind erledigt sie',
     body: 'Quest annehmen, machen, Foto oder Kommentar als Beweis schicken.',
+    proof: { title: 'Beweis geschickt', meta: 'Foto · wartet auf dich' },
   },
   {
     number: '03',
@@ -31,6 +52,7 @@ const steps = [
     ink: 'var(--ink-blue)',
     title: 'Du gibst frei',
     body: 'Kurz ansehen, freigeben. Oder zurückschicken — ohne Neustart.',
+    proof: { title: 'Freigegeben', meta: 'Ein Tipp, fertig' },
   },
   {
     number: '04',
@@ -39,78 +61,153 @@ const steps = [
     ink: 'var(--ink-gold)',
     title: 'Der Pott füllt sich',
     body: 'Die Belohnung wandert in den Pott — sichtbar als Ring um Pepp.',
+    proof: { title: 'Im Pott', meta: '+2,50 €' },
   },
 ];
+
+/* Die Welle aus PATHS.wave in SnoutTrail.jsx, unverändert. Nichts nachgezogen:
+   dieselbe Geste steht in den App-Screens. Die Linie läuft von x=120 bis x=920
+   in einer 1040 breiten Viewbox — also von 11,5 % bis 88,5 % der Fläche, und
+   damit ungefähr über den Mitten der vier Karten darunter. Genau abgemessen
+   wird trotzdem im Skript, nicht hier. */
+const TRAIL = {
+  d: 'M120,95 C260,5 380,185 520,95 C660,5 780,185 920,95',
+  w: 1040,
+  h: 190,
+};
 ---
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
 <section id="funktionen" class="how mkt-section mkt-section--xl mkt-section--card">
   <div class="mkt-container">
-    <div class="mkt-head">
-      <p class="mkt-label" data-anim>So funktioniert’s</p>
-      <h2 class="mkt-h2" data-anim>Vier Schritte, dann läuft es.</h2>
-      <p class="mkt-lead how__lead" data-anim>
-        Einmal einrichten dauert Minuten. Danach macht die Quest die Diskussion.
-      </p>
-    </div>
+    <div class="how__intro">
+      <div class="how__copy">
+        {
+          /* Kein .mkt-head: der stellt sich ab 901px zweispaltig, und in einer
+            halben Spalte stünden Headline und Lead dann nebeneinander in je
+            20ch. Die Reihenfolge Label → H2 → Lead bleibt dieselbe. */
+        }
+        <p class="mkt-label" data-anim>So funktioniert’s</p>
+        <h2 class="mkt-h2" data-anim>Vier Schritte, dann läuft es.</h2>
+        <p class="mkt-lead how__lead" data-anim>
+          Einmal einrichten dauert Minuten. Danach macht die Quest die Diskussion.
+        </p>
 
-    <ol class="how__steps mkt-list-reset">
+        <div class="how__cta" data-anim>
+          <Cta />
+          <p class="how__cta-note">
+            {PRICING.trialDays} Tage gratis &#183; Kein Bankkonto nötig &#183; Jederzeit kündbar
+          </p>
+        </div>
+      </div>
+
       {
-        steps.map((step) => (
-          <li class="mkt-card mkt-card--sunken" data-anim="card">
-            <div class="how__step-head">
-              <span class="mkt-tile" style={`background:${step.tint}`}>
-                <Icon name={step.icon} size={22} color={step.ink} />
-              </span>
-              <span class="how__step-number">{step.number}</span>
-            </div>
-            <h3 class="how__step-title">{step.title}</h3>
-            <p class="how__step-body">{step.body}</p>
-          </li>
-        ))
+        /* Die Bühne ist Dekoration: Der Schein läuft aus der Sektion heraus,
+          die Nachweis-Karten sagen dasselbe wie die Schritte daneben. Deshalb
+          aria-hidden — das nimmt sie zugleich aus der Reflow-Prüfung, die
+          angeschnittene Flächen sonst zu Recht meldet. */
       }
-    </ol>
+      <div class="how__stage" aria-hidden="true">
+        <div class="how__aura">
+          <Blob ton="peach" groesse="100%" deckkraft={0.7} weg={-36} />
+        </div>
 
-    <div class="how__cta" data-anim>
-      <Cta />
-      <p class="how__cta-note">
-        {PRICING.trialDays} Tage gratis &#183; Kein Bankkonto nötig &#183; Jederzeit kündbar
-      </p>
+        <Image
+          class="how__mascot"
+          src={mascot}
+          alt=""
+          width={440}
+          height={410}
+          widths={[200, 300, 400, 440, 600, 880]}
+          sizes="(max-width: 444px) 72vw, (max-width: 900px) 320px, (min-width: 1375px) 440px, 32vw"
+          format="webp"
+          loading="lazy"
+        />
+
+        {
+          /* Vier Karten im selben Kasten, deckend, die erste oben. Ohne Skript
+            ist genau eine zu sehen — dieselbe Lösung wie im Karussell der
+            Mechanik-Sektion, und aus demselben Grund: ein Startzustand
+            `opacity: 0` im CSS lässt Inhalt verschwinden, sobald das Skript
+            ausfällt. Der Wechsel gehört ins Skript.
+
+            Feste Höhe, weil die Karten übereinanderliegen: eine Karte, die
+            zwei Zeilen braucht, würde sonst unten aus der darunterliegenden
+            herausschauen. */
+        }
+        <div class="how__proofs">
+          {
+            steps.map((step) => (
+              <div class="how__proof" data-quest-proof>
+                <span class="mkt-tile" style={`background:${step.tint}`}>
+                  <Icon name={step.icon} size={20} color={step.ink} />
+                </span>
+                <span class="how__proof-text">
+                  <span class="how__proof-title">{step.proof.title}</span>
+                  <span class="how__proof-meta">{step.proof.meta}</span>
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
     </div>
-  </div>
 
-  {
-    /* „Vier Schritte, dann läuft es" — und rechts unten läuft Pepp. Der Render
-      steht in der leeren Ecke, die das Padding dieser XL-Sektion ohnehin
-      offenlässt: er legt sich also nicht über Inhalt und verlängert die Seite
-      nicht. Deshalb absolut und nicht in der CTA-Zeile.
+    <div class="how__run" data-quest-run>
+      {
+        /* Ohne Skript steht die fertige Linie da und die Schnauze am Anfang —
+          genau der Ruhezustand, den SnoutTrail.jsx rendert. Das Skript nimmt
+          die Linie erst zurück, wenn es wirklich läuft.
 
-      data-ride statt data-anim="card": er kommt von rechts hereingefahren und
-      bremst aus, statt wie eine Karte von unten aufzutauchen. Werte in
-      MOTION.ride, Ablauf in initRide() — siehe src/scripts/motion-config.js.
+          Ab 901px: darunter stehen die vier Karten untereinander, eine
+          waagerechte Welle hätte dort nichts zu verbinden. */
+      }
+      <svg
+        class="how__trail u-desk"
+        viewBox={`0 0 ${TRAIL.w} ${TRAIL.h}`}
+        fill="none"
+        aria-hidden="true"
+        data-quest-trail
+      >
+        <path
+          d={TRAIL.d}
+          stroke="var(--pepp-ink)"
+          stroke-width="6"
+          stroke-linecap="round"
+          data-quest-line></path>
+        <g data-quest-snout transform="translate(120 95)">
+          <image href="/logo/pepp-snout.svg" x="-34" y="-34" width="68" height="68" />
+        </g>
+      </svg>
 
-      aria-hidden und leeres alt: die Figur wiederholt nur, was die H2 sagt.
-      Ab 901px — darunter steht der CTA allein in der Spalte und die Figur
-      hätte keine Ecke mehr, in die sie passt. */
-  }
-  <div class="how__roll u-desk" aria-hidden="true" data-ride>
-    <Image
-      src={roll}
-      alt=""
-      width={248}
-      height={219}
-      densities={[1, 2]}
-      format="webp"
-      loading="lazy"
-    />
+      <ol class="how__steps mkt-list-reset">
+        {
+          steps.map((step) => (
+            <li
+              class="mkt-card mkt-card--sunken how__step"
+              data-anim="card"
+              data-quest-step
+            >
+              <div class="how__step-head">
+                <span class="mkt-tile" style={`background:${step.tint}`}>
+                  <Icon name={step.icon} size={22} color={step.ink} />
+                </span>
+                <span class="how__step-number">{step.number}</span>
+              </div>
+              <h3 class="how__step-title">{step.title}</h3>
+              <p class="how__step-body">{step.body}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
   </div>
 </section>
 
 <style>
   /* .mkt-section setzt bewusst kein overflow — jede Sektion entscheidet das
-     selbst. Diese muss beschneiden: der Surf-Pepp startet 260px rechts neben
-     seinem Platz, also ausserhalb des Viewports. Ohne diese Zeile liess sich
-     die Seite bis zum Auslösen der Animation 191px nach rechts schieben.
+     selbst. Diese muss beschneiden: der Peach-Schein hinter Pepp läuft über
+     die Bühne hinaus, und die Figur selbst steht am rechten Rand.
 
      body{overflow-x:hidden} fängt das nicht ab: liegt am Wurzelelement
      `visible`, wird der Wert des body auf den Viewport übertragen statt den
@@ -122,19 +219,169 @@ const steps = [
     overflow: hidden;
   }
 
-  /* Kein margin-top: den Abstand setzt .mkt-head als gap. Sonst addieren sich
-     gap und Margin, und welcher gewinnt, entscheidet die Ladereihenfolge der
-     Astro-Scoped-Styles gegen global.css. */
+  .how__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(24px, 4vw, 56px);
+    align-items: center;
+  }
+
+  /* Kein margin-top an den Kindern: sonst entscheidet die Ladereihenfolge der
+     Astro-Scoped-Styles gegen global.css darüber, welcher Abstand gilt. */
+  .how__copy {
+    display: grid;
+    gap: var(--space-5);
+    justify-items: start;
+  }
+
   .how__lead {
     font-size: var(--type-bodyl-size);
     line-height: var(--type-bodyl-lh);
   }
 
-  .how__steps {
+  .how__cta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-5) var(--space-7);
+    margin-top: clamp(8px, 1.5vw, 16px);
+  }
+
+  .how__cta-note {
+    margin: 0;
+    font-size: 14px;
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+  }
+
+  /* ── Bühne ─────────────────────────────────────────────────────────────── */
+
+  .how__stage {
+    position: relative;
+    display: grid;
+    place-items: center;
+    /* Die Karte hängt links unten über der Figur; ohne diesen Boden stünde sie
+       auf der Kante der Sektion. Unter 901px ist der Boden höher: dort ist die
+       Karte fast so breit wie die Figur, und mit dem Desktop-Wert lag sie über
+       deren halbem Körper statt über der unteren Ecke. */
+    padding-bottom: 56px;
+  }
+
+  .how__aura {
+    position: absolute;
+    inset: -18% -20%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .how__mascot {
+    position: relative;
+    z-index: 1;
+    /* AN DAS sizes-ATTRIBUT DES <Image> OBEN GEKOPPELT — beide Zeilen bilden
+       dieselbe Kurve ab, einmal fürs Layout und einmal für die Auswahl der
+       Auflösung. Ändert sich eine, muss die andere mit.
+
+       Auf dem Handy misst die Figur 72vw und nicht 32vw: dort steht sie unter
+       der Copy und teilt sich die Spalte mit niemandem. Mit dem Desktop-Wert
+       war sie 125px breit und die Nachweis-Karte davor doppelt so breit wie
+       die Figur dahinter. */
+    width: min(72vw, 320px);
+    height: auto;
+    display: block;
+    filter: drop-shadow(var(--shadow-mascot));
+  }
+
+  .how__proofs {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 78%);
+    height: 84px;
+  }
+
+  /* Deckend, gleich gross, alle im selben Kasten. Der z-index entscheidet ohne
+     Skript, welche zu sehen ist; mit Skript setzt ihn initQuestRun(). */
+  .how__proof {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-xl);
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    box-shadow: var(--shadow-3);
+  }
+
+  .how__proof:first-child {
+    z-index: 2;
+  }
+
+  .how__proof-text {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .how__proof-title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-h3-size);
+    line-height: 1.2;
+    color: var(--text-primary);
+  }
+
+  /* Quicksand, weil Geld im Design System zur Markenstimme gehört und nicht
+     zur UI-Stimme (guidelines/type-quicksand.card.html). */
+  .how__proof-meta {
+    font-family: var(--font-display);
+    font-weight: var(--weight-semibold);
+    font-size: 14px;
+    line-height: 1.3;
+    color: var(--text-secondary);
+  }
+
+  /* ── Der Lauf: Linie und Schritte ──────────────────────────────────────── */
+
+  .how__run {
     margin-top: var(--mkt-stack-gap);
+  }
+
+  /* overflow sichtbar: die Schnauze ist grösser als der Strich und ragt über
+     die Viewbox hinaus. Höhe fest, damit die Karten darunter nicht springen,
+     wenn das Bild der Schnauze nachlädt. */
+  .how__trail {
+    display: block;
+    width: 100%;
+    height: clamp(80px, 8vw, 116px);
+    overflow: visible;
+    margin-bottom: var(--space-6);
+  }
+
+  .how__steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
     gap: var(--mkt-card-gap);
+  }
+
+  /* Der aktive Schritt hebt sich, während die Schnauze über ihm steht: Weiss
+     statt Off-White, dazu der Schatten. Ausdrücklich kein transform — den hält
+     der Reveal aus buildReveals() besetzt, zwei Schreiber auf derselben
+     Eigenschaft ergäben ein Zucken. */
+  .how__step {
+    transition:
+      background var(--dur-slow) var(--ease-out-soft),
+      border-color var(--dur-slow) var(--ease-out-soft),
+      box-shadow var(--dur-slow) var(--ease-out-soft);
+  }
+
+  .how__step[data-quest-active] {
+    background: var(--surface-card);
+    border-color: var(--pepp-peach);
+    box-shadow: var(--shadow-3);
   }
 
   .how__step-head {
@@ -149,6 +396,11 @@ const steps = [
     font-size: 28px;
     letter-spacing: var(--tracking-tight);
     color: var(--text-secondary);
+    transition: color var(--dur-slow) var(--ease-out-soft);
+  }
+
+  .how__step[data-quest-active] .how__step-number {
+    color: var(--text-primary);
   }
 
   .how__step-title {
@@ -168,38 +420,24 @@ const steps = [
     max-width: var(--measure-body);
   }
 
-  .how__cta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-5) var(--space-7);
-    margin-top: clamp(32px, 4vw, 48px);
-  }
+  /* Ab 901px steht die Bühne rechts neben dem Kopf. Darunter liegt sie unter
+     dem CTA und ist schmaler — dort trägt sie die Sektion nicht, sie begleitet
+     sie nur. */
+  @media (min-width: 901px) {
+    .how__intro {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    }
 
-  .how__cta-note {
-    margin: 0;
-    font-size: 14px;
-    font-weight: var(--weight-medium);
-    color: var(--text-secondary);
-  }
+    .how__copy {
+      max-width: 560px;
+    }
 
-  /* z-index 0 statt des geerbten 1 aus `.mkt-section > *`: die Figur ist
-     Dekoration und liegt unter dem Inhalt. Der Rand ist derselbe wie beim Peek
-     in „Der Alltag", damit beide auf derselben Linie stehen.
+    .how__stage {
+      padding-bottom: clamp(24px, 3vw, 40px);
+    }
 
-     Kein eigener drop-shadow: der Render bringt seinen Schweif in Farbe mit,
-     ein Schlagschatten darunter würde ihn nur trüben. */
-  .how__roll {
-    position: absolute;
-    z-index: 0;
-    right: clamp(16px, 6vw, 120px);
-    bottom: clamp(20px, 3vw, 40px);
-    pointer-events: none;
-  }
-
-  .how__roll img {
-    display: block;
-    width: 248px;
-    height: auto;
+    .how__mascot {
+      width: clamp(280px, 32vw, 440px);
+    }
   }
 </style>

@@ -242,31 +242,110 @@ function initPeek() {
   }
 }
 
-/* Maskottchen, das hereinfährt statt aufzutauchen. Es startet ausserhalb der
-   Sektion und bremst auf seinem Platz aus, die Drehung richtet sich dabei auf.
+/* Snout Trail: die Schnauze läuft die Linie entlang und zeichnet sie dabei.
+   Die Geste steht im Design System (components/brand/SnoutTrail.jsx) und läuft
+   dort einmal auf Zeit ab. Hier hängt sie am Scroll: der Fortschritt der
+   Sektion ist der Fortschritt der Linie, vorwärts wie rückwärts.
 
-   `once: true` wie bei allen Reveals: ein Einflug, der bei jedem Richtungs-
-   wechsel neu losfährt, ist kein Auftritt mehr, sondern ein Zucken.
+   Der Ruhezustand ist die FERTIGE Linie mit der Schnauze an ihrem Anfang — so
+   steht sie im Markup. Zurückgenommen wird sie erst hier, also nur dann, wenn
+   dieses Skript wirklich läuft. Bei prefers-reduced-motion wird buildReveals()
+   gar nicht erst aufgerufen; dann bleibt die gezeichnete Linie stehen.
 
-   Kein Startzustand im CSS — steht das Skript still, steht die Figur fertig
-   auf ihrem Platz. Das ist die Grundregel oben in dieser Datei. */
-function initRide() {
-  for (const figur of document.querySelectorAll('[data-ride]')) {
-    const section = figur.closest('section');
-    if (!section) continue;
-    gsap.fromTo(
-      figur,
-      { x: MOTION.ride.x, rotate: MOTION.ride.rotate, autoAlpha: 0.001 },
-      {
-        x: 0,
-        rotate: 0,
-        autoAlpha: 1,
-        duration: MOTION.ride.duration,
-        ease: resolveEase(MOTION.ride.ease),
-        scrollTrigger: { trigger: section, start: MOTION.ride.start, once: true },
+   Unter runFrom passiert nichts: dort stehen die vier Karten untereinander und
+   die Welle ist ausgeblendet. Die erste Nachweis-Karte liegt per z-index oben,
+   das reicht als Standbild. */
+function initQuestRun() {
+  const trail = document.querySelector('[data-quest-trail]');
+  if (!trail) return;
+  if (!window.matchMedia(`(min-width:${MOTION.quest.runFrom}px)`).matches) return;
+
+  const lauf = trail.closest('[data-quest-run]');
+  const linie = trail.querySelector('[data-quest-line]');
+  const schnauze = trail.querySelector('[data-quest-snout]');
+  const schritte = [...document.querySelectorAll('[data-quest-step]')];
+  const karten = [...document.querySelectorAll('[data-quest-proof]')];
+  if (!lauf || !linie || !schnauze || !schritte.length) return;
+
+  const Q = MOTION.quest;
+  const laenge = linie.getTotalLength();
+  const viewBreite = trail.viewBox.baseVal.width;
+
+  /* Wo auf der Linie ein Schritt liegt. Die Kartenmitte wird gemessen und in
+     Viewbox-Koordinaten umgerechnet, statt vier Werte fest einzutragen: das
+     Raster ist auto-fit, die Karten stehen bei 901px anders als bei 1440px.
+     Abgesucht wird die Linie in 8er-Schritten — bei rund 900 Einheiten Länge
+     sind das gut hundert Messungen, einmal pro Refresh. */
+  const marken = () => {
+    const box = trail.getBoundingClientRect();
+    if (!box.width) return schritte.map((_, i) => i / schritte.length);
+    return schritte.map((schritt) => {
+      const r = schritt.getBoundingClientRect();
+      const x = ((r.left + r.width / 2 - box.left) / box.width) * viewBreite;
+      let l = 0;
+      while (l < laenge && linie.getPointAtLength(l).x < x) l += 8;
+      /* Gedeckelt: die Mitte der vierten Karte liegt rechts vom Ende der
+         Linie, die Schleife läuft dort über die Länge hinaus. Ohne den Deckel
+         käme die Marke auf 1,006 und der vierte Schritt würde nie aktiv. */
+      return Math.min(l, laenge) / laenge;
+    });
+  };
+  let stellen = marken();
+
+  const zeichnen = (p) => {
+    linie.style.strokeDasharray = String(laenge);
+    linie.style.strokeDashoffset = String(laenge * (1 - p));
+    const punkt = linie.getPointAtLength(laenge * p);
+    schnauze.setAttribute('transform', `translate(${punkt.x} ${punkt.y})`);
+  };
+
+  /* Der aktive Schritt ist eine Funktion der Scrollposition, kein Ablauf, der
+     abbrechen könnte — dasselbe Muster wie im Karussell der Mechanik-Sektion.
+     Vor der ersten Marke gilt Schritt 0: die Karte an Pepp zeigt dann schon,
+     worum es in Schritt 1 geht, statt leer zu bleiben. */
+  let aktiv = -1;
+  const zeigen = (i) => {
+    if (i === aktiv) return;
+    aktiv = i;
+    for (const [j, schritt] of schritte.entries()) {
+      schritt.toggleAttribute('data-quest-active', j === i);
+    }
+    for (const [j, karte] of karten.entries()) {
+      gsap.set(karte, { zIndex: j === i ? 2 : 1 });
+      gsap.to(karte, {
+        autoAlpha: j === i ? 1 : 0,
+        duration: Q.swap,
+        ease: resolveEase(Q.ease),
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  const trigger = ScrollTrigger.create({
+    trigger: lauf,
+    start: Q.start,
+    end: Q.end,
+    scrub: Q.scrub,
+    onUpdate: (self) => {
+      zeichnen(self.progress);
+      let i = 0;
+      for (const [j, marke] of stellen.entries()) {
+        if (self.progress >= marke) i = j;
       }
-    );
-  }
+      zeigen(i);
+    },
+    /* Die Kartenmitten gehen in die Marken ein: bei Resize muss neu gemessen
+       werden, sonst hebt sich der falsche Schritt, sobald das Raster umbricht. */
+    onRefresh: () => {
+      stellen = marken();
+    },
+  });
+
+  /* Ausgangsstellung. onUpdate feuert erst bei der nächsten Scrollbewegung —
+     ohne diese zwei Zeilen stünde die Linie beim Laden fertig da und spränge
+     dann auf ihren Anfang zurück. */
+  zeichnen(trigger.progress);
+  zeigen(0);
 }
 
 function buildReveals() {
@@ -324,7 +403,7 @@ function buildReveals() {
 
   initBlobs();
   initPeek();
-  initRide();
+  initQuestRun();
   initMechanicCarousel();
 }
 
@@ -332,7 +411,7 @@ function buildReveals() {
 export function replayMotion() {
   for (const trigger of ScrollTrigger.getAll()) trigger.kill();
   const animated = document.querySelectorAll(
-    '[data-anim], [data-hero-figure], [data-blob], [data-peek], [data-ride]'
+    '[data-anim], [data-hero-figure], [data-blob], [data-peek], [data-quest-proof]'
   );
   gsap.killTweensOf(animated);
   /* visibility mit zurücksetzen: revealSides nutzt autoAlpha, das setzt
