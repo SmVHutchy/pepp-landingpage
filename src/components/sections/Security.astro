@@ -96,6 +96,40 @@ const cards = [
 </section>
 
 <style>
+  /* SICHERHEIT FÜLLT DEN BILDSCHIRM, SOLANGE SIE HAFTET.
+
+     Vorher war sie 603px hoch in einem 1080px hohen Fenster. Sie klebte
+     korrekt mit der Oberkante bei 0 — aber ihre Unterkante lag damit bei 603,
+     und „Für alle, die mitziehen" schob sich von dort nach oben. Die Sektion
+     wurde also von unten aufgefressen, während sie noch die aktuelle war: bei
+     Scroll +400 stand die Folgesektion schon bei 203, von der Sicherheit blieb
+     ein 203px hoher Streifen mit der Headline und sonst nichts. Gemessen über
+     den ganzen Übergang, nicht geschätzt.
+
+     Der Deckvorgang IST die Geste — aber er soll über eine ganze Sektion
+     laufen, nicht über ein Fünftel davon. Mit einer Bildschirmhöhe beginnt die
+     Folgesektion an der unteren Bildkante und zieht über das volle Bild, und
+     die Sektion darunter tritt als Ganzes zurück statt in Scheiben.
+
+     Dieselbe Rechnung wie im Alltag: genau 100svh und keinen Pixel mehr, damit
+     initSticky() --haft-top auf 0 lässt. Wäre die Sektion höher als das
+     Fenster, haftete die UNTERkante am unteren Bildrand, und die Headline
+     stünde beim Decken oben ausserhalb.
+
+     width auf dem Container, weil `margin-inline: auto` an einem Grid-Item die
+     Streckung abschaltet — Begründung ausführlich in Problem.astro. */
+  @media (min-width: 901px) {
+    .sec {
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+    }
+
+    .sec > .mkt-container {
+      width: 100%;
+    }
+  }
+
   /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
   .sec__lead {
     font-size: var(--type-bodyl-size);
