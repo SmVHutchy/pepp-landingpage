@@ -88,6 +88,38 @@ export const MOTION = {
     end: 'bottom top',
   },
 
+  /* Sektionen, die stehenbleiben, während die nächste darüberzieht.
+     Markiert wird das im Markup mit data-haftet, nicht hier — welche Sektion
+     haftet, ist eine Struktur- und keine Bewegungsentscheidung.
+
+     WARUM DAS DESIGN SYSTEM DAGEGEN SPRICHT UND ES TROTZDEM SO BLEIBT:
+     guidelines/motion.md verbietet „parallax scroll" und „looping background
+     animation". Die Regel ist für die App geschrieben, wo jede Bewegung der
+     Bedienung dienen muss und der Nutzer zwanzigmal am Tag durch dieselben
+     Listen läuft. Diese Seite wird einmal gelesen, und sie muss dabei etwas
+     behaupten. Die Abweichung ist bewusst und gilt für die Marketingseite;
+     siehe ADR-015 in docs/DECISIONS.md.
+
+     stickFrom: darunter nicht. Auf dem Handy ist der Alltag 1376px hoch bei
+     844px Viewport — die Sektion stünde über anderthalb Bildschirmhöhen fest,
+     und das liest sich als hängengebliebene Seite, nicht als Tiefe.
+
+     scale und fade sind der Tiefenhinweis. Ohne ihn sieht das Überschieben
+     aus wie ein Zeichenfehler: zwei Flächen, die zufällig überlappen. Mit ihm
+     tritt die untere zurück. Beide Werte sind klein gehalten — 0.94 ist an
+     der Grenze des gerade noch Bemerkbaren, und mehr braucht es nicht, weil
+     die Deckung ohnehin die Hauptarbeit macht.
+
+     Der scrub ist kurz: die Bewegung soll am Finger hängen, nicht nachlaufen.
+     Bei 0.9 wie bei den Blobs schob sich die Kante schon über eine Sektion,
+     die noch gar nicht kleiner geworden war. */
+  sticky: {
+    stickFrom: 901,
+    scale: 0.94,
+    fade: 0.35,
+    scrub: 0.4,
+  },
+
   /* Maskottchen, das hinter einer Sektionskante hervorkommt. Es steht in der
      VORHERIGEN Sektion und wird von der folgenden verdeckt, weil die einen
      deckenden Hintergrund hat und später gezeichnet wird. Der scrub hebt es

@@ -271,3 +271,46 @@ deshalb an beiden Stellen im Code.
 **Preis.** Der Ausschluss ist nicht mehr an einer Stelle zentral ablesbar, sondern liegt
 bei der jeweiligen Seite. Das ist die richtige Seite der Abwägung — die Bedingung, unter
 der er entfällt, steht damit direkt neben dem Grund, aus dem er existiert.
+
+## ADR-015 · Scrollbewegung abweichend vom Design System
+
+**Kontext.** `guidelines/motion.md` im Design System schliesst mehrere Dinge ausdrücklich
+aus, die diese Seite tut: „**Never**: bouncing text, parallax scroll, looping background
+animation … more than one animated element competing for attention."
+
+Die Seite hält sich daran seit Beginn nicht. Der Hero-Parallax der Maskottchenfigur, die
+am Scroll mitlaufenden Farbblobs, der Snout Trail über den vier Schritten und das
+Karussell der Mechanik-Sektion sind alle Parallax im Sinne dieser Regel. Bisher stand das
+nirgends als Entscheidung, sondern nur als Ergebnis — beim nächsten Abgleich gegen das
+Design System wäre es als Fehler aufgeschlagen und jemand hätte es „repariert".
+
+**Entscheidung.** Die Regel gilt für die App, nicht für diese Seite.
+
+Der Grund ist nicht Geschmack, sondern die Nutzungssituation. In der App läuft ein
+Elternteil zwanzigmal am Tag durch dieselben Listen; jede Bewegung, die dabei nicht der
+Bedienung dient, ist eine Bewegung zu viel, und was beim ersten Mal charmant war, ist beim
+zwanzigsten ein Widerstand. Diese Seite wird einmal gelesen, und zwar von jemandem, der
+Pepp noch nicht kennt. Sie muss in diesem einen Durchgang etwas behaupten. Bewegung ist
+dort ein Argument, kein Ornament.
+
+„Der Alltag" ist der klarste Fall: die Sektion beschreibt den Zustand vorher. Dass „So
+funktioniert's" sie im Scrollen zudeckt, sagt dasselbe wie der Text daneben, nur ohne
+Worte. Denselben Übergang deutet die Seite ohnehin an jeder Sektionskante an —
+`.mkt-section--card` legt sich mit Radius über die Off-White-Fläche. Ausgespielt wird hier
+nur, was das Layout schon behauptet.
+
+**Was aus der Regel bestehen bleibt.** Der zweite Halbsatz, und der ist der wichtigere:
+nie mehr als ein bewegtes Element, das um Aufmerksamkeit konkurriert. Deshalb bekommt
+nicht jede Sektion eine Geste, und deshalb läuft der untere Seitendrittel — Preis,
+Sicherheit, FAQ — bewusst ohne. Dort wird entschieden, nicht mehr gestaunt.
+
+**Konsequenz.** `prefers-reduced-motion` bleibt unverhandelbar: bei `reduce` läuft nichts,
+und alle Endzustände stehen sofort (`scripts/verify.mjs` prüft das). Eine Ausnahme gibt es,
+und sie ist keine — eine haftende Sektion bleibt auch dann haften. Sie bewegt sich nicht,
+sie hört auf, sich zu bewegen. Was unter `reduce` wegfällt, ist allein der Tiefenhinweis
+aus Verkleinerung und Ausblendung.
+
+**Preis.** Die Seite lässt sich nicht mehr Zeile für Zeile gegen `guidelines/motion.md`
+prüfen. Wer das tut, findet Verstösse und muss diesen Eintrag kennen, um sie einzuordnen.
+Der Verweis steht deshalb auch im Code, bei `MOTION.sticky` in
+`src/scripts/motion-config.js`.

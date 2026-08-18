@@ -221,6 +221,103 @@ function initBlobs() {
   }
 }
 
+/* ── Haftende Sektionen ────────────────────────────────────────────────────
+   Eine Sektion mit data-haftet bleibt stehen, die nächste zieht darüber. Das
+   Darüberziehen selbst kostet keine Zeile Code: die Folgesektion hat einen
+   deckenden Hintergrund und steht später im Dokument, sie deckt also von
+   allein. Sichergestellt wird das durch `isolation: isolate` auf der
+   haftenden Sektion — ohne den eigenen Stapelkontext lägen ihre Kinder mit
+   z-index 1 im Wurzelkontext und damit ÜBER dem Hintergrund der Folgesektion.
+   Der Text schiene dann hindurch.
+
+   ZWEI GRÜNDE, WARUM DAS HIER STEHT UND NICHT NUR IM CSS:
+
+   Erstens die Höhe. `top: 0` haftet die Oberkante. Ist die Sektion höher als
+   der Viewport, wird ihr unteres Ende dadurch nie erreichbar — bei 1280x720
+   ist der Alltag 790px hoch, es fehlten 70px Inhalt. Der Ausgleich ist
+   `min(0, Viewporthöhe - Sektionshöhe)`: passt die Sektion, haftet die
+   Oberkante bei 0; passt sie nicht, haftet stattdessen ihre Unterkante am
+   unteren Bildrand. CSS kann eine Elementhöhe nicht gegen die Viewporthöhe
+   rechnen, deshalb ein ResizeObserver.
+
+   Zweitens die Grundregel dieser Datei: ohne dieses Skript muss die Seite
+   vollständig lesbar bleiben. Deshalb setzt erst das Skript data-haftend —
+   im Markup steht nur data-haftet als Absichtserklärung. Ohne JavaScript
+   scrollt die Sektion normal durch, und niemand verliert Inhalt.
+
+   Das läuft AUSSERHALB von matchMedia(reduced-motion): eine Sektion, die
+   stehenbleibt, ist keine Animation. Sie bewegt sich nicht, sie hört auf,
+   sich zu bewegen. Was unter `reduce` wegfällt, ist nur der Tiefenhinweis
+   weiter unten. */
+function initSticky() {
+  const sektionen = [...document.querySelectorAll('[data-haftet]')];
+  if (!sektionen.length) return;
+
+  const passt = window.matchMedia(`(min-width:${MOTION.sticky.stickFrom}px)`);
+
+  const messen = (sektion) => {
+    if (!passt.matches) {
+      delete sektion.dataset.haftend;
+      sektion.style.removeProperty('--haft-top');
+      return;
+    }
+    const fehlt = window.innerHeight - sektion.offsetHeight;
+    sektion.style.setProperty('--haft-top', `${Math.min(0, fehlt)}px`);
+    sektion.dataset.haftend = '';
+  };
+
+  const alle = () => {
+    for (const sektion of sektionen) messen(sektion);
+    /* Die Höhe der haftenden Sektion geht in keine Trigger-Rechnung ein, aber
+       ScrollTrigger vermisst die Seite nach einem Wechsel der Haftung neu —
+       ohne das stehen die Startlinien der Folgesektionen auf alten Werten. */
+    ScrollTrigger.refresh();
+  };
+
+  const beobachter = new ResizeObserver(alle);
+  for (const sektion of sektionen) beobachter.observe(sektion);
+  passt.addEventListener('change', alle);
+  alle();
+}
+
+/* Der Tiefenhinweis zur haftenden Sektion: sie tritt zurück, während die
+   nächste sie zudeckt. Gerechnet wird am Fortschritt der FOLGESEKTION, nicht
+   am eigenen — der eigene wäre längst abgelaufen, wenn das Zudecken beginnt.
+
+   Zwei Ziele, und die Aufteilung ist nicht beliebig:
+
+   Verkleinert wird der INHALT. Ein transform auf dem haftenden Element würde
+   dessen eigenen Kasten mitverschieben und die Kante gegen die überziehende
+   Sektion verrutschen lassen — sichtbar als Spalt.
+
+   Ausgeblendet wird die SEKTION. Zuerst hing auch das am Inhalt, und dann
+   stand der Farbblob in voller Deckkraft da, während der Text darunter schon
+   halb weg war. Er sah aus, als gehöre er zur oberen Sektion. Die Blobs
+   liegen ausserhalb von .mkt-container, sie einzeln mitzunehmen ginge nicht:
+   ihre Deckkraft kommt je Instanz aus --blob-deckkraft, ein absoluter
+   opacity-Tween würde die überschreiben. Eine Ebene höher trifft es alles auf
+   einmal und behält die Abstufung. */
+function initStickyTiefe() {
+  for (const sektion of document.querySelectorAll('[data-haftet]')) {
+    const naechste = sektion.nextElementSibling;
+    const inhalt = sektion.querySelector('.mkt-container');
+    if (!naechste || !inhalt) continue;
+
+    const lauf = {
+      ease: 'none',
+      scrollTrigger: {
+        trigger: naechste,
+        start: 'top bottom',
+        end: 'top top',
+        scrub: MOTION.sticky.scrub,
+      },
+    };
+
+    gsap.fromTo(inhalt, { scale: 1 }, { scale: MOTION.sticky.scale, ...lauf });
+    gsap.fromTo(sektion, { opacity: 1 }, { opacity: MOTION.sticky.fade, ...lauf });
+  }
+}
+
 /* Maskottchen, das hinter einer Sektionskante hervortritt. Verdeckt wird es von
    der folgenden Sektion, weil die einen deckenden Hintergrund hat und später
    gezeichnet wird — dafür braucht es kein z-index-Gefecht. Der scrub hebt es
@@ -401,6 +498,7 @@ function buildReveals() {
     });
   }
 
+  initStickyTiefe();
   initBlobs();
   initPeek();
   initQuestRun();
@@ -568,6 +666,10 @@ function initMechanicCarousel() {
    von ./nav.js oben. */
 initHeroLoader();
 initStickyBar();
+/* Vor initMotion: die Haftung verändert keine Trigger-Positionen, aber sie
+   setzt data-haftend, und initStickyTiefe hängt seinen Trigger an die
+   Folgesektion. Erst haften, dann messen. */
+initSticky();
 initMotion();
 
 /* Der Motion-Editor hängt an einem dynamischen Import hinter import.meta.env.DEV.
