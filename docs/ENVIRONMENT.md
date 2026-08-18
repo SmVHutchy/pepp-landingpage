@@ -7,6 +7,33 @@ Dienste hat nichts zu konfigurieren.
 
 Ein neuer Entwickler klont, installiert, startet. Kein Geheimnis muss beschafft werden.
 
+## Wo das Arbeitsverzeichnis liegen muss
+
+**Auf einer lokalen Platte.** Seit dem 18.08.2026 unter `~/Dev/pepp_final`. Davor lag es auf
+`//NAS_9R/9R_Drive`, einer SMB-Freigabe, und das hat zwei Tage lang jede Messung verfälscht.
+
+Der Grund ist die Zugriffszeit auf viele kleine Dateien. 200 Dateien aus `dist/` lesen:
+
+| Ablage       | Dauer  |
+| ------------ | ------ |
+| SMB über NAS | 439 ms |
+| lokale SSD   | 13 ms  |
+
+`scripts/perf.mjs` startet einen Dateiserver über `dist/` und beantwortet damit jede Anfrage des
+Messbrowsers. Lag `dist/` auf der Freigabe, floss die Netzwerkwartezeit ungefiltert in FCP und
+LCP: gemessen wurden 3712 ms, was wie ein Einbruch durch das Astro-7-Upgrade aussah. Von der SSD
+sind es 752 ms bei identischem Quellstand.
+
+Sichtbar war das Problem an der Systemlast — Werte um 5 bis 12 bei nahezu null CPU-Auslastung.
+Das sind keine rechnenden Prozesse, sondern wartende. Auch `npm ci` fällt darunter: 5 Sekunden
+lokal gegen mehrere Minuten über die Freigabe.
+
+Ausgeliefert wird die Seite später von einem Hoster mit lokaler Platte. Zwei Läufe von
+verschiedenen Ablageorten sind nicht vergleichbar; wer Zahlen nebeneinanderstellt, muss beide
+gleich gemessen haben.
+
+Eine ältere Kopie liegt weiterhin auf dem NAS. Sie ist eingefroren und **nicht** der Arbeitsstand.
+
 ## Was es stattdessen gibt
 
 ### `import.meta.env.DEV` — von Vite gesetzt, nicht von dir

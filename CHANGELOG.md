@@ -5,7 +5,37 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 
 ## [Unveröffentlicht]
 
+### Geändert — 18.08.2026
+
+- **Astro 5.6 auf 7.2.2, sharp auf 0.35 — abgenommen.** Der Commit `a44891f` trug den
+  Vermerk „Messung steht noch aus", weil beide Läufe davor unbrauchbar waren. Sie waren
+  es aus einem Grund, der nichts mit Astro zu tun hatte: das Arbeitsverzeichnis lag auf
+  einer SMB-Freigabe, und der Messserver las jede Antwort über das Netz. 200 kleine
+  Dateien brauchten dort 439 ms, von der lokalen SSD 13 ms. Nach dem Umzug nach
+  `~/Dev/pepp_final`: FCP 752 ms, LCP 1052 ms, CLS 0,0001, TBT 106 ms, 244 kB
+  ausgeliefert — gegenüber 764/1016/0,0004/173 ms und 245 kB vor dem Upgrade. TBT ist
+  um 39 % gefallen, der Rest liegt im Rauschen. Build 2,6 s statt 10,5 s.
+- **Belegt statt vermutet.** Derselbe Quellstand wurde mit 5.6.1 und mit 7.2.2 gebaut,
+  beide statisch ausgeliefert und gegeneinander gehalten. Gerenderter Text: identisch
+  auf allen fünf Seiten (816, 427, 1220, 1223, 311 Wörter). `<img>`-Attribute:
+  identisch bis auf die Reihenfolge, gleiche srcset-Breiten, gleiche
+  `width`/`height`. Pixel: die Bilder werden von sharp 0.35 neu kodiert und weichen in
+  den sichtbaren Flächen im Mittel um 3/255 ab — rund ein Prozent, im Bildvergleich
+  nicht zu unterscheiden. Abgeleitete Höhen runden gelegentlich um einen Pixel anders
+  (693 zu 692). Nichts davon ist eine Verhaltensänderung der Seite.
+- **verify, a11y und measure unverändert grün.** 20 Regeln erfüllt, 0 axe-Verstöße,
+  dieselben zwei unklaren Kontraststellen wie zuvor.
+
 ### Behoben — 18.08.2026
+
+- **Die Fußzeile verlor unter Astro 7 zwei Leerzeichen.** Ausgeliefert wurde
+  „BlueBranch GmbH ·Hans-Vogel-Straße 59, 90765Fürth". Die Rechtszeile stand als fünf
+  Ausdrücke über drei Quellzeilen, und die Zeilenumbrüche dazwischen trugen die
+  Leerzeichen — Astro 5 ließ sie stehen, Astro 7 kürzt sie weg. Damit hing eine
+  sichtbare Ausgabe an der Formatierung des Quelltextes; ein Prettier-Umbruch hätte
+  dasselbe angerichtet. Die Zeile wird jetzt im Frontmatter zusammengesetzt. Gefunden
+  hat es `measure` über −38 Zeichen sichtbaren Text bei unveränderten Höhen, nicht das
+  Auge. (`0d9f382`)
 
 - **Indexierung stand verkehrt herum.** `/barrierefreiheit` war per `Disallow` in
   `robots.txt` ausgeschlossen. Das verhindert das Crawlen, nicht das Indexieren: die
