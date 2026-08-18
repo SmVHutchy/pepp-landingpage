@@ -299,10 +299,16 @@ Worte. Denselben Übergang deutet die Seite ohnehin an jeder Sektionskante an �
 `.mkt-section--card` legt sich mit Radius über die Off-White-Fläche. Ausgespielt wird hier
 nur, was das Layout schon behauptet.
 
+**Wo die Geste steht.** Auf drei Sektionen: „Der Alltag", „Zwei Welten" und „Sicherheit".
+Jede beschreibt einen Zustand, den die folgende ablöst — das Zudecken ist dort die
+Aussage. Preis und FAQ bleiben ohne: dort wird entschieden und nachgeschlagen, nicht mehr
+gestaunt.
+
 **Was aus der Regel bestehen bleibt.** Der zweite Halbsatz, und der ist der wichtigere:
-nie mehr als ein bewegtes Element, das um Aufmerksamkeit konkurriert. Deshalb bekommt
-nicht jede Sektion eine Geste, und deshalb läuft der untere Seitendrittel — Preis,
-Sicherheit, FAQ — bewusst ohne. Dort wird entschieden, nicht mehr gestaunt.
+nie mehr als ein bewegtes Element, das um Aufmerksamkeit konkurriert. Deshalb trägt keine
+Sektion zwei Gesten. „So funktioniert's" und die Mechanik halten die Seite an, während
+ihre vier Schritte laufen — haften tun sie nicht. Beides zugleich wären zwei Dinge, die um
+denselben Blick bitten.
 
 **Konsequenz.** `prefers-reduced-motion` bleibt unverhandelbar: bei `reduce` läuft nichts,
 und alle Endzustände stehen sofort (`scripts/verify.mjs` prüft das). Eine Ausnahme gibt es,

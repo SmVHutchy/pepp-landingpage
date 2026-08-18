@@ -286,9 +286,12 @@ function initSticky() {
     sektion.style.setProperty('--haft-top', `${Math.min(0, fehlt)}px`);
     sektion.dataset.haftbereit = 'ja';
     /* Nicht blind wieder anschalten: liegt die Folgesektion schon darüber,
-       gehört die Sektion gelöst und ein Resize darf sie nicht zurückholen. */
+       gehört die Sektion gelöst und ein Resize darf sie nicht zurückholen.
+       Gemessen gegen die Haftlinie, nicht gegen 0 — bei einer Sektion, die
+       höher ist als der Viewport, liegt die Linie im Negativen. */
     const naechste = sektion.nextElementSibling;
-    const gedeckt = naechste && naechste.getBoundingClientRect().top <= 0;
+    const gedeckt =
+      naechste && naechste.getBoundingClientRect().top <= Math.min(0, fehlt);
     if (gedeckt) delete sektion.dataset.haftend;
     else sektion.dataset.haftend = '';
   };
@@ -325,6 +328,17 @@ function initSticky() {
    opacity-Tween würde die überschreiben. Eine Ebene höher trifft es alles auf
    einmal und behält die Abstufung. */
 function initStickyTiefe() {
+  /* Alle haftenden Sektionen laufen an EINEM Trigger über das ganze Dokument.
+     Vorher hatte jede ihren eigenen mit start/end auf der Folgesektion, und
+     genau daran ist es zweimal gescheitert: hinter den Pins von „So
+     funktioniert's" und der Mechanik lagen diese Linien falsch, „Zwei Welten"
+     und „Sicherheit" standen auf Enddeckkraft 0,35, während man sie las.
+
+     Ein Trigger von Dokumentanfang bis -ende hat keine Linie, die falsch
+     liegen könnte. Die Dokumenthöhe enthält den Platz der Pins bereits, und
+     welcher Wert gilt, entscheidet ohnehin die Rechnung unten. */
+  const stuecke = [];
+
   for (const sektion of document.querySelectorAll('[data-haftet]')) {
     const naechste = sektion.nextElementSibling;
     const inhalt = sektion.querySelector('.mkt-container');
@@ -347,80 +361,90 @@ function initStickyTiefe() {
        nicht mehr von einer Zahl abweichen, die irgendwann einmal gemessen
        wurde.
 
-       Der Trigger dient nur noch dazu, onUpdate im richtigen Bereich laufen zu
-       lassen; sein Ende ist bewusst grosszügig und die Rechnung klemmt selbst
-       auf 0 bis 1. */
-    const fortschritt = () => {
-      const haft = parseFloat(getComputedStyle(sektion).top) || 0;
-      const weg = window.innerHeight - haft;
-      if (weg <= 0) return 0;
-      return Math.min(
-        1,
-        Math.max(0, 1 - (naechste.getBoundingClientRect().top - haft) / weg)
-      );
-    };
-
+       Gelesen wird --haft-top statt der berechneten top-Eigenschaft: die steht
+       auf `auto`, sobald die Sektion gerade nicht haftet, und die Haftlinie
+       wäre in genau dem Moment nicht mehr bekannt, in dem man sie zum
+       Wiederanhaften braucht. */
     const zeichnen = () => {
-      const p = fortschritt();
+      if (sektion.dataset.haftbereit !== 'ja') return;
+
+      const haft = parseFloat(sektion.style.getPropertyValue('--haft-top')) || 0;
+      const oben = naechste.getBoundingClientRect().top;
+
+      /* AUCH DAS LÖSEN LÄUFT ÜBER DIE LAGE, NICHT ÜBER EINE LINIE.
+         Vorher hing es an einem eigenen ScrollTrigger mit `start: 'top top'`
+         auf der Folgesektion. Gemessen hat der 4200px zu früh ausgelöst —
+         exakt die Summe der beiden Pins von „So funktioniert's" und der
+         Mechanik. Die Startlinie stammte also aus der Vermessung vor den Pins,
+         und auch ein ScrollTrigger.refresh() am Ende hat sie nicht korrigiert.
+         Sichtbar war das daran, dass „Sicherheit" schon bei y=7600 aufhörte zu
+         haften, während die Folgesektion noch 4263px unter der Oberkante
+         stand.
+
+         Gelöst werden MUSS sie, und das ist kein Feinschliff: `position:
+         sticky` haftet innerhalb seines Bezugsrahmens, und der ist hier
+         <main>. Darin stehen alle Sektionen als Geschwister — ohne das Lösen
+         klebt eine Sektion nicht bis zur nächsten, sondern bis zum Seitenende.
+         Drei haftende Sektionen ergaben drei Textebenen, die durch alles
+         Folgende geisterten.
+
+         Je Paar ein <div> darumzulegen wäre der naheliegende Weg; der
+         Bezugsrahmen endete dann mit der deckenden Sektion. Das scheitert am
+         Bestand: `main > section` steht in measure.mjs, shots.mjs, verify.mjs
+         und in compare.mjs sogar als nth-of-type-Zählung. Ein Wrapper würde
+         vier Prüfwerkzeuge stillschweigend falsch machen.
+
+         Der Wechsel ist layoutneutral: sticky nimmt ein Element nie aus dem
+         Fluss, die Lage der Folgesektion ändert sich dadurch nicht. Es kann
+         also nicht schwingen, und weil in diesem Moment ohnehin eine deckende
+         Fläche davorliegt, sieht man den Wechsel auch nicht. */
+      if (oben <= haft) delete sektion.dataset.haftend;
+      else sektion.dataset.haftend = '';
+
+      const weg = window.innerHeight - haft;
+      const p = weg <= 0 ? 0 : Math.min(1, Math.max(0, 1 - (oben - haft) / weg));
       gsap.set(inhalt, { scale: 1 - (1 - MOTION.sticky.scale) * p });
       gsap.set(sektion, { opacity: 1 - (1 - MOTION.sticky.fade) * p });
     };
 
-    /* Der Trigger hängt an der FOLGESEKTION, nicht an der haftenden. Erst
-       stand er an der haftenden — und die ist `position: sticky`, taugt als
-       Messobjekt also nicht: ScrollTrigger bekam von ihr Werte, die sich beim
-       Haften nicht mehr wie Dokumentkoordinaten verhalten, und onUpdate lief
-       gar nicht erst. Sichtbar war das daran, dass „Zwei Welten" durchgehend
-       auf 1,00 stand und „Sicherheit" auf dem Wert festhing, den der eine
-       Aufruf beim Laden gerechnet hatte.
-
-       Der Bereich ist an beiden Enden grosszügig gefasst; welcher Wert gilt,
-       entscheidet ohnehin die Rechnung darin, nicht die Linie. */
-    ScrollTrigger.create({
-      trigger: naechste,
-      start: 'top bottom+=300',
-      end: 'top top-=300',
-      onUpdate: zeichnen,
-      onRefresh: zeichnen,
-    });
+    stuecke.push(zeichnen);
     zeichnen();
-
-    /* DIE HAFTUNG MUSS WIEDER GELÖST WERDEN, und das ist kein Feinschliff,
-       sondern der Unterschied zwischen Wirkung und Trümmerfeld.
-
-       `position: sticky` haftet innerhalb seines Bezugsrahmens. Der ist hier
-       <main>, und darin stehen alle Sektionen als Geschwister — die Sektion
-       klebte also nicht bis zur nächsten, sondern bis zum Seitenende. Drei
-       haftende Sektionen ergaben drei Textebenen, die durch alles Folgende
-       geisterten: „Musst du auch alles 5-mal sagen?" stand über „Zwei Welten"
-       und über „Sicherheit".
-
-       Der naheliegende Weg wäre, je Paar ein <div> darumzulegen; der
-       Bezugsrahmen endete dann mit der deckenden Sektion. Das scheitert am
-       Bestand: `main > section` steht in measure.mjs, shots.mjs, verify.mjs
-       und in compare.mjs sogar als nth-of-type-Zählung. Ein Wrapper würde vier
-       Prüfwerkzeuge stillschweigend falsch machen.
-
-       Also hier. Sobald die Oberkante der Folgesektion die Haftlinie erreicht,
-       ist die haftende Sektion vollständig verdeckt — ab da darf sie
-       weglaufen. Der Wechsel ist layoutneutral: ein sticky-Element steht immer
-       im Fluss, sticky nimmt es nie heraus. Es springt also nichts, und weil
-       es in diesem Moment ohnehin hinter einer deckenden Fläche liegt, ist der
-       Wechsel auch nicht zu sehen.
-
-       onEnterBack stellt sie beim Zurückscrollen wieder her — sonst wäre die
-       Geste einmalig und beim zweiten Blick weg. */
-    ScrollTrigger.create({
-      trigger: naechste,
-      start: 'top top',
-      onEnter: () => {
-        delete sektion.dataset.haftend;
-      },
-      onLeaveBack: () => {
-        if (sektion.dataset.haftbereit === 'ja') sektion.dataset.haftend = '';
-      },
-    });
   }
+
+  if (!stuecke.length) return;
+
+  /* GAR KEIN SCROLLTRIGGER MEHR, SONDERN DER SCROLL SELBST.
+     Zwischenstand war ein Trigger über das ganze Dokument. Der lief besser als
+     die Trigger je Sektion, aber nicht verlässlich: ScrollTrigger.refresh()
+     springt intern auf 0, vermisst dort und stellt die Scrollposition wieder
+     her — onUpdate feuert danach nicht noch einmal, weil sich aus seiner Sicht
+     nichts geändert hat. Gezeichnet wurde also der Zustand am Seitenanfang.
+     Messbar war das als Zufall: „Sicherheit" stand bei y=12000 mal auf 0,35
+     und mal auf 1, je nachdem, ob zwischendurch ein Refresh lag. Und Refreshes
+     gibt es hier viele, der ResizeObserver in initSticky löst bei jeder
+     Höhenänderung einen aus.
+
+     Am Scrollereignis gibt es diese Lücke nicht. Die Rechnung ist zwei
+     getBoundingClientRect je haftender Sektion, gedrosselt auf ein Bild —
+     billiger als der Trigger, den sie ersetzt. */
+  const alleZeichnen = () => {
+    for (const zeichnen of stuecke) zeichnen();
+  };
+
+  let angefordert = false;
+  const anstossen = () => {
+    if (angefordert) return;
+    angefordert = true;
+    requestAnimationFrame(() => {
+      angefordert = false;
+      alleZeichnen();
+    });
+  };
+
+  window.addEventListener('scroll', anstossen, { passive: true });
+  window.addEventListener('resize', anstossen, { passive: true });
+  ScrollTrigger.addEventListener('refresh', anstossen);
+  anstossen();
 }
 
 /* Maskottchen, das hinter einer Sektionskante hervortritt. Verdeckt wird es von
