@@ -27,12 +27,14 @@ interface Props {
    * Frontmatter entsteht.
    */
   body?: string;
+  /** Wird unverändert an Base durchgereicht, Begründung steht dort. */
+  noindex?: boolean;
 }
 
-const { title, description, body } = Astro.props;
+const { title, description, body, noindex } = Astro.props;
 ---
 
-<Base title={title} description={description}>
+<Base title={title} description={description} noindex={noindex}>
   <Nav />
   <main id="main" class="legal">
     {

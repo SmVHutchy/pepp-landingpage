@@ -30,9 +30,18 @@ const offen = [
   'Prüfung der App selbst — diese Erklärung betrifft nur die Website.',
   'Formale Konformitätsbewertung durch eine unabhängige Stelle.',
 ];
+/* noindex statt Disallow in robots.txt: die Seite ist im Footer verlinkt.
+   Ein Disallow hätte nur das Crawlen verhindert — die URL wäre weiter
+   indexierbar gewesen, nur ohne Snippet, und der Crawler hätte dieses
+   noindex nie zu sehen bekommen.
+
+   ENTFERNEN, sobald die BFSG-Pflichtangaben eingesetzt sind (Blocker B2 in
+   docs/AUDIT-2026-08-17.md). Dann gehört die Route auch wieder in die Liste
+   in src/pages/sitemap.xml.js. */
 ---
 
 <Legal
+  noindex
   title="Barrierefreiheit · Pepp"
   description="Stand der Barrierefreiheit dieser Website, was geprüft ist und was noch offen ist."
 >

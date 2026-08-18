@@ -17,51 +17,78 @@ import Faq from '../components/sections/Faq.astro';
 import FinalCta from '../components/sections/FinalCta.astro';
 import Footer from '../components/sections/Footer.astro';
 import StickyCta from '../components/sections/StickyCta.astro';
-import { PRICING, OPERATOR } from '../data/site.js';
+import { getImage } from 'astro:assets';
+import { PRICING, SITE, STORE } from '../data/site.js';
 import { FAQ } from '../data/faq.js';
+import elternQuests from '../assets/screens/eltern-03-quests.png';
+import kindStart from '../assets/screens/kind-01-start-taschengeld.png';
 
 /* Strukturierte Daten serverseitig — nicht per JS aus dem DOM gebaut.
-   Preise kommen aus PRICING, die FAQ aus derselben Liste wie Sektion 13. */
+   Preise kommen aus PRICING, die FAQ aus derselben Liste wie Sektion 13.
+
+   WebSite und Organization stehen NICHT hier, sondern in Base.astro: sie
+   gelten für jede Seite. Was hier steht, gilt nur für die Startseite, und es
+   verweist über @id auf die Objekte dort, statt Name und Adresse ein zweites
+   Mal zu führen. Beides landet in einem gemeinsamen @graph — erst dadurch
+   sieht ein Parser, dass die BlueBranch GmbH die Herausgeberin dieser App ist
+   und die FAQ zu dieser Website gehört.
+
+   applicationCategory bleibt FinanceApplication, obwohl Pepp kein
+   Finanzprodukt ist (scripts/verify.mjs:94 prüft genau diese Abgrenzung im
+   sichtbaren Text). Die schema.org-Liste kennt keine passendere Kategorie;
+   die Abgrenzung leistet die description, nicht der Kategorieschlüssel. */
+/* screenshot verlangt fertige URLs. getImage() erzeugt dieselben WebP, die
+   <Image> in den Sektionen ausliefert — es entsteht also keine dritte Datei,
+   nur ein Verweis auf die, die ohnehin gebaut wird. Je ein Screen pro Welt. */
+const [screenEltern, screenKind] = await Promise.all(
+  [elternQuests, kindStart].map((src) => getImage({ src, format: 'webp' }))
+);
+
 const jsonLd = [
   {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
+    '@type': 'MobileApplication',
+    '@id': `${SITE.origin}/#app`,
     name: 'Pepp',
+    alternateName: 'Pepp — Taschengeld & Aufgaben',
     applicationCategory: 'FinanceApplication',
+    applicationSubCategory: 'Familienorganisation',
     operatingSystem: 'iOS, Android',
-    inLanguage: 'de',
+    inLanguage: SITE.lang,
+    url: `${SITE.origin}/`,
+    image: new URL('/og-image.png', SITE.origin).href,
+    screenshot: [
+      new URL(screenEltern.src, SITE.origin).href,
+      new URL(screenKind.src, SITE.origin).href,
+    ],
     description:
       'Familien-App für Aufgaben, Taschengeld und Medienzeit. Aus Aufgaben werden Quests.',
+    /* installUrl und downloadUrl sind beide iOS: schema.org kennt kein Feld
+       für „zwei Stores". Android steht im sameAs der Organization. */
+    installUrl: STORE.ios,
+    publisher: { '@id': `${SITE.origin}/#organization` },
+    isPartOf: { '@id': `${SITE.origin}/#website` },
     offers: [
       {
         '@type': 'Offer',
+        name: 'Monatlich',
         price: PRICING.monthly.toFixed(2),
         priceCurrency: PRICING.currency,
-        name: 'Monatlich',
+        url: STORE.ios,
       },
       {
         '@type': 'Offer',
+        name: 'Jährlich',
         price: PRICING.yearly.toFixed(2),
         priceCurrency: PRICING.currency,
-        name: 'Jährlich',
+        url: STORE.ios,
       },
     ],
   },
   {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: OPERATOR.legalName,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: OPERATOR.street,
-      postalCode: OPERATOR.postalCode,
-      addressLocality: OPERATOR.city,
-      addressCountry: OPERATOR.country,
-    },
-  },
-  {
-    '@context': 'https://schema.org',
     '@type': 'FAQPage',
+    '@id': `${SITE.origin}/#faq`,
+    isPartOf: { '@id': `${SITE.origin}/#website` },
+    about: { '@id': `${SITE.origin}/#app` },
     mainEntity: FAQ.map((entry) => ({
       '@type': 'Question',
       name: entry.q,

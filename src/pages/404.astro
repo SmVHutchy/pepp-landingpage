@@ -30,7 +30,14 @@ const wege = [
 ];
 ---
 
+{
+  /* noindex ist hier Pflicht, nicht Feinschliff: eine statische Seite kann
+     keinen 404-Status setzen (siehe Kommentar oben), der Hoster antwortet
+     also mit 200. Ohne diesen Hinweis nimmt Google die Seite als vollwertige
+     Seite auf — ein klassischer Soft-404. */
+}
 <Base
+  noindex
   title="Seite nicht gefunden · Pepp"
   description="Diese Seite gibt es nicht. Hier geht es zurück zu Pepp."
 >

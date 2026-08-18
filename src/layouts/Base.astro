@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE } from '../data/site.js';
+import { SITE, STORE, OPERATOR } from '../data/site.js';
 
 interface Props {
   title: string;
@@ -9,7 +9,18 @@ interface Props {
   ogTitle?: string;
   ogDescription?: string;
   twitterDescription?: string;
-  /** Strukturierte Daten, serverseitig gerendert — nie per JS nachgeschoben. */
+  /**
+   * Seite aus dem Index halten. Nur für Seiten, die erreichbar sein sollen,
+   * aber nicht suchbar: die 404 (statisches Hosting antwortet mit 200, sonst
+   * landet sie als Soft-404 im Index) und /barrierefreiheit, solange dort
+   * Pflichtangaben als Platzhalter stehen.
+   *
+   * NICHT über robots.txt lösen. Ein Disallow verhindert das Crawlen, nicht
+   * das Indexieren: eine im Footer verlinkte URL kann ohne Snippet trotzdem
+   * in den Index geraten, und der Crawler darf das noindex dann nie lesen.
+   */
+  noindex?: boolean;
+  /** Strukturierte Daten der Seite, zusätzlich zum Basis-Graph unten. */
   jsonLd?: unknown[];
 }
 
@@ -19,11 +30,68 @@ const {
   ogTitle = title,
   ogDescription = description,
   twitterDescription = description,
+  noindex = false,
   jsonLd,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, SITE.origin).href;
 const ogImage = new URL('/og-image.png', SITE.origin).href;
+
+/* Basis-Graph: WebSite und Organization tragen JEDE Seite, nicht nur die
+   Startseite. Ein Parser, der auf /impressum landet, soll dieselbe Entität
+   auflösen wie einer, der auf / landet.
+
+   Die @id sind URL-Fragmente auf SITE.origin und damit stabil und global
+   eindeutig. Seitenspezifische Objekte (SoftwareApplication, FAQPage in
+   src/pages/index.astro) verweisen über diese @id hierher, statt Name und
+   Adresse ein zweites Mal zu führen.
+
+   sameAs zeigt auf die beiden Store-Einträge. Das ist die einzige externe
+   Verankerung, die es gibt, und sie ist die wichtigste: sie bindet „Pepp" an
+   zwei Einträge, die Suchmaschinen und LLM-Crawler ohnehin kennen.
+
+   Was hier bewusst NICHT steht: aggregateRating, review, foundingDate,
+   numberOfEmployees. Es gibt dazu keine belegten Werte, und ein erfundenes
+   Feld in strukturierten Daten ist eine Falschaussage. */
+const basisGraph = [
+  {
+    '@type': 'WebSite',
+    '@id': `${SITE.origin}/#website`,
+    url: `${SITE.origin}/`,
+    name: 'Pepp',
+    inLanguage: SITE.lang,
+    publisher: { '@id': `${SITE.origin}/#organization` },
+  },
+  {
+    '@type': 'Organization',
+    '@id': `${SITE.origin}/#organization`,
+    name: OPERATOR.legalName,
+    url: `${SITE.origin}/`,
+    email: OPERATOR.email,
+    telephone: OPERATOR.phone,
+    vatID: OPERATOR.vatId,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/logo/pepp-wordmark.svg', SITE.origin).href,
+    },
+    sameAs: [STORE.ios, STORE.android],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: OPERATOR.street,
+      postalCode: OPERATOR.postalCode,
+      addressLocality: OPERATOR.city,
+      addressCountry: OPERATOR.country,
+    },
+  },
+];
+
+/* Ein @graph statt mehrerer loser <script>-Blöcke: nur so sieht ein Parser,
+   dass die Organization der Herausgeber der App ist und die FAQ zu dieser
+   Seite gehört. */
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [...basisGraph, ...(jsonLd ?? [])],
+};
 ---
 
 <!doctype html>
@@ -35,6 +103,11 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {
+      /* follow, nicht none: die Links dieser Seite sollen weiter zählen,
+        nur die Seite selbst nicht im Index stehen. */
+      noindex && <meta name="robots" content="noindex, follow" />
+    }
 
     {
       /* Marke im Tab. SVG zuerst — moderne Browser nehmen es und skalieren
@@ -53,14 +126,36 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
     <meta name="theme-color" content="#FBF6F1" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pepp" />
     <meta property="og:locale" content={SITE.locale} />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
+    {
+      /* Nachgemessen an public/og-image.png, erzeugt von scripts/og-image.mjs.
+        Ohne Maße muss jeder Dienst das Bild erst laden, bevor er den Platz im
+        Layout reservieren kann — manche zeigen so lange gar keine Vorschau.
+        BEI ÄNDERUNG DES FORMATS hier nachziehen. */
+    }
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {
+      /* Beschreibt, was scripts/og-image.mjs tatsächlich zeichnet: Wortmarke,
+        Schlagzeile, Subline, drei Merkmale, Maskottchen rechts. */
+    }
+    <meta
+      property="og:image:alt"
+      content="Pepp: Aus Aufgaben werden Quests. Kinder sammeln Rewards, Eltern behalten den Überblick. Kein Bankkonto, werbefrei, made in Germany."
+    />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={ogTitle} />
     <meta name="twitter:description" content={twitterDescription} />
+    {
+      /* Twitter fällt zwar auf og:image zurück, aber nicht jeder Dienst, der
+        die twitter:-Tags liest, tut das auch. */
+    }
+    <meta name="twitter:image" content={ogImage} />
 
     {
       /* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu blockieren. */
@@ -78,15 +173,7 @@ const ogImage = new URL('/og-image.png', SITE.origin).href;
         das ist ein Datenblock, kein ausführbares Skript. Er soll unverändert
         im HTML stehen und nicht durch die Bündelung laufen. */
     }
-    {
-      jsonLd && (
-        <script
-          is:inline
-          type="application/ld+json"
-          set:html={JSON.stringify(jsonLd)}
-        />
-      )
-    }
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(graph)} />
   </head>
 
   <body>
