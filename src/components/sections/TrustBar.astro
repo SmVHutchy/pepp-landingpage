@@ -3,6 +3,8 @@
    Weiss mit Hairline oben und unten. z-index 2, damit die angeschnittenen
    Hero-Screens dahinter verschwinden. */
 import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 
 const points = [
   { icon: 'shield-check', label: 'Made in Germany' },
@@ -13,6 +15,25 @@ const points = [
 ---
 
 <section class="trust" aria-label="Vertrauen">
+  {/* Von Liam im Blob-Editor gesetzt. */}
+  <BlobFeld>
+    <Blob
+      ton="pink"
+      groesse="1800px"
+      top="-18.4%"
+      left="-19.6%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+    <Blob
+      ton="pink"
+      groesse="800px"
+      top="-18.1%"
+      left="220.1%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+  </BlobFeld>
   <ul class="trust__list mkt-list-reset">
     {
       points.map((point) => (

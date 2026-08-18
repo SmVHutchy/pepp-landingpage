@@ -32,6 +32,7 @@
    Inhalt steht im DOM und ist damit indexierbar. */
 import { Image } from 'astro:assets';
 import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import Icon from '../Icon.astro';
 /* Freigestellt aus dem gelieferten Render, siehe scripts/freistellen.mjs.
    Das runde Off-White-Plättchen von vorher war nur eine Krücke, weil
@@ -75,6 +76,37 @@ const REWARDS = [
 ---
 
 <section id="belohnungen" class="rewards">
+  {
+    /* Von Liam im Blob-Editor gesetzt. Der Schein in .rewards__aura weiter
+     unten gehoert nicht dazu — der liegt hinter dem Screen, nicht hinter der
+     Sektion. */
+  }
+  <BlobFeld>
+    <Blob
+      ton="pink"
+      groesse="1790px"
+      top="-38.7%"
+      left="16.5%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+    <Blob
+      ton="peach"
+      groesse="800px"
+      top="-12.3%"
+      left="168%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+    <Blob
+      ton="peach"
+      groesse="800px"
+      top="-67.7%"
+      left="59.8%"
+      deckkraft={0.26}
+      weg={-60}
+    />
+  </BlobFeld>
   <div class="mkt-container rewards__inner">
     <div class="rewards__head">
       <p class="mkt-label" data-anim>Belohnungen</p>

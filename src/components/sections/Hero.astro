@@ -19,6 +19,8 @@
    Die App-Screens sind damit erst ab „Die Mechanik" zu sehen. Das ist bewusst
    so entschieden: die Startseite zeigt die Marke, nicht das Interface. */
 import { Image } from 'astro:assets';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 
@@ -38,6 +40,35 @@ const microTrust = [
 ---
 
 <section class="hero">
+  {/* Von Liam im Blob-Editor gesetzt. */}
+  <BlobFeld>
+    <Blob
+      form="blob3"
+      groesse="1480px"
+      top="-17.7%"
+      left="36.6%"
+      deckkraft={0.23}
+      weichzeichnen={64}
+      winkel={360}
+      weg={0}
+    />
+    <Blob
+      ton="pink"
+      groesse="1080px"
+      top="-7.9%"
+      left="108.2%"
+      deckkraft={0.36}
+      weg={-60}
+    />
+    <Blob
+      ton="peach"
+      groesse="1510px"
+      top="-6.6%"
+      left="-9.2%"
+      deckkraft={0.75}
+      weg={-60}
+    />
+  </BlobFeld>
   <div class="hero__grid">
     <div class="hero__copy">
       <p class="hero__chip">

@@ -39,7 +39,7 @@
  * sie beschnitten haben. Der Schalter zeigt beides.
  */
 import { FORMEN, FORM_VERHAELTNIS, maskeVon } from '../data/blob-formen.js';
-import { rebuildBlobs } from './site.js';
+import { rebuildBlobs, stopBlobs } from './site.js';
 
 const STORAGE = 'pepp:blobs';
 
@@ -87,6 +87,11 @@ function lesen(el) {
   return {
     art: el.dataset.form || el.dataset.ton || 'blob1',
     groesse: parseFloat(s.getPropertyValue('--blob-groesse')) || 560,
+    /* Die Einheit muss mit. Zwei Blobs auf der Seite sind mit groesse="100%"
+       gesetzt — sie liegen hinter einem Screen und sollen mit ihm mitwachsen.
+       Ohne diese Zeile las der Editor daraus 100 und schrieb 100px zurück:
+       aus einer mitwachsenden Fläche wurde ein Fleck von hundert Pixeln. */
+    einheit: s.getPropertyValue('--blob-groesse').trim().endsWith('%') ? '%' : 'px',
     deckkraft: parseFloat(s.getPropertyValue('--blob-deckkraft')) || 0.5,
     weich: parseFloat(s.getPropertyValue('--blob-weich')) || 48,
     winkel: parseFloat(s.getPropertyValue('--blob-winkel')) || 0,
@@ -117,7 +122,7 @@ function schreiben(el, w) {
   }
 
   el.dataset.blob = String(w.weg);
-  s.setProperty('--blob-groesse', `${Math.round(w.groesse)}px`);
+  s.setProperty('--blob-groesse', `${Math.round(w.groesse)}${w.einheit ?? 'px'}`);
   s.setProperty('--blob-deckkraft', String(w.deckkraft));
   s.setProperty('--blob-weich', `${Math.round(w.weich)}px`);
   s.setProperty('--blob-winkel', `${Math.round(w.winkel)}deg`);
@@ -258,6 +263,7 @@ export function mountBlobEditor() {
       <button type="button" data-act="neu">+ Blob</button>
       <button type="button" data-act="weg">Löschen</button>
       <button type="button" data-act="clip">Beschnitt aus</button>
+      <button type="button" data-act="parallaxe">Parallaxe an</button>
       <button type="button" data-act="code">Code</button>
       <button type="button" data-act="reset">Zurücksetzen</button>
     </div>
@@ -271,6 +277,13 @@ export function mountBlobEditor() {
 
   let gewaehlt = null;
   let beschnitt = true;
+  /* Beim Öffnen steht die Parallaxe still. Sie ist der Grund, warum sich die
+     Blobs beim Setzen wegbewegen: der Weg aus data-blob wird über die ganze
+     Sektionshöhe verteilt, und in „So funktioniert's" und der Mechanik sind
+     das durch den Halt rund 3340px — ein Blob mit weg=-70 wandert dort über
+     die volle Strecke, während man ihn zu greifen versucht. Gesetzt wird im
+     Ruhezustand, angesehen wird es mit dem Knopf. */
+  let parallaxe = false;
 
   /* ── Aufbau der Regler ─────────────────────────────────────────────── */
   const eingaben = {};
@@ -358,7 +371,7 @@ export function mountBlobEditor() {
       const zeile = document.createElement('div');
       zeile.className = 'pbe__eintrag';
       zeile.setAttribute('role', 'option');
-      zeile.innerHTML = `<span>${sektionName(sektionVon(el))}</span><span>${w.art} · ${Math.round(w.groesse)}px</span>`;
+      zeile.innerHTML = `<span>${sektionName(sektionVon(el))}</span><span>${w.art} · ${Math.round(w.groesse)}${w.einheit}</span>`;
       zeile.addEventListener('click', () => waehlen(el, true));
       zeile._el = el;
       liste.append(zeile);
@@ -425,7 +438,7 @@ export function mountBlobEditor() {
     eingaben[r.key].addEventListener('input', () => {
       const wert = Number(eingaben[r.key].value);
       aendern({ [r.key]: wert });
-      if (r.key === 'weg') planeNeubau();
+      if (r.key === 'weg' && parallaxe) planeNeubau();
     });
     eingaben[r.key].addEventListener('change', () => listeAufbauen());
   }
@@ -568,6 +581,7 @@ export function mountBlobEditor() {
     schreiben(el, {
       art: 'blob1',
       groesse: 800,
+      einheit: 'px',
       deckkraft: 0.26,
       weich: 64,
       winkel: 0,
@@ -583,7 +597,7 @@ export function mountBlobEditor() {
     /* Mit Scrollen: die Zielsektion kann ausserhalb des Bildes liegen, und ein
        Blob, den man nach dem Anlegen suchen muss, ist keiner. */
     waehlen(el, true);
-    planeNeubau();
+    if (parallaxe) planeNeubau();
   }
 
   function loeschen() {
@@ -618,7 +632,7 @@ export function mountBlobEditor() {
         const dawn = istForm(w.art);
         const attr = [
           dawn ? `form="${w.art}"` : `ton="${w.art}"`,
-          `groesse="${Math.round(w.groesse)}px"`,
+          `groesse="${Math.round(w.groesse)}${w.einheit}"`,
         ];
         for (const seite of [...SENKRECHT, ...WAAGERECHT]) {
           if (w[seite] !== null)
@@ -695,6 +709,12 @@ export function mountBlobEditor() {
       );
       e.target.textContent = beschnitt ? 'Beschnitt aus' : 'Beschnitt an';
     }
+    if (act === 'parallaxe') {
+      parallaxe = !parallaxe;
+      if (parallaxe) rebuildBlobs();
+      else stopBlobs();
+      e.target.textContent = parallaxe ? 'Parallaxe aus' : 'Parallaxe an';
+    }
     if (act === 'code') {
       codeFeld.hidden = !codeFeld.hidden;
       codeFeld.textContent = alsCode();
@@ -708,12 +728,17 @@ export function mountBlobEditor() {
       root.hidden = !root.hidden;
       document.documentElement.classList.toggle('pbe-offen', !root.hidden);
       if (!root.hidden) {
+        if (!parallaxe) stopBlobs();
         listeAufbauen();
         /* Vorauswahl: die Sektion, die man gerade ansieht. Umstellen kann man
            sie im Menü — auch auf eine, die gerade nicht im Bild ist. */
         const sicht = sichtbarsteSektion();
         if (sicht) sektionWahl.value = sicht.dataset.pbeNr ?? '0';
       } else {
+        /* Beim Schliessen läuft die Seite wieder so, wie sie ausgeliefert
+           wird — sonst hält man einen Zustand für den echten, den nur der
+           Editor erzeugt hat. */
+        rebuildBlobs();
         gewaehlt = null;
         markieren();
       }

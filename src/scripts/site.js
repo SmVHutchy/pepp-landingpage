@@ -230,11 +230,22 @@ function initBlobs() {
    gleichzeitig. Wird im Build nie aufgerufen — der Editor hängt hinter
    import.meta.env.DEV. */
 export function rebuildBlobs() {
+  stopBlobs();
+  initBlobs();
+  ScrollTrigger.refresh();
+}
+
+/* Parallaxe anhalten und jeden Blob dorthin zurücksetzen, wo seine Zahlen ihn
+   hinstellen. Der Editor braucht das: mit laufender Parallaxe steht ein Blob
+   beim Ziehen nie da, wo man ihn hinzieht, sondern um den Scrollversatz daneben
+   — und in „So funktioniert's" und der Mechanik ist der besonders gross, weil
+   die beiden Sektionen durch ihren Halt rund 3340px hoch sind und der Weg über
+   diese ganze Strecke verteilt wird. Gesetzt wird im Ruhezustand, geprüft mit
+   laufender Parallaxe. */
+export function stopBlobs() {
   for (const trigger of blobTrigger) trigger?.kill();
   blobTrigger = [];
   gsap.set('[data-blob]', { clearProps: 'transform' });
-  initBlobs();
-  ScrollTrigger.refresh();
 }
 
 /* ── Haftende Sektionen ────────────────────────────────────────────────────
