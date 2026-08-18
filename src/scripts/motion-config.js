@@ -155,9 +155,11 @@ export const MOTION = {
      eine waagerechte Welle hätte dort nichts zu verbinden. */
   quest: {
     runFrom: 901,
-    start: 'top 88%',
-    end: 'bottom 52%',
-    scrub: 0.8,
+    /* Wie viele Bildschirmhöhen ein Schritt braucht, bis er durch ist — die
+       Sektion hält so lange an. Gleicher Wert wie in der Mechanik, damit die
+       beiden Halte sich gleich anfühlen und nicht wie zwei verschiedene
+       Ideen. Vier Schritte ergeben 2,4 Bildschirmhöhen. */
+    halteProSchritt: 0.6,
     swap: 0.45,
     ease: '--ease-out-soft',
   },
@@ -192,6 +194,11 @@ export const MOTION = {
      es schaltet nicht um. */
   mechanic: {
     pinFrom: 901,
+    /* Wie viele Bildschirmhöhen gescrollt werden müssen, bis ein Schritt
+       durch ist. Die Sektion hält so lange an. 0.6 ist gerade genug, dass ein
+       Wechsel als Wechsel gelesen wird, ohne dass man das Gefühl bekommt, die
+       Seite klemme. Vier Schritte ergeben 2,4 Bildschirmhöhen Haltestrecke. */
+    halteProSchritt: 0.6,
     fade: 1.1,
     ease: '--ease-out-soft',
     start: 'top 55%',

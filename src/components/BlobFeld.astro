@@ -1,0 +1,43 @@
+---
+/**
+ * Clip-Ebene für Farbblobs.
+ *
+ * Die Blobs liegen darin und werden am Sektionsrand abgeschnitten. Nichts
+ * ragt in die Nachbarsektion, und deshalb dürfen sie gross sein und weit über
+ * die Ecke hinausgehen — sichtbar bleibt der Bogen, der in der Ecke steht.
+ * Genau so stehen sie in den App-Screens.
+ *
+ * WARUM NICHT EINFACH `overflow: hidden` AUF DER SEKTION. Das würde jedes
+ * `position: sticky` im Inneren abschalten — die Mechanik-Sektion hat eine
+ * haftende Bühne, und die haftenden Sektionen selbst haben Nachbarn, die
+ * darauf angewiesen sind. `overflow` wirkt auf alle Nachkommen, eine eigene
+ * Ebene wirkt nur auf ihren eigenen Inhalt. Diese Trennung ist der ganze
+ * Zweck der Komponente.
+ *
+ * `border-radius: inherit` holt sich den Radius der Sektion. Ohne das würde
+ * ein Eckblob in einer .mkt-section--card die abgerundete obere Kante wieder
+ * quadratisch überdecken.
+ *
+ * z-index bleibt auf 0: `.mkt-section > *` gibt allen direkten Kindern einer
+ * Sektion z-index 1, und das gilt auch für diese Ebene. Sie läge damit über
+ * dem Inhalt. Deshalb wird der Wert hier ausdrücklich zurückgenommen.
+ *
+ * Die aufrufende Sektion braucht `position: relative` — `.mkt-section` bringt
+ * das mit.
+ */
+---
+
+<div class="blob-feld" aria-hidden="true">
+  <slot />
+</div>
+
+<style>
+  .blob-feld {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+</style>

@@ -9,6 +9,8 @@ import Icon from '../Icon.astro';
 import anlegen from '../../assets/screens/eltern-06-anlegen-details.png';
 import quests from '../../assets/screens/eltern-03-quests.png';
 import questListe from '../../assets/screens/kind-03-quest-liste.png';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 
 /* Schritt 3 zeigt in der Referenz `eltern-07-pruefen.png`. Diese Datei ist
    weder im Design-Bundle noch in der Dateiliste des Design-Projekts enthalten
@@ -95,6 +97,19 @@ const layerOf = steps.map((step) => {
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
 <section class="mech mkt-section mkt-section--xl">
+  {/* Weiss. Unten links, gegenüber der Gerätebühne rechts. */}
+  <BlobFeld>
+    <Blob
+      form="blob1"
+      groesse="900px"
+      bottom="-18%"
+      left="-18%"
+      deckkraft={0.24}
+      weichzeichnen={72}
+      weg={-80}
+    />
+  </BlobFeld>
+
   <div class="mkt-container">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Die Mechanik</p>
@@ -175,10 +190,12 @@ const layerOf = steps.map((step) => {
     position: relative;
   }
 
+  /* Kein `position: sticky` mehr. Seit die Sektion die Seite anhält (Pin in
+     initMechanicCarousel), steht der ganze Inhalt still — eine haftende Bühne
+     innerhalb eines festgehaltenen Blocks wäre ein zweiter Versatz auf einem,
+     der schon steht. Ohne JavaScript scrollt die Sektion durch wie jede
+     andere; das war auch mit sticky so. */
   .mech__stage {
-    /* 104px = Nav-Höhe 72 + 32 Luft */
-    position: sticky;
-    top: 104px;
     display: flex;
     justify-content: center;
   }

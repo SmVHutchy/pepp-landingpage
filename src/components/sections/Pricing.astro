@@ -8,6 +8,8 @@
 import { Image } from 'astro:assets';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import wave from '../../assets/mascot/pepp-wave.png';
 import {
   PRICING,
@@ -28,6 +30,21 @@ const included = [
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
 <section id="preis" class="price mkt-section mkt-section--xl mkt-section--card">
+  {
+    /* Weiss. Oben rechts, und mit Abstand am schwächsten: hier wird entschieden, nicht gestaunt. */
+  }
+  <BlobFeld>
+    <Blob
+      form="blob1"
+      groesse="840px"
+      top="-18%"
+      right="-16%"
+      deckkraft={0.16}
+      weichzeichnen={80}
+      weg={-50}
+    />
+  </BlobFeld>
+
   <div class="mkt-container price__inner">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Preis</p>

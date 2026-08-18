@@ -22,6 +22,7 @@ import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 import { PRICING } from '../../data/site.js';
 import mascot from '../../assets/mascot/pepp-quest.png';
+import BlobFeld from '../BlobFeld.astro';
 
 /* `proof` ist die Karte, die im selben Schritt vor Pepp steht: ein Ausschnitt
    aus der App, nicht der Schritttext ein zweites Mal. Sie liegt in der Bühne
@@ -79,6 +80,19 @@ const TRAIL = {
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
 <section id="funktionen" class="how mkt-section mkt-section--xl mkt-section--card">
+  {/* Weiss. Oben rechts, hinter dem Kopfbereich — links steht der Text. */}
+  <BlobFeld>
+    <Blob
+      form="blob3"
+      groesse="960px"
+      top="-18%"
+      right="-16%"
+      deckkraft={0.24}
+      weichzeichnen={72}
+      weg={-60}
+    />
+  </BlobFeld>
+
   <div class="mkt-container">
     <div class="how__intro">
       <div class="how__copy">

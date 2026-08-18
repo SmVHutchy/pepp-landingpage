@@ -12,6 +12,7 @@
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 import peek from '../../assets/mascot/pepp-point.png';
 
 const cards = [
@@ -54,22 +55,34 @@ const cards = [
 }
 <section class="problem mkt-section mkt-section--ground" data-haftet>
   {
-    /* blob2 statt des bisherigen Pfirsich-Scheins: der Alltag ist die erste
-       Sektion nach dem Hero, die Farbe tragen kann, und ein einfarbiger
-       Schein bringt hier keinen Bogen zustande. 64px Weichzeichnung statt der
-       voreingestellten 48 — bei 48 stand die Kontur der Form gegen die
-       Kartenreihe, und dann liest man eine Figur statt einer Stimmung. */
+    /* Dawn-Blobs statt der bisherigen einfarbigen Scheine: der Alltag ist die
+       erste Sektion nach dem Hero, die Farbe tragen kann, und ein einfarbiger
+       Schein bringt keinen Bogen zustande.
+
+       64px Weichzeichnung statt der voreingestellten 48 — bei 48 stand die
+       Kontur der Form gegen die Kartenreihe, und dann liest man eine Figur
+       statt einer Stimmung. */
   }
-  <Blob
-    form="blob2"
-    groesse="760px"
-    top="-18%"
-    left="-16%"
-    deckkraft={0.28}
-    weichzeichnen={64}
-    weg={-70}
-  />
-  <Blob ton="pink" groesse="520px" top="30%" right="-12%" deckkraft={0.4} weg={-110} />
+  <BlobFeld>
+    <Blob
+      form="blob2"
+      groesse="980px"
+      top="-18%"
+      left="-18%"
+      deckkraft={0.32}
+      weichzeichnen={64}
+      weg={-70}
+    />
+    <Blob
+      form="blob4"
+      groesse="780px"
+      bottom="-18%"
+      right="-14%"
+      deckkraft={0.24}
+      weichzeichnen={72}
+      weg={-110}
+    />
+  </BlobFeld>
 
   <div class="mkt-container">
     <div class="mkt-head">
@@ -139,29 +152,12 @@ const cards = [
   /* Die Blobs dürfen über den Rand hinaus, aber nicht die Seite verbreitern —
      body hat overflow-x:hidden, das fängt es waagerecht ab. Senkrecht ragen
      sie in die Nachbarsektionen; das ist gewollt, sie sind ja der Übergang. */
-  .problem {
-    /* isolation: der Blob-Stapel bleibt in dieser Sektion und mischt sich nicht
-       mit dem Dawn-Panel der Belohnungen weiter unten.
+  /* Haftung und Stapelkontext stehen in global.css bei [data-haftet] — drei
+     Sektionen teilen sich die Regel, eine gescopte Kopie je Sektion wäre
+     dreimal dasselbe. Das frühere `isolation: isolate` hier ist darin
+     aufgegangen.
 
-       Seit die Sektion haftet, trägt dieselbe Zeile eine zweite Last: der
-       eigene Stapelkontext ist die Bedingung dafür, dass „So funktioniert's"
-       sie überhaupt zudecken kann. `.mkt-section > *` gibt allen Kindern
-       z-index 1; ohne Kontext lägen die im Wurzelkontext und damit über dem
-       Hintergrund der Folgesektion. Der Alltagstext schiene durch die weisse
-       Fläche. Nicht entfernen. */
-    isolation: isolate;
-  }
-
-  /* Haftung. Das Attribut setzt initSticky() in site.js, zusammen mit
-     --haft-top. Der Wert ist 0, solange die Sektion in den Viewport passt,
-     und sonst negativ: dann haftet die Unterkante am unteren Bildrand statt
-     der Oberkante am oberen, und kein Inhalt wird unerreichbar. */
-  .problem[data-haftend] {
-    position: sticky;
-    top: var(--haft-top, 0px);
-  }
-
-  /* Der Peek stand hier, um von der Folgesektion angeschnitten zu werden.
+     Der Peek stand hier, um von der Folgesektion angeschnitten zu werden.
      Das gilt weiter — nur passiert es jetzt im Vorbeiziehen statt an einer
      festen Kante, und die Figur ist ein paar Sekunden länger ganz zu sehen.
      Genau dafür war sie gedacht. */

@@ -203,12 +203,14 @@ function revealSides(items, section) {
    je Element im data-blob-Attribut, damit mehrere Blobs verschieden schnell
    laufen — gleiche Geschwindigkeit wirkt wie ein mitgeschobenes Hintergrundbild
    statt wie Tiefe. */
+let blobTrigger = [];
+
 function initBlobs() {
   for (const blob of document.querySelectorAll('[data-blob]')) {
     const weg = Number(blob.dataset.blob) || 0;
     if (!weg) continue;
     const section = blob.closest('section') ?? blob.parentElement;
-    gsap.to(blob, {
+    const tween = gsap.to(blob, {
       y: weg,
       ease: 'none',
       scrollTrigger: {
@@ -218,7 +220,21 @@ function initBlobs() {
         scrub: MOTION.blob.scrub,
       },
     });
+    blobTrigger.push(tween.scrollTrigger);
   }
+}
+
+/* Für den Blob-Editor: nach dem Anlegen, Löschen oder Verschieben eines Blobs
+   müssen die Parallax-Trigger neu entstehen. Ohne das Aufräumen käme bei jedem
+   Zug ein zusätzlicher Trigger dazu, und der Blob liefe mit zwei Tweens
+   gleichzeitig. Wird im Build nie aufgerufen — der Editor hängt hinter
+   import.meta.env.DEV. */
+export function rebuildBlobs() {
+  for (const trigger of blobTrigger) trigger?.kill();
+  blobTrigger = [];
+  gsap.set('[data-blob]', { clearProps: 'transform' });
+  initBlobs();
+  ScrollTrigger.refresh();
 }
 
 /* ── Haftende Sektionen ────────────────────────────────────────────────────
@@ -255,15 +271,26 @@ function initSticky() {
 
   const passt = window.matchMedia(`(min-width:${MOTION.sticky.stickFrom}px)`);
 
+  /* haftbereit trennt „darf haften" von „haftet gerade". Das Lösen weiter
+     unten (initStickyTiefe) schaltet nur das zweite ab; ohne das erste wüsste
+     es beim Zurückscrollen nicht, ob es die Haftung überhaupt wiederherstellen
+     darf — unter 901px darf es nicht. */
   const messen = (sektion) => {
     if (!passt.matches) {
+      sektion.dataset.haftbereit = 'nein';
       delete sektion.dataset.haftend;
       sektion.style.removeProperty('--haft-top');
       return;
     }
     const fehlt = window.innerHeight - sektion.offsetHeight;
     sektion.style.setProperty('--haft-top', `${Math.min(0, fehlt)}px`);
-    sektion.dataset.haftend = '';
+    sektion.dataset.haftbereit = 'ja';
+    /* Nicht blind wieder anschalten: liegt die Folgesektion schon darüber,
+       gehört die Sektion gelöst und ein Resize darf sie nicht zurückholen. */
+    const naechste = sektion.nextElementSibling;
+    const gedeckt = naechste && naechste.getBoundingClientRect().top <= 0;
+    if (gedeckt) delete sektion.dataset.haftend;
+    else sektion.dataset.haftend = '';
   };
 
   const alle = () => {
@@ -303,18 +330,96 @@ function initStickyTiefe() {
     const inhalt = sektion.querySelector('.mkt-container');
     if (!naechste || !inhalt) continue;
 
-    const lauf = {
-      ease: 'none',
-      scrollTrigger: {
-        trigger: naechste,
-        start: 'top bottom',
-        end: 'top top',
-        scrub: MOTION.sticky.scrub,
-      },
+    /* KEIN SCRUB-TWEEN MIT start/end, SONDERN EINE RECHNUNG AUS DER LAGE.
+       Zuerst stand hier ein fromTo mit `start: 'top bottom'` und
+       `end: 'top top'` auf der Folgesektion. Für den Alltag lief das richtig;
+       für „Zwei Welten" und „Sicherheit" nicht — beide standen schon an ihrem
+       eigenen Anfang auf der Enddeckkraft 0,35, waren also grau, während man
+       sie las. Beide liegen hinter dem Pin der Mechanik-Sektion, der 2,4
+       Bildschirmhöhen ins Dokument schiebt; ein ScrollTrigger.refresh() nach
+       allen Triggern hat es nicht behoben.
+
+       Statt weiter an der Start-Ende-Arithmetik zu raten, wird der Fortschritt
+       gerechnet: wie weit ist die Oberkante der Folgesektion von unten bis zur
+       Haftlinie gewandert. Das ist dieselbe Bauart wie beim Karussell und beim
+       Snout Trail — der Zustand ist eine Funktion der Lage, kein Ablauf, der
+       an einer falsch vermessenen Linie hängen kann. Was man sieht, kann damit
+       nicht mehr von einer Zahl abweichen, die irgendwann einmal gemessen
+       wurde.
+
+       Der Trigger dient nur noch dazu, onUpdate im richtigen Bereich laufen zu
+       lassen; sein Ende ist bewusst grosszügig und die Rechnung klemmt selbst
+       auf 0 bis 1. */
+    const fortschritt = () => {
+      const haft = parseFloat(getComputedStyle(sektion).top) || 0;
+      const weg = window.innerHeight - haft;
+      if (weg <= 0) return 0;
+      return Math.min(
+        1,
+        Math.max(0, 1 - (naechste.getBoundingClientRect().top - haft) / weg)
+      );
     };
 
-    gsap.fromTo(inhalt, { scale: 1 }, { scale: MOTION.sticky.scale, ...lauf });
-    gsap.fromTo(sektion, { opacity: 1 }, { opacity: MOTION.sticky.fade, ...lauf });
+    const zeichnen = () => {
+      const p = fortschritt();
+      gsap.set(inhalt, { scale: 1 - (1 - MOTION.sticky.scale) * p });
+      gsap.set(sektion, { opacity: 1 - (1 - MOTION.sticky.fade) * p });
+    };
+
+    /* Der Trigger hängt an der FOLGESEKTION, nicht an der haftenden. Erst
+       stand er an der haftenden — und die ist `position: sticky`, taugt als
+       Messobjekt also nicht: ScrollTrigger bekam von ihr Werte, die sich beim
+       Haften nicht mehr wie Dokumentkoordinaten verhalten, und onUpdate lief
+       gar nicht erst. Sichtbar war das daran, dass „Zwei Welten" durchgehend
+       auf 1,00 stand und „Sicherheit" auf dem Wert festhing, den der eine
+       Aufruf beim Laden gerechnet hatte.
+
+       Der Bereich ist an beiden Enden grosszügig gefasst; welcher Wert gilt,
+       entscheidet ohnehin die Rechnung darin, nicht die Linie. */
+    ScrollTrigger.create({
+      trigger: naechste,
+      start: 'top bottom+=300',
+      end: 'top top-=300',
+      onUpdate: zeichnen,
+      onRefresh: zeichnen,
+    });
+    zeichnen();
+
+    /* DIE HAFTUNG MUSS WIEDER GELÖST WERDEN, und das ist kein Feinschliff,
+       sondern der Unterschied zwischen Wirkung und Trümmerfeld.
+
+       `position: sticky` haftet innerhalb seines Bezugsrahmens. Der ist hier
+       <main>, und darin stehen alle Sektionen als Geschwister — die Sektion
+       klebte also nicht bis zur nächsten, sondern bis zum Seitenende. Drei
+       haftende Sektionen ergaben drei Textebenen, die durch alles Folgende
+       geisterten: „Musst du auch alles 5-mal sagen?" stand über „Zwei Welten"
+       und über „Sicherheit".
+
+       Der naheliegende Weg wäre, je Paar ein <div> darumzulegen; der
+       Bezugsrahmen endete dann mit der deckenden Sektion. Das scheitert am
+       Bestand: `main > section` steht in measure.mjs, shots.mjs, verify.mjs
+       und in compare.mjs sogar als nth-of-type-Zählung. Ein Wrapper würde vier
+       Prüfwerkzeuge stillschweigend falsch machen.
+
+       Also hier. Sobald die Oberkante der Folgesektion die Haftlinie erreicht,
+       ist die haftende Sektion vollständig verdeckt — ab da darf sie
+       weglaufen. Der Wechsel ist layoutneutral: ein sticky-Element steht immer
+       im Fluss, sticky nimmt es nie heraus. Es springt also nichts, und weil
+       es in diesem Moment ohnehin hinter einer deckenden Fläche liegt, ist der
+       Wechsel auch nicht zu sehen.
+
+       onEnterBack stellt sie beim Zurückscrollen wieder her — sonst wäre die
+       Geste einmalig und beim zweiten Blick weg. */
+    ScrollTrigger.create({
+      trigger: naechste,
+      start: 'top top',
+      onEnter: () => {
+        delete sektion.dataset.haftend;
+      },
+      onLeaveBack: () => {
+        if (sektion.dataset.haftbereit === 'ja') sektion.dataset.haftend = '';
+      },
+    });
   }
 }
 
@@ -418,11 +523,30 @@ function initQuestRun() {
     }
   };
 
+  /* DIE SEITE HÄLT AN, BIS DIE LINIE GEZEICHNET IST — dieselbe Bauart wie in
+     der Mechanik-Sektion. Vorher lief die Linie am Scroll mit, und wer zügig
+     scrollte, war an Schritt 4 vorbei, bevor die Schnauze bei Schritt 2 war.
+     Die Sektion erzählt vier Schritte nacheinander; sie braucht die Strecke,
+     die sie behauptet.
+
+     Gepinnt wird der Inhalt, NICHT die Sektion: der pin-spacer läge sonst um
+     `.how`, und `main > section` steht in verify.mjs, measure.mjs, shots.mjs
+     und compare.mjs — letzteres zählt sogar Positionen durch. Der Spacer
+     bleibt deshalb innerhalb der Sektion; die Sektionsfläche wächst über
+     pinSpacing mit und trägt weiter den Hintergrund, der sich beim Überziehen
+     auf „Der Alltag" legt.
+
+     Kein `scrub` mehr: mit Pin ist der Fortschritt der Weg auf der
+     Haltestrecke, und der ist bereits die Scrollposition selbst. Ein Scrub
+     obendrauf würde die Linie hinter dem Finger herziehen. */
   const trigger = ScrollTrigger.create({
-    trigger: lauf,
-    start: Q.start,
-    end: Q.end,
-    scrub: Q.scrub,
+    trigger: lauf.closest('section'),
+    pin: lauf.closest('.mkt-container'),
+    pinSpacing: true,
+    anticipatePin: 1,
+    start: 'top top',
+    end: () =>
+      `+=${Math.round(window.innerHeight * Q.halteProSchritt * schritte.length)}`,
     onUpdate: (self) => {
       zeichnen(self.progress);
       let i = 0;
@@ -503,6 +627,15 @@ function buildReveals() {
   initPeek();
   initQuestRun();
   initMechanicCarousel();
+
+  /* ZULETZT UND NICHT FRÜHER. Der Pin der Mechanik-Sektion schiebt 2,4
+     Bildschirmhöhen in das Dokument. Jeder Trigger, der vorher angelegt wurde
+     — und das sind alle haftenden Sektionen —, rechnet sonst mit den alten
+     Abständen. Sichtbar war das daran, dass „Zwei Welten" und „Sicherheit"
+     schon an ihrem eigenen Anfang auf der Enddeckkraft 0,35 standen: der
+     Trigger hielt sich für längst durchlaufen, obwohl die Folgesektion noch
+     gar nicht im Bild war. */
+  ScrollTrigger.refresh();
 }
 
 /** Alles zurück auf Anfang — der Motion-Editor ruft das nach jeder Änderung. */
@@ -640,19 +773,51 @@ function initMechanicCarousel() {
      wird. Dann gewinnt der Trigger, nicht diese Zeile. */
   zeigen(0, true);
 
-  for (const [i, step] of steps.entries()) {
-    const eigene = Number(step.dataset.mechStep) || 0;
-    const vorige = i > 0 ? Number(steps[i - 1].dataset.mechStep) || 0 : 0;
-    ScrollTrigger.create({
-      trigger: step,
-      start: MOTION.mechanic.start,
-      /* Weit ausserhalb: dieser Trigger hat kein Ende, das etwas auslösen
-         soll. Nur `start` zählt, in beide Richtungen. */
-      end: '+=100000',
-      onEnter: () => zeigen(eigene),
-      onLeaveBack: () => zeigen(vorige),
-    });
-  }
+  /* DIE SEITE HÄLT AN, BIS DAS KARUSSELL DURCH IST.
+     Vorher hing jeder Schritt an einer eigenen Linie und die Sektion lief
+     dabei einfach weiter; wer zügig scrollte, war an Schritt 4 vorbei, bevor
+     Schritt 2 zu Ende geblendet hatte. Die Sektion erklärt aber vier Dinge
+     nacheinander — sie braucht die Zeit, die sie behauptet.
+
+     Der Pin friert die Sektion an der Oberkante ein und legt darunter eine
+     Strecke, die es zu durchscrollen gilt. Der aktive Schritt ist eine
+     Funktion des Fortschritts auf dieser Strecke, kein Ablauf: ein
+     unterbrochenes oder rückwärts gescrolltes Karussell steht damit immer
+     richtig, und ein zitterndes Trackpad kann nichts auslösen.
+
+     Die Strecke ist halteProSchritt Bildschirmhöhen je Schritt. Als Funktion
+     und nicht als Zahl, damit sie bei Resize neu gerechnet wird.
+
+     pinSpacing legt die Strecke als Platz ins Dokument — ohne das würde der
+     Rest der Seite unter die festgehaltene Sektion rutschen.
+
+     Nur ab pinFrom: darunter steht die Bühne gar nicht erst da (siehe
+     Mechanic.astro), und eine Seite, die auf dem Handy nicht weiterscrollt,
+     ist keine Geste, sondern ein Defekt. Die Prüfung oben verlässt die
+     Funktion in dem Fall bereits.
+
+     FESTGEHALTEN WIRD DER INHALT, NICHT DIE SEKTION. ScrollTrigger legt um
+     jedes gepinnte Element einen `pin-spacer` — stünde der um die Sektion,
+     wäre `.mech` kein direktes Kind von <main> mehr. Genau darauf bauen aber
+     verify.mjs, measure.mjs, shots.mjs und compare.mjs, letzteres sogar mit
+     nth-of-type. Der Spacer liegt deshalb INNERHALB der Sektion. Sichtbar ist
+     kein Unterschied: die Sektionsfläche wächst über pinSpacing mit und trägt
+     den Hintergrund, der Inhalt steht still. */
+  ScrollTrigger.create({
+    trigger: stack.closest('section'),
+    pin: stack.closest('.mkt-container'),
+    start: 'top top',
+    end: () => `+=${Math.round(window.innerHeight * M.halteProSchritt * steps.length)}`,
+    pinSpacing: true,
+    anticipatePin: 1,
+    onUpdate: (self) => {
+      const i = Math.min(steps.length - 1, Math.floor(self.progress * steps.length));
+      zeigen(Number(steps[i].dataset.mechStep) || 0);
+      for (const [j, step] of steps.entries()) {
+        step.toggleAttribute('data-mech-aktiv', j === i);
+      }
+    },
+  });
 
   /* Die Spaltenbreite geht in den seitlichen Versatz ein — bei Resize muss er
      neu gerechnet werden, sonst stehen die hinteren Geräte nach dem Umbruch
@@ -683,4 +848,5 @@ if (import.meta.env.DEV) {
     editor.restoreOverrides();
     editor.mountMotionEditor();
   });
+  import('./blob-editor.js').then((editor) => editor.mountBlobEditor());
 }

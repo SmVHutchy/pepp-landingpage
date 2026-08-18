@@ -3,6 +3,8 @@
    Off-White. Vier Karten, die ausschliesslich sagen, was Pepp NICHT ist.
    Keine der verbotenen Begriffe steht hier ohne Verneinung. */
 import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+import BlobFeld from '../BlobFeld.astro';
 
 /* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
    getrennt — gleiches Muster wie in Mechanic und Pot. */
@@ -40,7 +42,20 @@ const cards = [
     ein Farbmoment, der ein Kapitel markiert, trägt. SM-Padding, weil diese
     Sektion beruhigt statt zu verkaufen. */
 }
-<section class="mkt-section mkt-section--sm mkt-section--chapter">
+<section class="sec mkt-section mkt-section--sm mkt-section--chapter">
+  {/* Kapitelfläche. Unten links — die Sektion beruhigt, ein Bogen reicht. */}
+  <BlobFeld>
+    <Blob
+      form="blob3"
+      groesse="820px"
+      bottom="-18%"
+      left="-16%"
+      deckkraft={0.28}
+      weichzeichnen={72}
+      weg={-50}
+    />
+  </BlobFeld>
+
   <div class="mkt-container">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Sicherheit</p>

@@ -100,6 +100,33 @@ svg[data-pepp-icon] {
   background: var(--mkt-surface-chapter);
 }
 
+/* ── Haftende Sektionen ───────────────────────────────────────────────────
+   Eine Sektion mit data-haftet bleibt stehen, die nächste zieht darüber.
+   Begründung in ADR-015 (docs/DECISIONS.md), Mechanik in initSticky()
+   (src/scripts/site.js). Drei Sektionen tragen das: Der Alltag, Zwei Welten,
+   Sicherheit.
+
+   isolation gilt schon ohne Skript, und das ist Absicht: sie kostet nichts
+   und ist die Bedingung dafür, dass die Folgesektion überhaupt decken kann.
+   `.mkt-section > *` gibt allen direkten Kindern z-index 1; ohne eigenen
+   Stapelkontext lägen die im Wurzelkontext und damit ÜBER dem Hintergrund der
+   Folgesektion — der Text schiene durch die weisse Fläche hindurch. */
+[data-haftet] {
+  isolation: isolate;
+}
+
+/* Das zweite Attribut setzt erst initSticky(), zusammen mit --haft-top. Ohne
+   JavaScript haftet also nichts und die Seite scrollt normal durch — das ist
+   die Grundregel aus site.js.
+
+   --haft-top ist 0, solange die Sektion in den Viewport passt, und sonst
+   negativ: dann haftet die Unterkante am unteren Bildrand statt der Oberkante
+   am oberen, und kein Inhalt wird unerreichbar. */
+[data-haftend] {
+  position: sticky;
+  top: var(--haft-top, 0px);
+}
+
 /* ── Typografie der Marketing-Skala ───────────────────────────────────── */
 
 .mkt-h1 {

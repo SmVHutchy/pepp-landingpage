@@ -5,6 +5,9 @@
    Design Systems (--status-payout). */
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
+import Blob from '../Blob.astro';
+
+import BlobFeld from '../BlobFeld.astro';
 
 import pott from '../../assets/screens/kind-01-start-taschengeld.png';
 import sparziel from '../../assets/screens/kind-12-sparziel.png';
@@ -29,6 +32,19 @@ const points = [
 ---
 
 <section class="pot mkt-section mkt-section--card">
+  {/* Weiss. Oben rechts, hinter den beiden Geräten. */}
+  <BlobFeld>
+    <Blob
+      form="blob5"
+      groesse="880px"
+      top="-18%"
+      right="-14%"
+      deckkraft={0.26}
+      weichzeichnen={64}
+      weg={-60}
+    />
+  </BlobFeld>
+
   <div class="mkt-container pot__inner">
     <div class="pot__grid">
       <div>
