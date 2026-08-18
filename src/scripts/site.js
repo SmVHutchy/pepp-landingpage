@@ -65,13 +65,29 @@ function initStickyBar() {
   const bar = document.querySelector('[data-sticky-cta]');
   if (!bar) return;
 
-  const update = () => {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const show = max > 0 && window.scrollY / max > 0.25;
-    bar.dataset.visible = String(show);
+  /* scrollHeight bei JEDEM Scrollereignis zu lesen erzwingt jedes Mal ein
+     Layout der ganzen Seite — bei knapp 11.000px Höhe ist das nichts, was man
+     sich pro Scrollschritt leisten sollte, und es ruckelte sichtbar mit.
+     Die Seitenhöhe ändert sich nur bei Resize und wenn ScrollTrigger neu
+     vermisst; genau dann wird sie neu gelesen. */
+  let max = 0;
+  const messen = () => {
+    max = document.documentElement.scrollHeight - window.innerHeight;
   };
-  update();
+
+  const update = () => {
+    bar.dataset.visible = String(max > 0 && window.scrollY / max > 0.25);
+  };
+
+  const neuMessen = () => {
+    messen();
+    update();
+  };
+
+  neuMessen();
   window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', neuMessen, { passive: true });
+  ScrollTrigger.addEventListener('refresh', neuMessen);
 }
 
 /* ── 5 · Bewegung ───────────────────────────────────────────────────────────
@@ -226,6 +242,33 @@ function initPeek() {
   }
 }
 
+/* Maskottchen, das hereinfährt statt aufzutauchen. Es startet ausserhalb der
+   Sektion und bremst auf seinem Platz aus, die Drehung richtet sich dabei auf.
+
+   `once: true` wie bei allen Reveals: ein Einflug, der bei jedem Richtungs-
+   wechsel neu losfährt, ist kein Auftritt mehr, sondern ein Zucken.
+
+   Kein Startzustand im CSS — steht das Skript still, steht die Figur fertig
+   auf ihrem Platz. Das ist die Grundregel oben in dieser Datei. */
+function initRide() {
+  for (const figur of document.querySelectorAll('[data-ride]')) {
+    const section = figur.closest('section');
+    if (!section) continue;
+    gsap.fromTo(
+      figur,
+      { x: MOTION.ride.x, rotate: MOTION.ride.rotate, autoAlpha: 0.001 },
+      {
+        x: 0,
+        rotate: 0,
+        autoAlpha: 1,
+        duration: MOTION.ride.duration,
+        ease: resolveEase(MOTION.ride.ease),
+        scrollTrigger: { trigger: section, start: MOTION.ride.start, once: true },
+      }
+    );
+  }
+}
+
 function buildReveals() {
   /* Reveals pro Sektion, getrennt nach Gruppen:
      [data-anim] -> Text, [data-anim="card"] -> Fläche mit Nachfedern.
@@ -281,14 +324,15 @@ function buildReveals() {
 
   initBlobs();
   initPeek();
-  initMechanicSwap();
+  initRide();
+  initMechanicCarousel();
 }
 
 /** Alles zurück auf Anfang — der Motion-Editor ruft das nach jeder Änderung. */
 export function replayMotion() {
   for (const trigger of ScrollTrigger.getAll()) trigger.kill();
   const animated = document.querySelectorAll(
-    '[data-anim], [data-hero-figure], [data-blob], [data-peek]'
+    '[data-anim], [data-hero-figure], [data-blob], [data-peek], [data-ride]'
   );
   gsap.killTweensOf(animated);
   /* visibility mit zurücksetzen: revealSides nutzt autoAlpha, das setzt
@@ -310,88 +354,133 @@ function initMotion() {
   });
 }
 
-/* ── 6 · Mechanik-Sektion: der gepinnte Screen wechselt mit dem Punkt ─────
-   Alle Bilder werden vorab geladen, vor jedem Tausch killTweensOf und
-   overwrite:"auto" — sonst bleibt das Bild halbtransparent hängen oder es
-   steht kurz eine leere Fläche. */
+/* ── 6 · Mechanik-Sektion: das Gerät läuft als Karussell mit den Punkten ───
+   Die Screens liegen als Ebenen übereinander (siehe Mechanic.astro). Der
+   aktive Screen steht vorne und scharf, die anderen stehen seitlich versetzt,
+   kleiner, gekippt und weichgezeichnet dahinter — man sieht sie als Tiefe,
+   nicht als zweiten lesbaren Screen. Beim Wechsel schiebt sich der neue von
+   der Seite nach vorne und der alte in dieselbe Richtung weiter nach hinten.
 
-function initMechanicSwap() {
-  const screen = document.querySelector('[data-mech-screen]');
-  if (!screen) return;
+   Jede Ebene bekommt ihren Platz allein aus dem Abstand zum aktiven Schritt.
+   Damit gibt es keinen Ablauf, der abbrechen könnte: wohin eine Ebene gehört,
+   ist zu jedem Zeitpunkt eine Funktion des aktiven Schritts, und ein
+   unterbrochener Wechsel läuft einfach von dort weiter, wo er steht. Vorher
+   hing der Zustand an der Reihenfolge der Tweens — ein abgebrochener Tausch
+   konnte den Screen halbdurchsichtig stehen lassen. */
+
+function initMechanicCarousel() {
+  const stack = document.querySelector('[data-mech-stack]');
+  if (!stack) return;
   if (!window.matchMedia(`(min-width:${MOTION.mechanic.pinFrom}px)`).matches) return;
 
-  screen.removeAttribute('loading');
-
+  const layers = [...stack.querySelectorAll('[data-mech-layer]')];
   const steps = [...document.querySelectorAll('[data-mech-step]')];
-  const ready = new Map();
+  if (layers.length < 2 || !steps.length) return;
 
-  for (const step of steps) {
-    const src = step.dataset.mechStep;
-    if (ready.has(src)) continue;
-    const img = new Image();
-    const loaded = new Promise((resolve) => {
-      img.onload = resolve;
-      img.onerror = resolve;
-    });
-    /* srcset zuerst, dann src: der Browser wählt daraus die Dichte, die er
-       gleich auch anzeigen wird. Nur src vorzuladen würde auf einem
-       2x-Display die falsche Datei wärmen, und der Tausch käme trotzdem mit
-       Verzögerung. */
-    if (step.dataset.mechSrcset) img.srcset = step.dataset.mechSrcset;
-    img.src = src;
-    // Nie länger als 800ms auf ein Bild warten
-    ready.set(
-      src,
-      Promise.race([loaded, new Promise((resolve) => setTimeout(resolve, 800))])
-    );
-  }
+  const M = MOTION.mechanic;
 
-  for (const step of steps) {
-    const src = step.dataset.mechStep;
-    const srcset = step.dataset.mechSrcset;
+  /* Die Ebenen liegen alle im Bild — lazy brächte hier nichts ausser einer
+     Verzögerung beim ersten Wechsel. */
+  for (const layer of layers) layer.querySelector('img')?.removeAttribute('loading');
 
-    const swap = () => {
-      if (screen.dataset.current === src) return;
-      screen.dataset.current = src;
+  /* Wie weit die hinteren Geräte zur Seite rücken, wird nicht fest gesetzt,
+     sondern aus der Bühne gerechnet: die Spalte ist zwischen 364px (ab 901px
+     Viewport) und 483px breit, das Gerät selbst 320px. Ein fester Versatz
+     würde unten aus der Spalte in den Text laufen. Gerechnet wird so, dass
+     das hintere Gerät 8px innerhalb der Bühnenkante endet. */
+  const seitlicherVersatz = () => {
+    const buehne = stack.parentElement?.getBoundingClientRect().width ?? 0;
+    const geraet = layers[0].offsetWidth || 320;
+    return Math.max(24, Math.round(buehne / 2 - (geraet * M.backScale) / 2 - 8));
+  };
 
-      gsap.killTweensOf(screen);
-      gsap.to(screen, {
-        opacity: 0,
-        duration: MOTION.mechanic.fadeOut,
-        ease: 'power1.in',
-        overwrite: 'auto',
-        onComplete: () => {
-          (ready.get(src) ?? Promise.resolve()).then(() => {
-            // Zwischenzeitlich weitergescrollt? Dann gilt der neuere Schritt.
-            if (screen.dataset.current !== src) return;
-            /* srcset MUSS mitgesetzt werden. Das <Image> rendert wegen
-               densities={[1,2]} ein srcset, und bei der Bildauswahl gewinnt
-               srcset gegen src — ein Tausch, der nur src setzt, blieb ohne
-               Wirkung: currentSrc stand über alle Schritte auf dem ersten
-               Bild. Das war Fund 14 aus docs/AUDIT-2026-08-17.md. */
-            if (srcset) screen.setAttribute('srcset', srcset);
-            screen.setAttribute('src', src);
-            gsap.to(screen, {
-              opacity: 1,
-              duration: MOTION.mechanic.fadeIn,
-              ease: 'power1.out',
-              overwrite: 'auto',
-            });
-          });
-        },
-      });
+  /* d = Abstand zur aktiven Ebene. 0 steht vorne, ±1 rechts und links
+     dahinter, alles Weitere ist ganz draussen und unsichtbar.
+
+     Kein y: die hinteren Geräte stehen auf derselben Höhe wie das vordere und
+     laufen nur zur Seite. Ein Höhenversatz liess den Stapel nach unten
+     wegkippen, statt zur Seite zu kreisen.
+
+     `blur(0px)` und nicht `none` für das vordere Gerät: GSAP rechnet einen
+     Filter nur dann Bild für Bild aus, wenn Anfang und Ende dieselben
+     Funktionen tragen. Gegen `none` gibt es nichts zu interpolieren — der
+     Weichzeichner spränge dann, statt zu laufen. */
+  const platz = (d, versatz) => {
+    if (d === 0) {
+      return { x: 0, y: 0, scale: 1, rotationY: 0, opacity: 1, filter: 'blur(0px)' };
+    }
+    const richtung = Math.sign(d);
+    const weit = Math.abs(d) > 1;
+    return {
+      x: richtung * versatz * (weit ? 1.2 : 1),
+      y: 0,
+      scale: M.backScale * (weit ? 0.94 : 1),
+      rotationY: -richtung * M.backTilt,
+      opacity: weit ? 0 : M.backOpacity,
+      filter: `blur(${weit ? M.backBlur * 1.5 : M.backBlur}px)`,
     };
+  };
 
+  let aktiv = 0;
+
+  const zeigen = (i, sofort = false) => {
+    if (!layers[i]) return;
+    if (i === aktiv && !sofort) return;
+    aktiv = i;
+
+    const versatz = seitlicherVersatz();
+    for (const [j, ebene] of layers.entries()) {
+      const ziel = platz(j - i, versatz);
+      /* z-index springt, statt zu laufen: ein Zwischenwert von 8,4 hat keine
+         Bedeutung, und die Ebene muss sofort in der richtigen Tiefe liegen —
+         sonst schöbe sich der neue Screen hinter dem alten nach vorne. */
+      gsap.set(ebene, { zIndex: 10 - Math.abs(j - i) });
+      if (sofort) {
+        gsap.set(ebene, ziel);
+        continue;
+      }
+      gsap.to(ebene, {
+        ...ziel,
+        duration: M.fade,
+        ease: resolveEase(M.ease),
+        overwrite: 'auto',
+      });
+    }
+  };
+
+  /* EINE Linie für beide Richtungen: onEnter und onLeaveBack hängen beide an
+     `start`. Vorher lagen die Bereiche zweier Schritte übereinander (Ende von
+     Schritt 1 lag hinter dem Anfang von Schritt 2), und onEnterBack schaltete
+     beim kleinsten Zurückrutschen auf das vorige Bild zurück. Ein Trackpad,
+     das am Ende einer Bewegung ein paar Pixel zurückgibt, löste damit einen
+     vollen Tausch aus: gemessen ein Deckkraft-Einbruch auf 0,34 und zurück,
+     ohne dass sich das Bild überhaupt änderte — das sichtbare Flackern.
+     Mit nur einer Linie ist der aktive Schritt eine reine Funktion der
+     Scrollposition; ein Zittern darum herum kann nichts mehr auslösen. */
+  /* Ausgangsstellung, auch nach einem Replay aus dem Motion-Editor. Steht vor
+     den Triggern: die feuern beim Anlegen sofort, wenn ihre Linie schon
+     überschritten ist — etwa wenn die Seite mitten in der Sektion neu geladen
+     wird. Dann gewinnt der Trigger, nicht diese Zeile. */
+  zeigen(0, true);
+
+  for (const [i, step] of steps.entries()) {
+    const eigene = Number(step.dataset.mechStep) || 0;
+    const vorige = i > 0 ? Number(steps[i - 1].dataset.mechStep) || 0 : 0;
     ScrollTrigger.create({
       trigger: step,
       start: MOTION.mechanic.start,
-      end: MOTION.mechanic.end,
-      onEnter: swap,
-      onEnterBack: swap,
+      /* Weit ausserhalb: dieser Trigger hat kein Ende, das etwas auslösen
+         soll. Nur `start` zählt, in beide Richtungen. */
+      end: '+=100000',
+      onEnter: () => zeigen(eigene),
+      onLeaveBack: () => zeigen(vorige),
     });
   }
 
-  screen.dataset.current = screen.getAttribute('src');
+  /* Die Spaltenbreite geht in den seitlichen Versatz ein — bei Resize muss er
+     neu gerechnet werden, sonst stehen die hinteren Geräte nach dem Umbruch
+     im Text. ScrollTrigger vermisst bei Resize ohnehin neu. */
+  ScrollTrigger.addEventListener('refresh', () => zeigen(aktiv, true));
 }
 
 /* ── Start ──────────────────────────────────────────────────────────────── */

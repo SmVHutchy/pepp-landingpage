@@ -3,7 +3,7 @@
    Weiss mit Hairline oben, ohne Radius. Der Screen bleibt links sticky stehen
    und wechselt, während rechts die Schritte durchlaufen — der Tausch selbst
    liegt in initMechanicSwap() und läuft nur ab --mkt-breakpoint-desk. */
-import { Image, getImage } from 'astro:assets';
+import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 
 import anlegen from '../../assets/screens/eltern-06-anlegen-details.png';
@@ -27,6 +27,7 @@ const steps = [
     tint: 'var(--pepp-peach-tint)',
     ink: 'var(--ink-peach)',
     screen: anlegen,
+    alt: 'Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart',
     title: 'Kategorie, Belohnung, Frist',
     lead: 'Sieben Kategorien mit Schnellauswahl: Haushalt, Schule, Haustiere, Draußen, Routinen, Medienzeit, Sparen.',
     body: 'Dann 2,50 € oder 30 Min dranhängen — und eine Frist setzen.',
@@ -36,6 +37,7 @@ const steps = [
     tint: 'var(--pepp-lilac-tint)',
     ink: 'var(--ink-lilac)',
     screen: quests,
+    alt: 'Pepp Eltern-App: Quest-Übersicht nach Zustand gruppiert',
     title: 'Einmalig, wiederkehrend, Routine',
     lead: 'Der Müll jeden Dienstag, Hausaufgaben als Routine, Rasen mähen einmal.',
     body: 'Die Liste sortierst du nach Kind und Zustand.',
@@ -54,36 +56,41 @@ const steps = [
     tint: 'var(--pepp-pink-tint)',
     ink: 'var(--ink-pink)',
     screen: questListe,
+    alt: 'Pepp Kinder-App: Quest-Liste nach Dringlichkeit',
     title: 'Zurückschicken, ohne von vorn',
     lead: 'Beweis unscharf? Zurückschicken heißt nicht neu machen — das Kind liefert nur den Nachweis nach.',
     body: 'Und eine „Für alle"-Quest gehört dem Kind, das zuerst annimmt.',
   },
 ];
 
-/* Der Tausch per JS lädt genau die Variante, die <Image> auch rendert — sonst
-   käme über den Umweg des Rohpfads das unoptimierte PNG (ein knappes MB).
+/* Die Screens liegen als Stapel im Markup, einer pro eindeutigem Bild, und der
+   Tausch blendet nur noch Deckkraft um. Vorher hing EIN <img> da, dessen src
+   beim Scrollen umgeschrieben wurde — daran hingen drei Fehler:
 
-   Es werden BEIDE Dichten erzeugt, nicht nur 1x. Grund: das <Image> unten
-   trägt densities={[1,2]} und rendert damit ein srcset. Bei der Bildauswahl
-   gewinnt srcset gegen src — ein Tausch, der nur src setzt, ist wirkungslos.
-   Genau das war Fund 14: über alle vier Schritte blieb currentSrc auf
-   eltern-06-anlegen-details stehen, während src und data-current korrekt
-   weiterwanderten. Sichtbar war eine Aus- und Einblendung ohne Bildwechsel.
+   1. Ein src-Tausch braucht erst eine Ausblendung, sonst springt der Inhalt
+      hart um. Die Ausblendung kam nie bei 0 an (gemessen: 0,23), weil das
+      CSS `transition: opacity` gegen den GSAP-Tween lief. Sichtbar war ein
+      Inhaltssprung in einem halbdurchsichtigen Bild — matschig und überlappt.
+   2. Bei jedem Tausch musste srcset mitgesetzt werden, sonst gewann das alte
+      srcset gegen das neue src (das war Fund 14). Ein Stapel hat das Problem
+      gar nicht: jede Ebene trägt ihr eigenes, unverändertes srcset.
+   3. Ein unterbrochener Tausch konnte das Bild halbdurchsichtig stehen lassen.
 
-   Deshalb wandert das vollständige srcset mit ins Markup, und site.js setzt
-   beim Tausch beides. Behebt Fund 14 aus docs/AUDIT-2026-08-17.md. */
-const swapSrc = new Map();
-for (const step of steps) {
-  if (!step.screen) continue;
-  const [x1, x2] = await Promise.all([
-    getImage({ src: step.screen, width: 320, height: 692, format: 'webp' }),
-    getImage({ src: step.screen, width: 640, height: 1384, format: 'webp' }),
-  ]);
-  swapSrc.set(step.title, {
-    src: x1.src,
-    srcset: `${x1.src} 1x, ${x2.src} 2x`,
-  });
-}
+   Ein Stapel kennt keinen Zwischenzustand ohne Bild: die neue Ebene legt sich
+   deckend über die alte, es gibt nichts auszublenden.
+
+   `layerOf` bildet Schritt -> Ebene ab. Schritt 3 hat kein eigenes Bild
+   (eltern-07-pruefen.png fehlt, siehe oben) und zeigt deshalb ausdrücklich
+   weiter die Ebene von Schritt 2, statt still auszufallen. Sobald die Datei
+   da ist, reicht `screen:` — die Ebene entsteht dann von selbst. */
+const layers: { screen: ImageMetadata; alt: string }[] = [];
+const layerOf = steps.map((step) => {
+  if (!step.screen) return Math.max(0, layers.length - 1);
+  const vorhanden = layers.findIndex((l) => l.screen === step.screen);
+  if (vorhanden !== -1) return vorhanden;
+  layers.push({ screen: step.screen, alt: step.alt });
+  return layers.length - 1;
+});
 ---
 
 {/* XL-Padding: eine der drei Sektionen, die das Argument tragen. */}
@@ -100,27 +107,31 @@ for (const step of steps) {
     <div class="mech__grid">
       <div class="mech__sticky">
         <div class="mech__stage">
-          <Image
-            src={anlegen}
-            alt="Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart"
-            width={320}
-            height={692}
-            densities={[1, 2]}
-            format="webp"
-            loading="lazy"
-            data-mech-screen
-          />
+          <div class="mech__stack" data-mech-stack>
+            {
+              layers.map((layer, i) => (
+                <div class="mech__slide" data-mech-layer={i}>
+                  <Image
+                    src={layer.screen}
+                    alt={layer.alt}
+                    width={320}
+                    height={692}
+                    densities={[1, 2]}
+                    format="webp"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+              ))
+            }
+          </div>
         </div>
       </div>
 
       <ol class="mech__steps mkt-list-reset">
         {
-          steps.map((step) => (
-            <li
-              data-anim="card"
-              data-mech-step={swapSrc.get(step.title)?.src}
-              data-mech-srcset={swapSrc.get(step.title)?.srcset}
-            >
+          steps.map((step, i) => (
+            <li data-anim="card" data-mech-step={layerOf[i]}>
               <span class="mech__tile" style={`background:${step.tint}`}>
                 <Icon name={step.icon} size={22} color={step.ink} />
               </span>
@@ -172,12 +183,56 @@ for (const step of steps) {
     justify-content: center;
   }
 
-  .mech__stage img {
+  /* perspective macht aus dem rotationY der Karussell-Bewegung eine echte
+     Drehung im Raum statt einer Stauchung. Der Wert ist bewusst hoch: bei
+     kleinerer Perspektive kippt das Gerät so stark, dass die Screens am Rand
+     verzerren. */
+  .mech__stack {
+    position: relative;
+    width: 320px;
+    height: 692px;
+    perspective: 1400px;
+  }
+
+  /* Eine Ebene des Karussells. Transform, Deckkraft und Weichzeichner setzt
+     ausschliesslich GSAP (siehe initMechanicCarousel in site.js) — hier steht
+     nur, was ohne Skript gelten soll.
+
+     KEIN transition auf opacity oder filter. GSAP schreibt diese Werte Bild
+     für Bild selbst; eine CSS-Transition startet bei jedem dieser
+     Schreibvorgänge neu und hängt dem Tween hinterher. Vorher stand hier eine
+     — gemessen kam die Ausblendung nie unter 0,23 Deckkraft, und der neue
+     Screen erschien im noch zu einem Viertel sichtbaren alten. Das war das
+     Matschige und Überlappende. */
+  .mech__slide {
+    position: absolute;
+    inset: 0;
+    /* Nur auf Elementen, die sich wirklich bewegen. */
+    will-change: transform, opacity;
+  }
+
+  .mech__slide img {
     width: 320px;
     height: 692px;
     display: block;
     filter: drop-shadow(0 18px 40px rgb(26 26 26 / 0.16));
-    transition: opacity var(--dur-base) var(--ease-standard);
+  }
+
+  /* Ohne Skript liegen alle drei Ebenen deckungsgleich aufeinander. Das ist
+     kein Problem, sondern der Ruhezustand: die Geräte sind gleich gross und
+     deckend, es ist also genau eines zu sehen. Der z-index bestimmt nur,
+     WELCHES — ohne diese zwei Regeln wäre es das letzte im Markup.
+
+     Ausdrücklich kein `opacity: 0` hier. Startzustände von Animationen gehören
+     ins Skript, sonst verschwindet Inhalt, sobald das Skript ausfällt;
+     scripts/verify.mjs prüft das und hat einen ersten Versuch an dieser Stelle
+     zu Recht abgelehnt. */
+  .mech__slide {
+    z-index: 0;
+  }
+
+  .mech__slide:first-child {
+    z-index: 1;
   }
 
   .mech__steps {
