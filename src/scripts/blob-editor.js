@@ -65,11 +65,9 @@ const istForm = (art) => art in FORMEN;
 /* Bezugsgrösse für die Prozentangaben: der Blob selbst. Siehe Blob.astro —
    gegen die Sektionshöhe gerechnet bedeutet dieselbe Zahl in einer haltenden
    Sektion etwas völlig anderes als in einer normalen. */
-const eigenX = () => 'var(--blob-groesse)';
+const eigenX = () => 'var(--blob-mass)';
 const eigenY = (art) =>
-  istForm(art)
-    ? `calc(var(--blob-groesse) * ${FORM_VERHAELTNIS})`
-    : 'var(--blob-groesse)';
+  istForm(art) ? `calc(var(--blob-mass) * ${FORM_VERHAELTNIS})` : 'var(--blob-mass)';
 
 const datenName = (seite) => `pos${seite[0].toUpperCase()}${seite.slice(1)}`;
 

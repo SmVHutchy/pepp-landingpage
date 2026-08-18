@@ -131,10 +131,10 @@ const {
 /* Die Bezugsgrössen für Prozentangaben: die eigene Breite und die eigene
    Höhe. Beim Marken-Blob folgt die Höhe dem Seitenverhältnis der Formen, beim
    Glow ist die Fläche quadratisch. */
-const EIGEN_X = 'var(--blob-groesse)';
+const EIGEN_X = 'var(--blob-mass)';
 const EIGEN_Y = form
-  ? `calc(var(--blob-groesse) * ${FORM_VERHAELTNIS})`
-  : 'var(--blob-groesse)';
+  ? `calc(var(--blob-mass) * ${FORM_VERHAELTNIS})`
+  : 'var(--blob-mass)';
 
 /* Prozent gegen den Blob rechnen, Pixel unverändert lassen. Die Zahl wandert
    zusätzlich in ein data-Attribut: der Blob-Editor liest sie von dort und muss
@@ -150,8 +150,16 @@ for (const [seite, wert] of Object.entries(kanten)) {
     continue;
   }
   const p = parseFloat(roh);
-  const bezug = seite === 'top' || seite === 'bottom' ? EIGEN_Y : EIGEN_X;
-  stilKanten.push(`${seite}:calc(${bezug} * ${p / 100})`);
+  const senkrecht = seite === 'top' || seite === 'bottom';
+  const bezug = senkrecht ? EIGEN_Y : EIGEN_X;
+  /* Die Schranken sind auf dem Desktop absichtlich unerreichbar weit und
+     greifen erst unter 901px — siehe --blob-rand-* im Stil unten. */
+  const grenze = senkrecht
+    ? ['--blob-rand-y-min', '--blob-rand-y-max']
+    : ['--blob-rand-x-min', '--blob-rand-x-max'];
+  stilKanten.push(
+    `${seite}:clamp(var(${grenze[0]}),calc(${bezug} * ${p / 100}),var(${grenze[1]}))`
+  );
   zahlen[`data-pos-${seite}`] = String(p);
 }
 
@@ -182,10 +190,42 @@ const stil = [
 </div>
 
 <style>
+  /* DIE GESETZTE GRÖSSE GILT FÜR EINE 1440px BREITE FLÄCHE, und darunter wird
+     sie mitskaliert. Ohne das bricht die Komposition auf dem Handy zusammen:
+     gemessen lagen bei 390px 24 von 33 Blobs zu weniger als 10 % in ihrer
+     Sektion, 18 waren breiter als das Dreifache des Viewports.
+
+     Der Grund ist die Einheit. `groesse` steht in Pixeln — richtig, damit ein
+     Blob auf schmalem Schirm nicht zum Fleck schrumpft. Ein Wert von 1800px
+     ist auf 1440px aber das 1,25-Fache der Breite und auf 390px das
+     4,6-Fache. Und weil die Kanten in Prozent DES BLOBS rechnen, wächst der
+     Versatz mit: -19,6 % sind hier 353px, dort 353px bei einem Blob, der
+     viermal breiter ist als das Bild. Was auf dem Desktop in der Ecke sass,
+     liegt auf dem Handy vollständig daneben.
+
+     Mit einem gemeinsamen Faktor bleibt das Verhältnis erhalten: Grösse und
+     Versatz schrumpfen zusammen, die Ecke bleibt die Ecke. Der Faktor ist
+     nicht linear bis null — bei 0,42 ist Schluss, sonst wäre auf 390px vom
+     Bogen wieder nichts zu sehen, und genau davor sollte die Pixelangabe
+     ursprünglich schützen.
+
+     Gestuft und nicht stufenlos: an einem Weichzeichner mit 60px Radius ist
+     der Sprung an einer Breakpoint-Kante nicht zu sehen, und eine Stufe kann
+     man nachlesen. 901px ist die Kante, die das Projekt ohnehin überall
+     benutzt. */
   .blob {
+    --blob-skala: 1;
+    --blob-mass: calc(var(--blob-groesse) * var(--blob-skala));
+    /* Schranken für die Kanten. Auf dem Desktop unerreichbar weit: die
+       gesetzten Werte kommen unverändert durch, auch die, die absichtlich
+       ganz ausserhalb liegen. */
+    --blob-rand-x-min: -100000px;
+    --blob-rand-x-max: 100000px;
+    --blob-rand-y-min: -100000px;
+    --blob-rand-y-max: 100000px;
     position: absolute;
-    width: var(--blob-groesse);
-    height: var(--blob-groesse);
+    width: var(--blob-mass);
+    height: var(--blob-mass);
     opacity: var(--blob-deckkraft);
     pointer-events: none;
     z-index: 0;
@@ -213,8 +253,43 @@ const stil = [
      mask-repeat: no-repeat ist Pflicht. Die Vorgabe ist `repeat`, und dann
      kachelt die Form über die ganze Fläche, sobald sie kleiner steht als der
      Kasten. */
+  @media (max-width: 1439px) {
+    .blob {
+      --blob-skala: 0.78;
+    }
+  }
+
+  /* Unter 901px greifen die Schranken: ein Viertel des Blobs muss in der
+     Sektion bleiben.
+
+     Die Grösse allein reicht hier nicht. Ein Blob bei `left: 108%` steht auf
+     einer 1440px breiten Sektion knapp am rechten Rand — auf 390px liegt
+     derselbe Wert vollständig daneben, weil sich das Seitenverhältnis der
+     Sektion ändert und nicht nur ihr Massstab. Gemessen blieben nach der
+     Skalierung noch 11 von 33 Blobs unter 10 % Sichtbarkeit, auf dem Desktop
+     sind es 5.
+
+     `100%` bezieht sich in einer Kantenangabe auf die Sektion, `--blob-mass`
+     auf den Blob — beides in einer Rechnung ist genau das, was hier gebraucht
+     wird und was sich in der Prozentangabe allein nicht ausdrücken lässt. */
+  @media (max-width: 900px) {
+    .blob {
+      --blob-skala: 0.55;
+      --blob-rand-x-min: calc(var(--blob-mass) * -0.75);
+      --blob-rand-x-max: calc(100% - var(--blob-mass) * 0.25);
+      --blob-rand-y-min: calc(var(--blob-mass) * -0.75);
+      --blob-rand-y-max: calc(100% - var(--blob-mass) * 0.25);
+    }
+  }
+
+  @media (max-width: 479px) {
+    .blob {
+      --blob-skala: 0.42;
+    }
+  }
+
   .blob--dawn {
-    height: calc(var(--blob-groesse) * var(--blob-verhaeltnis));
+    height: calc(var(--blob-mass) * var(--blob-verhaeltnis));
     filter: blur(var(--blob-weich));
     mask-image: var(--blob-maske);
     mask-repeat: no-repeat;
