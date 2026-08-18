@@ -1,0 +1,180 @@
+---
+/**
+ * Freistehendes Maskottchen an einer Sektionskante.
+ *
+ * Dieselbe Setzsprache wie Blob.astro, damit im Editor nicht zwei Denkweisen
+ * nebeneinander stehen: `groesse` in Pixeln, die vier Kanten in Prozent der
+ * EIGENEN Kante. -20 % heisst also „ein Fünftel der Figur hängt über den
+ * Rand" — unabhängig davon, wie hoch die Sektion ist. Die lange Begründung
+ * steht in Blob.astro; sie gilt hier wörtlich, und aus demselben Grund:
+ * zwei Sektionen sind durch ihren Scroll-Halt über 3000px hoch.
+ *
+ * Waagerecht ist die Bezugskante die Breite, senkrecht die Höhe — und die
+ * Höhe ergibt sich aus Breite × Verhältnis aus src/data/maskottchen.js. Die
+ * Verhältnisse liegen zwischen 0,885 und 1,777; mit einem gemeinsamen Wert
+ * läge dieselbe Prozentzahl bei pepp-jump um fast das Doppelte daneben.
+ *
+ * WARUM DREHUNG UND SPIEGELUNG AM <img> HÄNGEN UND NICHT AM KASTEN. Trägt das
+ * Element `weg` (Parallaxe), schreibt GSAP bei jedem Frame `transform` UND
+ * `translate: none; rotate: none; scale: none` auf dasselbe Element — die
+ * Einzeleigenschaften wären damit bei jedem Scroll weg. Der äussere Kasten
+ * gehört also der Parallaxe, das Bild darin trägt die eigene Lage.
+ *
+ * <Image> AUS astro:assets, NICHT ein nacktes <img> mit ?url. Der erste
+ * Versuch hier war genau das, mit der Begründung, <Image> brauche seine
+ * Metadaten zur Bauzeit und die Figur werde erst über `figur` gewählt. Das
+ * stimmt so nicht: ein Import ohne ?url liefert ein ImageMetadata-Objekt, und
+ * das darf man <Image> auch aus einer Tabelle heraus übergeben. Der Unterschied
+ * ist gemessen und deutlich — die ausgelieferte Datei für eine Figur:
+ *
+ *     nacktes <img> mit ?url   1 211 469 Byte  (das PNG, unverändert)
+ *     <Image> mit densities        8 072 Byte  (webp auf Anzeigegrösse)
+ *
+ * Das Hundertfünfzigfache, für ein Element, das reine Dekoration ist. Die
+ * Renders sind 1000 bis 1700px breit; angezeigt werden sie mit 300.
+ *
+ * densities statt widths/sizes, weil die Anzeigebreite fest ist: sie steht als
+ * Pixelwert in `groesse` und wird nur über --mk-skala in Stufen kleiner. Zwei
+ * Auflösungen decken damit alles ab, was vorkommt.
+ *
+ * aria-hidden: eine Figur an der Kante ist Dekoration. Trägt sie einmal
+ * Bedeutung, gehört sie in die Sektion selbst, mit echtem alt-Text.
+ *
+ * Die Regeln liegen in src/styles/maskottchen.css und nicht in einem <style>
+ * hier — Begründung steht in der Datei. Kurz: der Editor erzeugt Figuren zur
+ * Laufzeit, und gescoptes CSS greift bei denen nicht.
+ */
+import { Image } from 'astro:assets';
+import '../styles/maskottchen.css';
+import { verhaeltnisVon } from '../data/maskottchen.js';
+
+import payout from '../assets/mascot/moment-payout-approved.png';
+import unlocked from '../assets/mascot/moment-reward-unlocked.png';
+import coinPlay from '../assets/mascot/pepp-coin-play.png';
+import jump from '../assets/mascot/pepp-jump.png';
+import onARoll from '../assets/mascot/pepp-on-a-roll.png';
+import point from '../assets/mascot/pepp-point.png';
+import quest from '../assets/mascot/pepp-quest.png';
+import wave from '../assets/mascot/pepp-wave.png';
+
+const QUELLEN: Record<string, ImageMetadata> = {
+  'moment-payout-approved': payout,
+  'moment-reward-unlocked': unlocked,
+  'pepp-coin-play': coinPlay,
+  'pepp-jump': jump,
+  'pepp-on-a-roll': onARoll,
+  'pepp-point': point,
+  'pepp-quest': quest,
+  'pepp-wave': wave,
+};
+
+interface Props {
+  /** Schlüssel aus src/data/maskottchen.js */
+  figur: string;
+  /** Breite, in Pixeln — sie soll auf schmalem Schirm nicht mitwachsen. */
+  groesse?: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  deckkraft?: number;
+  /** Grad. Dreht das Bild, nicht den Kasten. */
+  drehung?: number;
+  /** Spiegelt waagerecht — die Figur schaut zur anderen Seite. */
+  spiegeln?: boolean;
+  /** Parallaxe in Pixeln über die Sektionshöhe, wie bei Blob. */
+  weg?: number;
+  /**
+   * Statt Parallaxe die Peek-Geste: die Figur wird im Vorbeiscrollen
+   * angehoben (initPeek in site.js, Werte aus MOTION.peek).
+   *
+   * SCHLIESST `weg` AUS. Beide schreiben `transform` auf dasselbe Element,
+   * über zwei verschiedene ScrollTrigger — zusammen überschreiben sie sich
+   * gegenseitig bei jedem Frame. Deshalb wird `weg` ignoriert, sobald das
+   * hier gesetzt ist, statt beides auszugeben und auf Glück zu hoffen.
+   */
+  heben?: boolean;
+  /** Zusätzliche Klassen, z. B. u-desk für „erst ab 901px". */
+  class?: string;
+}
+
+const {
+  figur,
+  groesse = '320px',
+  top,
+  bottom,
+  left,
+  right,
+  deckkraft = 1,
+  drehung = 0,
+  spiegeln = false,
+  weg = 0,
+  heben = false,
+  class: className,
+} = Astro.props;
+
+const quelle = QUELLEN[figur];
+if (!quelle) {
+  throw new Error(
+    `Maskottchen: „${figur}" gibt es nicht. Bekannt sind: ${Object.keys(QUELLEN).join(', ')}`
+  );
+}
+
+const VERHAELTNIS = verhaeltnisVon(figur);
+const EIGEN_X = 'var(--mk-mass)';
+const EIGEN_Y = `calc(var(--mk-mass) * ${VERHAELTNIS})`;
+
+/* Prozentwerte werden hier zu einem calc() gegen die eigene Kante aufgelöst,
+   die rohe Zahl wandert zusätzlich in ein data-Attribut. Der Editor liest
+   damit die Zahl zurück, ohne ein calc() rückwärts lesen zu müssen — dieselbe
+   Aufteilung wie bei Blob.astro. */
+const kanten = { top, bottom, left, right };
+const zahlen: Record<string, string> = {};
+const stilKanten: string[] = [];
+for (const [seite, wert] of Object.entries(kanten)) {
+  if (!wert) continue;
+  const roh = String(wert).trim();
+  if (!roh.endsWith('%')) {
+    stilKanten.push(`${seite}:${roh}`);
+    continue;
+  }
+  const p = parseFloat(roh);
+  const senkrecht = seite === 'top' || seite === 'bottom';
+  stilKanten.push(`${seite}:calc(${senkrecht ? EIGEN_Y : EIGEN_X} * ${p / 100})`);
+  zahlen[`data-pos-${seite}`] = String(p);
+}
+
+/* Anzeigebreite in Pixeln, für <Image>. `groesse` ist immer ein Pixelwert —
+   die Prozentangaben dieser Komponente betreffen nur die Kanten. Deckel bei
+   der Breite der Quelldatei: mehr anzufordern hätte keinen Zweck. */
+const breite = Math.min(Math.round(parseFloat(groesse)) || 320, quelle.width);
+
+const stil = [
+  `--mk-groesse:${groesse}`,
+  `--mk-deckkraft:${deckkraft}`,
+  `--mk-drehung:${drehung}deg`,
+  `--mk-spiegel:${spiegeln ? -1 : 1}`,
+  ...stilKanten,
+].join(';');
+---
+
+<div
+  class:list={['maskottchen', className]}
+  data-blob={heben ? undefined : weg}
+  data-peek={heben ? '' : undefined}
+  data-figur={figur}
+  style={stil}
+  {...zahlen}
+  aria-hidden="true"
+>
+  <Image
+    class="maskottchen__bild"
+    src={quelle}
+    alt=""
+    width={breite}
+    densities={[1, 2]}
+    format="webp"
+    loading="lazy"
+    decoding="async"
+  />
+</div>

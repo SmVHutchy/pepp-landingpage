@@ -1,0 +1,65 @@
+/* Regeln für die frei gesetzten Maskottchen (Maskottchen.astro).
+ *
+ * WARUM ALS EIGENE DATEI UND NICHT ALS <style> IN DER KOMPONENTE. Astro kapselt
+ * Komponenten-CSS über ein data-astro-cid-Attribut: aus `.maskottchen` würde
+ * `.maskottchen[data-astro-cid-xxxxxxx]`. Der Blob-Editor legt Figuren zur
+ * Laufzeit an; die tragen das Attribut nicht und bekämen damit KEINE dieser
+ * Regeln — kein position:absolute, keine Breite. Genau dieser Fehler hat bei
+ * den Farbblobs schon einmal Stunden gekostet und wird dort seither mit einem
+ * kopierten Marker geheilt.
+ *
+ * Ein importiertes Stylesheet ist global. Damit gilt dieselbe Regel für die im
+ * Code gesetzten Figuren und für die, die der Editor erzeugt — eine Quelle,
+ * kein Abgleich. Importiert wird sie von Maskottchen.astro und, damit der
+ * Editor auch auf einer Seite ohne Figur arbeiten kann, von blob-editor.js.
+ */
+
+.maskottchen {
+  /* Wie bei den Blobs eine Skala, die auf schmalem Schirm greift. `groesse`
+     ist auf einer 1440er Fläche gesetzt — 320px sind dort ein Fünftel der
+     Breite und auf 390px vier Fünftel. Die Stufen sind dieselben wie in
+     Blob.astro, damit Figur und Fläche zusammen schrumpfen. */
+  --mk-skala: 1;
+  --mk-mass: calc(var(--mk-groesse, 320px) * var(--mk-skala));
+  position: absolute;
+  /* z-index 0 statt des geerbten 1 aus `.mkt-section > *`: die Figur liegt
+     UNTER dem Inhalt. Sonst stünde sie über der Schrift, sobald sie eine
+     Textspalte berührt — bei .problem__peek steht dieselbe Zeile aus
+     demselben Grund. */
+  z-index: 0;
+  width: var(--mk-mass);
+  opacity: var(--mk-deckkraft, 1);
+  pointer-events: none;
+  will-change: transform;
+}
+
+@media (max-width: 1439px) {
+  .maskottchen {
+    --mk-skala: 0.78;
+  }
+}
+
+@media (max-width: 900px) {
+  .maskottchen {
+    --mk-skala: 0.55;
+  }
+}
+
+@media (max-width: 479px) {
+  .maskottchen {
+    --mk-skala: 0.42;
+  }
+}
+
+/* Drehung und Spiegelung hängen am BILD, nicht am Kasten. Trägt der Kasten
+   `weg`, schreibt GSAP bei jedem Frame `transform` und zusätzlich
+   `translate:none; rotate:none; scale:none` darauf — Einzeleigenschaften wären
+   dort bei jedem Scroll wieder weg. Der Kasten gehört der Parallaxe, das Bild
+   trägt seine eigene Lage. */
+.maskottchen__bild {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform: rotate(var(--mk-drehung, 0deg)) scaleX(var(--mk-spiegel, 1));
+  filter: drop-shadow(var(--shadow-mascot));
+}

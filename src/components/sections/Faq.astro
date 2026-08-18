@@ -5,25 +5,15 @@
 
    Die Liste ist dieselbe, aus der das JSON-LD FAQPage entsteht — eine Frage
    kann nicht in der Seite stehen und im Schema fehlen. */
-import Blob from '../Blob.astro';
-import BlobFeld from '../BlobFeld.astro';
 import { FAQ } from '../../data/faq.js';
 ---
 
+{
+  /* Ohne Farbblob — Liam, 18.08.2026. Die letzten beiden Sektionen der Seite
+  tragen keine Fläche mehr: FAQ und der Schlussblock sind die ruhige Landung
+  nach elf farbigen Sektionen. */
+}
 <section id="faq" class="mkt-section mkt-section--ground">
-  {/* Off-White. Unten rechts, hinter den letzten Aufklappern. */}
-  <BlobFeld>
-    <Blob
-      form="blob4"
-      groesse="900px"
-      bottom="-18%"
-      right="-16%"
-      deckkraft={0.28}
-      weichzeichnen={72}
-      weg={-70}
-    />
-  </BlobFeld>
-
   <div class="faq__container">
     {
       /* Ohne Label: „FAQ" war ein Synonym der eigenen H2 „Häufige Fragen" und

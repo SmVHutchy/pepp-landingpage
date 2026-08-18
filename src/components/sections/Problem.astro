@@ -9,11 +9,10 @@
 
    Je Karte ein eigener Tint mit dem passenden abgedunkelten Hue: die
    --ink-*-Werte erreichen auf ihrem Tint 4,3-5,8:1. */
-import { Image } from 'astro:assets';
+import Maskottchen from '../Maskottchen.astro';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
-import peek from '../../assets/mascot/pepp-point.png';
 
 const cards = [
   {
@@ -128,23 +127,74 @@ const cards = [
       Hintergrund und wird später gezeichnet, verdeckt ihn also von unten.
       Kein z-index nötig, die Zeichenreihenfolge macht es.
 
-      aria-hidden und leeres alt: reine Dekoration, der Satz daneben trägt die
-      Aussage. Ab 901px, darunter würde die Figur die schmale Spalte zudecken. */
+      aria-hidden: reine Dekoration, der Satz daneben trägt die Aussage.
+      u-desk — ab 901px, darunter würde die Figur die schmale Spalte zudecken.
+
+      Als <Maskottchen> statt als eigener Block, damit er im Blob-Editor
+      greifbar ist. Vorher war er die einzige Figur der Seite, die sich nur
+      über handgeschriebene Pixel bewegen liess.
+
+      DIE ZAHLEN SIND UMGERECHNET, NICHT NEU GESETZT. Vorher standen dort
+      `bottom: -140px` und `right: clamp(16px, 6vw, 120px)` bei 200px Breite.
+      Die Komponente rechnet in Prozent der EIGENEN Kante:
+        Höhe  = 200 × 1,113 (Verhältnis von pepp-point) = 222,6px
+        -140 / 222,6 = -62,9 %
+        right bei 1440px Fenster = 6vw = 86,4px, davon 200px = 43,2 %
+      Das clamp ist damit weg: aus einer mit dem Fenster wandernden Kante
+      wird eine feste. Der alte Kommentar zu -140px gilt weiter — bei -104
+      reichte der Kopf samt Schatten in die Body-Zeile der dritten Karte. */
   }
-  <div class="problem__peek u-desk" data-peek aria-hidden="true">
-    <Image
-      src={peek}
-      alt=""
-      width={200}
-      height={223}
-      densities={[1, 2]}
-      format="webp"
-      loading="lazy"
-    />
-  </div>
+  <Maskottchen
+    figur="pepp-point"
+    groesse="200px"
+    bottom="-62.9%"
+    right="43.2%"
+    heben
+    class="u-desk"
+  />
 </section>
 
 <style>
+  /* Wie im Hero: die Sektion füllt den Bildschirm, statt ihre Höhe aus dem
+     Inhalt zu ziehen. 831 von 1080 Pixeln liessen sie gedrängt wirken, obwohl
+     Platz da war.
+
+     Hier steht 100svh ohne Abzug — die Sektion grenzt an keine feste Leiste,
+     sie steht mitten im Fluss.
+
+     Sie trägt data-haftet, und das ist der Grund für genau 100svh und keinen
+     Pixel mehr: initSticky() setzt --haft-top auf 0, solange die Sektion in
+     den Bildschirm passt, und sonst negativ — dann haftet die Unterkante am
+     unteren Bildrand statt der Oberkante am oberen. Bei exakt einer
+     Bildschirmhöhe bleibt --haft-top 0, die Geste bleibt die gedachte.
+     Gemessen: 0px auf allen vier geprüften Fenstern.
+
+     min-height statt height, damit ein flaches Fenster den Inhalt nicht
+     staucht — dort greift dann die zweite Haftung, und auch das ist richtig
+     so herum. */
+  @media (min-width: 901px) {
+    .problem {
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+    }
+
+    /* Ohne diese Zeile fällt .mkt-container von 1180 auf 533px zusammen, die
+       Karten stapeln sich untereinander und die Sektion wird 1862px hoch —
+       das Gegenteil des Gewollten.
+
+       Grund: der Container trägt `margin-inline: auto`. Ein Grid-Item mit
+       automatischem Rand in einer Achse wird in dieser Achse NICHT gestreckt;
+       `justify-self: stretch` verhält sich wie `start` und die Breite fällt
+       auf fit-content. Eine ausdrückliche Spalte hilft dagegen nicht — die
+       Spalte war bereits 1440px breit, gemessen. Nur eine gesetzte Breite
+       nimmt `auto` aus dem Spiel; max-width und die automatischen Ränder
+       zentrieren dann wie zuvor. */
+    .problem > .mkt-container {
+      width: 100%;
+    }
+  }
+
   .problem__title {
     max-width: 18ch;
   }
@@ -170,29 +220,4 @@ const cards = [
      Das gilt weiter — nur passiert es jetzt im Vorbeiziehen statt an einer
      festen Kante, und die Figur ist ein paar Sekunden länger ganz zu sehen.
      Genau dafür war sie gedacht. */
-
-  /* Der Peek steht am unteren Rand und ragt bewusst darüber hinaus: die
-     Kante der Folgesektion schneidet ihn ab. bottom ist negativ um etwa die
-     halbe Figurenhöhe, damit gut die Hälfte sichtbar bleibt.
-
-     z-index: 0 statt des geerbten 1 aus `.mkt-section > *` — der Peek soll
-     UNTER dem Inhalt liegen, nicht darüber. */
-  .problem__peek {
-    position: absolute;
-    z-index: 0;
-    right: clamp(16px, 6vw, 120px);
-    /* -140px, nicht -104: bei -104 reichte der Kopf samt Schatten in die
-       Body-Zeile der dritten Karte. Der Inhalt liegt zwar darüber (z-index),
-       lesbar war es also — aber unruhig. */
-    bottom: -140px;
-    pointer-events: none;
-    will-change: transform;
-  }
-
-  .problem__peek img {
-    display: block;
-    width: 200px;
-    height: auto;
-    filter: drop-shadow(var(--shadow-mascot));
-  }
 </style>

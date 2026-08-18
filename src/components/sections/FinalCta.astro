@@ -4,25 +4,16 @@
    Enthält CTA-Instanz 5. Das Maskottchen kommt als gelieferter Render.
    Die H2 wiederholt die H1 wörtlich — bewusst, es ist derselbe Satz am Ende. */
 import { Image } from 'astro:assets';
-import Blob from '../Blob.astro';
-import BlobFeld from '../BlobFeld.astro';
 import Cta from '../Cta.astro';
 import jump from '../../assets/mascot/pepp-jump.png';
 ---
 
+{
+  /* Ohne Farbblob — Liam, 18.08.2026. Die Farbe steht hier ohnehin schon: das
+  .final__panel trägt den Dawn-Verlauf. Zwei Blobs dahinter waren Fläche unter
+  Fläche. Dasselbe gilt für das FAQ direkt darüber. */
+}
 <section class="final">
-  {/* Von Liam im Blob-Editor gesetzt. */}
-  <BlobFeld>
-    <Blob
-      ton="peach"
-      groesse="1800px"
-      top="-39.9%"
-      left="-10.6%"
-      deckkraft={1}
-      weg={-60}
-    />
-    <Blob ton="pink" groesse="1750px" top="-29.8%" left="30%" deckkraft={1} weg={-60} />
-  </BlobFeld>
   <div class="mkt-container">
     <div class="final__frame" data-anim="card">
       <div class="final__panel">
