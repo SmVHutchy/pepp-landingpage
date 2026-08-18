@@ -83,7 +83,22 @@ interface Props {
   saettigung?: number;
   /** Kantenlänge des Quadrats, in dem der radiale Verlauf ausläuft. */
   groesse?: string;
-  /** Positionierung; alles was in inset/top/left passt. */
+  /**
+   * Positionierung. Zwei Kanten genügen, eine senkrechte und eine waagerechte.
+   *
+   * PROZENTE BEZIEHEN SICH AUF DEN BLOB, NICHT AUF DIE SEKTION — und das ist
+   * der Unterschied zwischen brauchbar und unbrauchbar. In CSS rechnet `top:
+   * -18%` gegen die Höhe des Elternteils. Solange alle Sektionen ungefähr
+   * gleich hoch sind, fällt das nicht auf; sobald eine anhält und 3300px hoch
+   * wird, sind dieselben 18 % dort 601px statt 150px, und von einem 718px
+   * hohen Blob bleiben 117px stehen. Gemessen an „So funktioniert's" und der
+   * Mechanik, nachdem beide einen Halt bekommen hatten.
+   *
+   * Gegen den Blob gerechnet heisst -18% immer dasselbe: 18 % der Form hängen
+   * über die Kante hinaus, in jeder Sektion, bei jeder Höhe.
+   *
+   * Pixelwerte bleiben Pixelwerte und gehen unverändert durch.
+   */
   top?: string;
   left?: string;
   right?: string;
@@ -113,6 +128,33 @@ const {
   weg = -60,
 } = Astro.props;
 
+/* Die Bezugsgrössen für Prozentangaben: die eigene Breite und die eigene
+   Höhe. Beim Marken-Blob folgt die Höhe dem Seitenverhältnis der Formen, beim
+   Glow ist die Fläche quadratisch. */
+const EIGEN_X = 'var(--blob-groesse)';
+const EIGEN_Y = form
+  ? `calc(var(--blob-groesse) * ${FORM_VERHAELTNIS})`
+  : 'var(--blob-groesse)';
+
+/* Prozent gegen den Blob rechnen, Pixel unverändert lassen. Die Zahl wandert
+   zusätzlich in ein data-Attribut: der Blob-Editor liest sie von dort und muss
+   keinen calc()-Ausdruck zurückübersetzen. */
+const kanten = { top, bottom, left, right };
+const zahlen: Record<string, string> = {};
+const stilKanten = [];
+for (const [seite, wert] of Object.entries(kanten)) {
+  if (!wert) continue;
+  const roh = String(wert).trim();
+  if (!roh.endsWith('%')) {
+    stilKanten.push(`${seite}:${roh}`);
+    continue;
+  }
+  const p = parseFloat(roh);
+  const bezug = seite === 'top' || seite === 'bottom' ? EIGEN_Y : EIGEN_X;
+  stilKanten.push(`${seite}:calc(${bezug} * ${p / 100})`);
+  zahlen[`data-pos-${seite}`] = String(p);
+}
+
 const stil = [
   `--blob-groesse:${groesse}`,
   `--blob-deckkraft:${deckkraft}`,
@@ -121,10 +163,7 @@ const stil = [
   form && `--blob-verhaeltnis:${FORM_VERHAELTNIS}`,
   form && `--blob-winkel:${winkel}deg`,
   form && `--blob-saettigung:${saettigung}`,
-  top && `top:${top}`,
-  left && `left:${left}`,
-  right && `right:${right}`,
-  bottom && `bottom:${bottom}`,
+  ...stilKanten,
 ]
   .filter(Boolean)
   .join(';');
@@ -136,6 +175,8 @@ const stil = [
   style={stil}
   data-blob={weg}
   data-form={form}
+  data-ton={form ? undefined : ton}
+  {...zahlen}
   aria-hidden="true"
 >
 </div>

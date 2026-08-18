@@ -15,12 +15,23 @@
  *   Pfeiltasten  verschieben um 1 %, mit Shift um 5 %
  *   Entf         löscht den gewählten Blob
  *
- * WARUM PROZENT UND NICHT PIXEL. Die Sektionshöhe hängt am Text, und der
- * bricht bei jeder Breite anders um. Ein Blob, der bei 1440px 200px unter der
- * Oberkante sitzt, steht bei 1280px woanders im Verhältnis zur Sektion. Der
- * Editor rechnet deshalb beim Ziehen sofort in Prozent der Sektionsmasse zurück
- * und gibt auch Prozent aus. Nur `groesse` bleibt in Pixeln — sie soll bei
- * schmalem Viewport gerade NICHT mitschrumpfen, sonst verschwindet der Bogen.
+ * WARUM PROZENT, UND WOVON. Gerechnet wird in Prozent des BLOBS, nicht der
+ * Sektion. Das war zuerst andersherum, und es ging schief, sobald zwei
+ * Sektionen einen Scroll-Halt bekamen: „So funktioniert's" und die Mechanik
+ * sind dadurch rund 3340px hoch, und dieselben -18 % sind dort 601px statt
+ * 150px. Von einem 718px hohen Blob blieben 117px stehen — er stand in der
+ * Liste und war auf dem Schirm praktisch weg.
+ *
+ * Gegen den Blob gerechnet heisst -18 % überall dasselbe: 18 % der Form hängen
+ * über die Kante. Die Zahl bleibt bei jeder Sektionshöhe und jeder Breite
+ * gültig, und sie ist ablesbar, ohne die Sektion zu kennen.
+ *
+ * Die Zahlen stehen in data-pos-top und Geschwistern; im style steht ein
+ * calc(), das sie auf die eigene Grösse bezieht. Gelesen wird das data-
+ * Attribut, damit hier kein calc()-Ausdruck zurückübersetzt werden muss.
+ *
+ * `groesse` bleibt in Pixeln — sie soll bei schmalem Viewport gerade NICHT
+ * mitschrumpfen, sonst verschwindet der Bogen.
  *
  * WARUM DER BESCHNITT ABSCHALTBAR IST. Die Blobs liegen in einer Clip-Ebene
  * (BlobFeld.astro), die alles am Sektionsrand abschneidet. Beim Setzen will
@@ -43,42 +54,108 @@ const WAAGERECHT = ['left', 'right'];
    von dort, geschrieben wird dorthin. Damit kann nichts auseinanderlaufen,
    und der ausgegebene Code ist garantiert das, was man sieht. */
 
+/* Was ein Blob sein kann. Die fünf Markenformen laufen im Dawn-Verlauf, die
+   beiden Glows sind die einfarbigen Ambient-Scheine, die im Design System
+   hinter dem Maskottchen stehen. Beide Betriebsarten stecken schon in
+   Blob.astro — hier sind sie nur in einer Liste, damit der Editor zwischen
+   ihnen umschalten kann. */
+export const ARTEN = [...Object.keys(FORMEN), 'peach', 'pink'];
+const istForm = (art) => art in FORMEN;
+
+/* Bezugsgrösse für die Prozentangaben: der Blob selbst. Siehe Blob.astro —
+   gegen die Sektionshöhe gerechnet bedeutet dieselbe Zahl in einer haltenden
+   Sektion etwas völlig anderes als in einer normalen. */
+const eigenX = () => 'var(--blob-groesse)';
+const eigenY = (art) =>
+  istForm(art)
+    ? `calc(var(--blob-groesse) * ${FORM_VERHAELTNIS})`
+    : 'var(--blob-groesse)';
+
+const datenName = (seite) => `pos${seite[0].toUpperCase()}${seite.slice(1)}`;
+
+/* Kantenlänge des Blobs auf der gefragten Achse, in Pixeln — die Bezugsgrösse
+   für jede Prozentrechnung im Editor. */
+const eigenMass = (w, seiten) =>
+  seiten === SENKRECHT && istForm(w.art) ? w.groesse * FORM_VERHAELTNIS : w.groesse;
+
 function lesen(el) {
   const s = el.style;
-  const zahl = (v) => (v === '' ? null : parseFloat(v));
+  const zahl = (seite) => {
+    const d = el.dataset[datenName(seite)];
+    return d === undefined || d === '' ? null : parseFloat(d);
+  };
   return {
-    form: el.dataset.form || 'blob1',
+    art: el.dataset.form || el.dataset.ton || 'blob1',
     groesse: parseFloat(s.getPropertyValue('--blob-groesse')) || 560,
     deckkraft: parseFloat(s.getPropertyValue('--blob-deckkraft')) || 0.5,
     weich: parseFloat(s.getPropertyValue('--blob-weich')) || 48,
     winkel: parseFloat(s.getPropertyValue('--blob-winkel')) || 0,
     saettigung: parseFloat(s.getPropertyValue('--blob-saettigung')) || 1,
     weg: Number(el.dataset.blob) || 0,
-    top: zahl(s.top),
-    bottom: zahl(s.bottom),
-    left: zahl(s.left),
-    right: zahl(s.right),
+    top: zahl('top'),
+    bottom: zahl('bottom'),
+    left: zahl('left'),
+    right: zahl('right'),
   };
 }
 
 function schreiben(el, w) {
   const s = el.style;
-  el.dataset.form = w.form;
+  const dawn = istForm(w.art);
+
+  /* classList statt className: die Auswahlmarkierung .pbe-gewaehlt hängt am
+     selben Element und darf beim Umschalten nicht verlorengehen. */
+  el.classList.toggle('blob--dawn', dawn);
+  el.classList.toggle('blob--peach', w.art === 'peach');
+  el.classList.toggle('blob--pink', w.art === 'pink');
+  if (dawn) {
+    el.dataset.form = w.art;
+    delete el.dataset.ton;
+  } else {
+    el.dataset.ton = w.art;
+    delete el.dataset.form;
+  }
+
   el.dataset.blob = String(w.weg);
   s.setProperty('--blob-groesse', `${Math.round(w.groesse)}px`);
   s.setProperty('--blob-deckkraft', String(w.deckkraft));
   s.setProperty('--blob-weich', `${Math.round(w.weich)}px`);
   s.setProperty('--blob-winkel', `${Math.round(w.winkel)}deg`);
   s.setProperty('--blob-saettigung', String(Math.round(w.saettigung * 100) / 100));
-  s.setProperty('--blob-maske', maskeVon(w.form));
-  s.setProperty('--blob-verhaeltnis', String(FORM_VERHAELTNIS));
+  s.setProperty('--blob-maske', dawn ? maskeVon(w.art) : 'none');
+  s.setProperty('--blob-verhaeltnis', String(dawn ? FORM_VERHAELTNIS : 1));
+
   for (const seite of [...SENKRECHT, ...WAAGERECHT]) {
-    if (w[seite] === null || w[seite] === undefined) s.removeProperty(seite);
-    else s.setProperty(seite, `${Math.round(w[seite] * 10) / 10}%`);
+    const wert = w[seite];
+    if (wert === null || wert === undefined) {
+      s.removeProperty(seite);
+      delete el.dataset[datenName(seite)];
+      continue;
+    }
+    const p = Math.round(wert * 10) / 10;
+    const bezug = SENKRECHT.includes(seite) ? eigenY(w.art) : eigenX();
+    s.setProperty(seite, `calc(${bezug} * ${p / 100})`);
+    el.dataset[datenName(seite)] = String(p);
   }
 }
 
-const alleBlobs = () => [...document.querySelectorAll('.blob--dawn')];
+const alleBlobs = () => [...document.querySelectorAll('.blob')];
+
+/* Astro kapselt Komponenten-CSS über ein data-astro-cid-Attribut: aus
+   `.blob--peach` wird `.blob--peach[data-astro-cid-lcdodfp2]`. Ein Element,
+   das hier zur Laufzeit entsteht, trägt das Attribut nicht und bekommt damit
+   KEINE der Blob-Regeln — kein position:absolute, kein Hintergrund. Es landet
+   unsichtbar im Textfluss, und man sucht einen Blob, den es zwar gibt, den
+   aber nichts zeichnet.
+   Deshalb wird der Marker von einem vorhandenen Element abgeschaut. Fest
+   eintragen kann man ihn nicht: der Hash ändert sich, sobald jemand die
+   Komponente anfasst. */
+function markerUebernehmen(neu, vorlage) {
+  if (!vorlage) return;
+  for (const attr of vorlage.attributes) {
+    if (attr.name.startsWith('data-astro-cid-')) neu.setAttribute(attr.name, '');
+  }
+}
 const sektionVon = (el) => el.closest('section');
 const feldVon = (el) => el.closest('.blob-feld');
 
@@ -129,11 +206,27 @@ const CSS = `
 const REGLER = [
   { key: 'groesse', label: 'Grösse', min: 120, max: 1800, step: 10, einheit: 'px' },
   { key: 'deckkraft', label: 'Deckkraft', min: 0, max: 1, step: 0.01, einheit: '' },
-  { key: 'weich', label: 'Weichzeichnen', min: 0, max: 160, step: 2, einheit: 'px' },
+  {
+    key: 'weich',
+    label: 'Weichzeichnen',
+    min: 0,
+    max: 160,
+    step: 2,
+    einheit: 'px',
+    nurDawn: true,
+  },
   /* Die beiden Regler für die Farbigkeit. Sie ändern nicht den Verlauf — der
      ist der Token —, sondern welcher Teil davon im sichtbaren Ausschnitt
      landet und wie kräftig er dort steht. Siehe Blob.astro. */
-  { key: 'winkel', label: 'Verlauf drehen', min: 0, max: 360, step: 5, einheit: '°' },
+  {
+    key: 'winkel',
+    label: 'Verlauf drehen',
+    min: 0,
+    max: 360,
+    step: 5,
+    einheit: '°',
+    nurDawn: true,
+  },
   {
     key: 'saettigung',
     label: 'Sättigung',
@@ -141,6 +234,7 @@ const REGLER = [
     max: 2.4,
     step: 0.05,
     einheit: '',
+    nurDawn: true,
   },
   { key: 'weg', label: 'Parallaxe', min: -240, max: 240, step: 5, einheit: 'px' },
 ];
@@ -185,7 +279,7 @@ export function mountBlobEditor() {
   formWahl.className = 'pbe__row';
   formWahl.innerHTML = '<span>Form</span><output></output>';
   const formSelect = document.createElement('select');
-  for (const name of Object.keys(FORMEN)) {
+  for (const name of ARTEN) {
     const opt = document.createElement('option');
     opt.value = name;
     opt.textContent = name;
@@ -193,7 +287,7 @@ export function mountBlobEditor() {
   }
   formWahl.append(formSelect);
   felder.append(formWahl);
-  eingaben.form = formSelect;
+  eingaben.art = formSelect;
 
   for (const r of REGLER) {
     const row = document.createElement('label');
@@ -238,6 +332,23 @@ export function mountBlobEditor() {
   positionRow.innerHTML = '<span>Position</span><output></output>';
   felder.append(positionRow);
 
+  /* Zielsektion für „+ Blob". Jede Sektion bekommt eine laufende Nummer, weil
+     zwei von ihnen denselben Kurznamen tragen können und ein Name als Schlüssel
+     dann die falsche träfe. */
+  const sektionRow = document.createElement('label');
+  sektionRow.className = 'pbe__row';
+  sektionRow.innerHTML = '<span>Neu in Sektion</span><output></output>';
+  const sektionWahl = document.createElement('select');
+  document.querySelectorAll('main > section').forEach((sektion, i) => {
+    sektion.dataset.pbeNr = String(i);
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = `${i + 1} · ${sektionName(sektion)}`;
+    sektionWahl.append(opt);
+  });
+  sektionRow.append(sektionWahl);
+  felder.append(sektionRow);
+
   /* ── Anzeige ───────────────────────────────────────────────────────── */
 
   function listeAufbauen() {
@@ -247,7 +358,7 @@ export function mountBlobEditor() {
       const zeile = document.createElement('div');
       zeile.className = 'pbe__eintrag';
       zeile.setAttribute('role', 'option');
-      zeile.innerHTML = `<span>${sektionName(sektionVon(el))}</span><span>${w.form} · ${Math.round(w.groesse)}px</span>`;
+      zeile.innerHTML = `<span>${sektionName(sektionVon(el))}</span><span>${w.art} · ${Math.round(w.groesse)}px</span>`;
       zeile.addEventListener('click', () => waehlen(el, true));
       zeile._el = el;
       liste.append(zeile);
@@ -265,11 +376,14 @@ export function mountBlobEditor() {
   function reglerFuellen() {
     if (!gewaehlt) return;
     const w = lesen(gewaehlt);
-    eingaben.form.value = w.form;
+    eingaben.art.value = w.art;
     for (const r of REGLER) {
       eingaben[r.key].value = w[r.key];
       eingaben[r.key].parentElement.querySelector('output').textContent =
         `${w[r.key]}${r.einheit}`;
+      /* Weichzeichner, Drehung und Sättigung wirken nur auf den Verlauf. Beim
+         Glow stünden sie da und täten nichts — dann lieber weg. */
+      if (r.nurDawn) eingaben[r.key].parentElement.hidden = !istForm(w.art);
     }
     for (const [row, seiten] of [
       [ankerY, SENKRECHT],
@@ -304,8 +418,8 @@ export function mountBlobEditor() {
     sichern();
   }
 
-  eingaben.form.addEventListener('change', () =>
-    aendern({ form: eingaben.form.value }, true)
+  eingaben.art.addEventListener('change', () =>
+    aendern({ art: eingaben.art.value }, true)
   );
   for (const r of REGLER) {
     eingaben[r.key].addEventListener('input', () => {
@@ -317,9 +431,9 @@ export function mountBlobEditor() {
   }
 
   /* Ankerwechsel: die sichtbare Lage bleibt, nur die Bezugskante wechselt.
-     Gerechnet wird über die Sektionsmasse, weil die Prozentwerte sich darauf
-     beziehen — 20 % von oben sind bei einer 800px-Sektion 160px, und von
-     unten gemessen sind das dann nicht 80 %, sondern 100 − 20 − Blobhöhe. */
+     Die Prozente beziehen sich auf den Blob, der Weg zwischen den Kanten aber
+     auf die Sektion — deshalb geht die Rechnung einmal durch Pixel: aktuelle
+     Kante in px, Gegenkante daraus, und zurück in Prozent der Blobgrösse. */
   for (const [row, seiten] of [
     [ankerY, SENKRECHT],
     [ankerX, WAAGERECHT],
@@ -332,10 +446,12 @@ export function mountBlobEditor() {
       if (w[ziel] !== null) return;
       const quelle = seiten.find((s) => w[s] !== null);
       const kasten = sektionVon(gewaehlt).getBoundingClientRect();
-      const bezug = seiten === SENKRECHT ? kasten.height : kasten.width;
-      const eigen = seiten === SENKRECHT ? w.groesse * FORM_VERHAELTNIS : w.groesse;
-      const neu = quelle === undefined ? 0 : 100 - w[quelle] - (eigen / bezug) * 100;
-      aendern({ [quelle ?? ziel]: null, [ziel]: neu });
+      const sektionMass = seiten === SENKRECHT ? kasten.height : kasten.width;
+      const eigen = eigenMass(w, seiten);
+      /* Abstand der aktuellen Kante zum Sektionsrand, in Pixeln. */
+      const abstand = quelle === undefined ? 0 : (w[quelle] / 100) * eigen;
+      const gegen = sektionMass - eigen - abstand;
+      aendern({ [quelle ?? ziel]: null, [ziel]: (gegen / eigen) * 100 });
     });
   }
 
@@ -344,7 +460,7 @@ export function mountBlobEditor() {
   let zieht = null;
   document.addEventListener('pointerdown', (e) => {
     if (root.hidden || root.contains(e.target)) return;
-    const treffer = e.target.closest('.blob--dawn');
+    const treffer = e.target.closest('.blob');
     if (treffer) waehlen(treffer);
     if (!gewaehlt) return;
     /* Blobs haben pointer-events:none — getroffen wird also fast nie direkt.
@@ -369,15 +485,20 @@ export function mountBlobEditor() {
       aendern({ groesse: Math.max(120, zieht.w.groesse + dx * 2) });
       return;
     }
+    /* Der gezogene Weg ist in Pixeln; die Prozente beziehen sich auf den Blob,
+       also wird durch dessen eigene Kantenlänge geteilt, nicht durch die der
+       Sektion. bottom und right zählen andersherum. */
     const teil = {};
     const px = (v, seite) => (seite === 'bottom' || seite === 'right' ? -v : v);
-    for (const seite of SENKRECHT) {
-      if (zieht.w[seite] === null) continue;
-      teil[seite] = zieht.w[seite] + (px(dy, seite) / zieht.kasten.height) * 100;
-    }
-    for (const seite of WAAGERECHT) {
-      if (zieht.w[seite] === null) continue;
-      teil[seite] = zieht.w[seite] + (px(dx, seite) / zieht.kasten.width) * 100;
+    for (const [seiten, weg] of [
+      [SENKRECHT, dy],
+      [WAAGERECHT, dx],
+    ]) {
+      const eigen = eigenMass(zieht.w, seiten);
+      for (const seite of seiten) {
+        if (zieht.w[seite] === null) continue;
+        teil[seite] = zieht.w[seite] + (px(weg, seite) / eigen) * 100;
+      }
     }
     aendern(teil);
   });
@@ -396,13 +517,12 @@ export function mountBlobEditor() {
 
   /* ── Anlegen und Löschen ───────────────────────────────────────────── */
 
-  function neuerBlob() {
-    /* In die Sektion, die gerade am meisten Bild füllt — das ist die, die man
-       ansieht. Ohne diese Regel landete der neue Blob in der ersten Sektion
-       des Dokuments und man suchte ihn. */
+  /* Die Sektion, die gerade am meisten Bild füllt — das ist die, die man
+     ansieht. Sie ist die Vorauswahl im Sektionsmenü. */
+  function sichtbarsteSektion() {
     let beste = null;
     let meiste = 0;
-    for (const sektion of document.querySelectorAll('section')) {
+    for (const sektion of document.querySelectorAll('main > section')) {
       const r = sektion.getBoundingClientRect();
       const sicht = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
       if (sicht > meiste) {
@@ -410,27 +530,48 @@ export function mountBlobEditor() {
         beste = sektion;
       }
     }
-    if (!beste) return;
+    return beste;
+  }
 
-    let feld = beste.querySelector('.blob-feld');
+  function neuerBlob() {
+    /* Zielsektion ist die im Menü gewählte. Vorher ging der neue Blob immer in
+       die gerade sichtbare, und damit war eine Sektion, die man nicht auf den
+       Schirm bekommt, überhaupt nicht bestückbar. */
+    const ziel = document.querySelector(
+      `main > section[data-pbe-nr="${sektionWahl.value}"]`
+    );
+    if (!ziel) return;
+
+    let feld = ziel.querySelector('.blob-feld');
     if (!feld) {
       feld = document.createElement('div');
       feld.className = 'blob-feld';
       feld.setAttribute('aria-hidden', 'true');
-      beste.prepend(feld);
+      markerUebernehmen(feld, document.querySelector('.blob-feld'));
+      ziel.prepend(feld);
+      /* Die Clip-Ebene liegt auf inset:0 und misst sich am nächsten
+         positionierten Vorfahren. Ist die Sektion static, wäre das <main> oder
+         der Viewport, und der Blob stünde irgendwo. Hier heilen, im Code der
+         Sektion muss es dann auch stehen. */
+      const statisch = getComputedStyle(ziel).position === 'static';
+      if (statisch) ziel.style.position = 'relative';
       console.warn(
-        `[Blobs] ${sektionName(beste)} hat noch kein <BlobFeld>. Beim Übertragen des Codes eines anlegen — sonst ragt der Blob in die Nachbarsektion.`
+        `[Blobs] ${sektionName(ziel)} hat noch kein <BlobFeld>. Beim Übertragen des Codes eines anlegen` +
+          (statisch ? ' — und die Sektion braucht position:relative.' : '.')
       );
     }
 
     const el = document.createElement('div');
-    el.className = 'blob blob--dawn';
+    el.className = 'blob';
     el.setAttribute('aria-hidden', 'true');
+    markerUebernehmen(el, document.querySelector('.blob'));
     schreiben(el, {
-      form: 'blob1',
+      art: 'blob1',
       groesse: 800,
       deckkraft: 0.26,
       weich: 64,
+      winkel: 0,
+      saettigung: 1,
       weg: -60,
       top: -15,
       left: -15,
@@ -439,7 +580,9 @@ export function mountBlobEditor() {
     });
     feld.append(el);
     listeAufbauen();
-    waehlen(el);
+    /* Mit Scrollen: die Zielsektion kann ausserhalb des Bildes liegen, und ein
+       Blob, den man nach dem Anlegen suchen muss, ist keiner. */
+    waehlen(el, true);
     planeNeubau();
   }
 
@@ -469,19 +612,28 @@ export function mountBlobEditor() {
       zeilen.push(`{/* ── ${name} ── */}`);
       zeilen.push('<BlobFeld>');
       for (const w of blobs) {
-        const attr = [`form="${w.form}"`, `groesse="${Math.round(w.groesse)}px"`];
+        /* Marken-Blob und Glow sind zwei Betriebsarten desselben Bauteils und
+           nehmen unterschiedliche Eigenschaften — Weichzeichner, Drehung und
+           Sättigung gelten nur für den Verlauf. */
+        const dawn = istForm(w.art);
+        const attr = [
+          dawn ? `form="${w.art}"` : `ton="${w.art}"`,
+          `groesse="${Math.round(w.groesse)}px"`,
+        ];
         for (const seite of [...SENKRECHT, ...WAAGERECHT]) {
           if (w[seite] !== null)
             attr.push(`${seite}="${Math.round(w[seite] * 10) / 10}%"`);
         }
         attr.push(`deckkraft={${Math.round(w.deckkraft * 100) / 100}}`);
-        attr.push(`weichzeichnen={${Math.round(w.weich)}}`);
         attr.push(`weg={${Math.round(w.weg)}}`);
-        /* Nur ausgeben, wenn sie vom Standard abweichen — sonst stehen in
-           jeder Sektion zwei Zeilen, die nichts tun. */
-        if (Math.round(w.winkel)) attr.push(`winkel={${Math.round(w.winkel)}}`);
-        const saet = Math.round(w.saettigung * 100) / 100;
-        if (saet !== 1) attr.push(`saettigung={${saet}}`);
+        if (dawn) {
+          attr.push(`weichzeichnen={${Math.round(w.weich)}}`);
+          /* Nur ausgeben, wenn sie vom Standard abweichen — sonst stehen in
+             jeder Sektion zwei Zeilen, die nichts tun. */
+          if (Math.round(w.winkel)) attr.push(`winkel={${Math.round(w.winkel)}}`);
+          const saet = Math.round(w.saettigung * 100) / 100;
+          if (saet !== 1) attr.push(`saettigung={${saet}}`);
+        }
         zeilen.push('  <Blob');
         for (const a of attr) zeilen.push(`    ${a}`);
         zeilen.push('  />');
@@ -555,8 +707,13 @@ export function mountBlobEditor() {
     if (e.key === 'b' && !tippt && !e.metaKey && !e.ctrlKey) {
       root.hidden = !root.hidden;
       document.documentElement.classList.toggle('pbe-offen', !root.hidden);
-      if (!root.hidden) listeAufbauen();
-      else {
+      if (!root.hidden) {
+        listeAufbauen();
+        /* Vorauswahl: die Sektion, die man gerade ansieht. Umstellen kann man
+           sie im Menü — auch auf eine, die gerade nicht im Bild ist. */
+        const sicht = sichtbarsteSektion();
+        if (sicht) sektionWahl.value = sicht.dataset.pbeNr ?? '0';
+      } else {
         gewaehlt = null;
         markieren();
       }
