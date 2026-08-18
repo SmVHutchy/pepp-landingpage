@@ -96,6 +96,23 @@ der Hoster mit seiner eigenen Seite und die Datei liegt ungenutzt herum. Der
 `noindex`-Hinweis im Head fängt nur den zweiten Teil des Problems ab — die Aufnahme als
 Soft-404 bei Status 200 — er ersetzt die Hoster-Konfiguration nicht.
 
+## Caching und Kompression — der größte Hebel, den nur der Hoster hat
+
+Gemessen mit `npm run perf` (390×844@2x, 1,6 Mbit/s, 150 ms Latenz, CPU 4×):
+die Startseite überträgt **245 kB**. Ohne Kompression wären es 423 kB.
+
+| Pfad                                                 | `Cache-Control`                       | Warum                                                                                                    |
+| ---------------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `/_astro/*`                                          | `public, max-age=31536000, immutable` | Die Dateinamen tragen einen Inhalts-Hash. Ändert sich der Inhalt, ändert sich der Name — diese Datei nie |
+| `/fonts/*`, `/logo/*`, Favicons, `og-image.png`      | `public, max-age=31536000, immutable` | Keine Hashes im Namen, aber sie ändern sich nur, wenn jemand `npm run fonts` oder `brand-assets` läuft   |
+| `*.html`                                             | `public, max-age=0, must-revalidate`  | Muss beim nächsten Besuch aktuell sein, sonst sieht jemand alte Preise                                   |
+| `robots.txt`, `sitemap.xml`, `llms.txt`, Webmanifest | `public, max-age=3600`                | Crawler holen sie ohnehin selten                                                                         |
+
+**Brotli aktivieren.** Es wirkt auf HTML, CSS und JS — dort schrumpft das JS-Bündel
+von 119 kB auf 42 kB. Auf WOFF2, WebP und PNG wirkt es nicht, die sind bereits
+komprimiert. Genau deshalb sind die Schriften mit 131 kB der größte einzelne Posten,
+obwohl sie im Rohgewicht kleiner aussehen als das JS.
+
 ## Security-Header — Vorschlag, hostersyntaxfrei
 
 Vorbereitet, damit die Umsetzung nach der Hoster-Entscheidung nur noch Abtippen ist.

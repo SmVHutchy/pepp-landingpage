@@ -37,8 +37,29 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
   Jetzt `widths` + `sizes`; über sechs Viewport/DPR-Kombinationen nachgemessen, jede holt
   die kleinste passende Variante. Handy bei 2x: 22 kB statt 52 kB. (`95b5f5f`)
 
+- **Schriften subsettet: 354 → 245 kB übertragen.** Zwei Drittel des Seitengewichts
+  waren Schriften, und als einziger Posten entziehen sie sich der Kompression — WOFF2
+  ist bereits brotli-komprimiert. Der bestehende Subset war „Latin" und damit viel zu
+  weit: Inter trug 909 Zeichen, darunter 95 des Internationalen Phonetischen
+  Alphabets; die sechs Routen benutzen 99. Neu `npm run fonts`
+  (Inter 195 → 100 kB, Quicksand 41 → 31 kB). Abgesichert durch eine Prüfung in
+  `verify.mjs`, die jedes gerenderte Zeichen aller sechs Routen gegen die Abdeckung
+  der fertigen Dateien hält und dabei Regression von Altlast unterscheidet.
+  (`76c6e53`)
+- **`npm run perf`.** Misst gegen `dist/` bei 390×844@2x, 1,6 Mbit/s, 150 ms Latenz
+  und CPU 4×, mit brotli gerechnet, gegen die Core-Web-Vitals-Schwellen. Vorher gab es
+  `verify`, `compare` und `measure`, aber nichts für Geschwindigkeit — jede Aussage
+  dazu war unbelegbar. Stand jetzt: FCP 728 ms, LCP 1036 ms, CLS 0,0004, TBT 120 ms.
+  (`76c6e53`)
+
 ### Offen — 18.08.2026
 
+- **Drei Zeichen ohne Schrift.** Der Pfeil `→` in den Rechtstexten existiert in
+  **keiner** der beiden Schriften, Quicksand kennt weder den geschützten Bindestrich
+  noch das schmale geschützte Leerzeichen. Sie fallen seit jeher auf die Systemschrift
+  zurück — das ist keine Folge des Subsettings, sondern ein Fund daraus. `verify.mjs`
+  meldet sie als Hinweis. Behebbar nur über den Inhalt, und bei Fremdtext ist das eine
+  Entscheidung.
 - **`apple-itunes-app`.** Die iOS-App-ID ist bekannt. Das Meta blendet auf iOS-Safari
   eine Leiste über der Seite ein und ist damit eine Design- und Produktentscheidung,
   keine Metadatenfrage. Bewusst nicht ausgeführt.
