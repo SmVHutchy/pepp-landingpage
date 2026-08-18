@@ -402,6 +402,100 @@ const browser = await chromium.launch();
   await page.close();
 }
 
+/* ── Durchlauf 7: Zeichenabdeckung der Schriften ────────────────────────────
+   Die Schriften sind auf einen festen Vorrat subsettet (scripts/fonts.mjs):
+   236 kB runter auf 131 kB. Sie sind zwei Drittel des ausgelieferten
+   Seitengewichts und der einzige Posten, den Kompression nicht mehr anfasst.
+
+   Der Preis dafür ist eine neue Fehlerklasse: ein Zeichen, das jemand in
+   einen Text schreibt und das die Schrift nicht mehr enthält. Der Browser
+   fällt dann still auf die Systemschrift zurück — im besten Fall sieht man
+   einen Bruch in der Typografie, im schlechtesten ein Kästchen.
+
+   Diese Prüfung ist die Gegenleistung. Sie besucht alle sechs Routen, sammelt
+   jedes sichtbare Zeichen und hält es gegen scripts/font-abdeckung.json, die
+   aus den FERTIGEN WOFF2 ausgelesen wurde — nicht aus dem Wunschvorrat.
+
+   WER DEN VORRAT IN fonts.mjs KÜRZT, MUSS HIER DURCHKOMMEN. */
+{
+  const { readFileSync, existsSync } = await import('node:fs');
+  const abdeckungsdatei = new URL('./font-abdeckung.json', import.meta.url);
+
+  if (!existsSync(abdeckungsdatei)) {
+    warn(
+      'scripts/font-abdeckung.json fehlt — Zeichenabdeckung ungeprüft. Erzeugen mit: npm run fonts'
+    );
+  } else {
+    const roh = JSON.parse(readFileSync(abdeckungsdatei, 'utf8'));
+    const schriften = Object.keys(roh)
+      .filter((k) => !k.startsWith('_') && !k.endsWith(':quelle'))
+      .map((name) => ({
+        name,
+        subset: new Set(roh[name]),
+        quelle: new Set(roh[`${name}:quelle`] ?? roh[name]),
+      }));
+
+    /* Die letzte Route existiert absichtlich nicht: sie holt die 404-Seite,
+       die im Dev-Server unter jeder unbekannten URL liegt. */
+    const routen = [
+      '',
+      'impressum',
+      'datenschutz',
+      'agb',
+      'barrierefreiheit',
+      'gibtsnicht',
+    ];
+    const gesehen = new Set();
+
+    const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+    for (const route of routen) {
+      await page.goto(new URL(route, LOCAL).href, { waitUntil: 'domcontentloaded' });
+      const text = await page.evaluate(() => document.body.innerText);
+      for (const zeichen of text) gesehen.add(zeichen.codePointAt(0));
+    }
+    await page.close();
+
+    /* Steuerzeichen und Leerraum zählen nicht: Zeilenumbrüche entstehen aus
+       dem Layout, nicht aus dem Text, und werden nie gezeichnet. */
+    const sichtbar = [...gesehen].filter(
+      (cp) => cp > 0x20 && cp !== 0x7f && !(cp >= 0x80 && cp <= 0x9f) && cp !== 0xa0
+    );
+
+    const zeig = (name, cp) =>
+      `${name}: „${String.fromCodePoint(cp)}" (U+${cp.toString(16).toUpperCase().padStart(4, '0')})`;
+
+    const verschluckt = []; // war in der Quelle, fehlt im Subset -> behebbar
+    const nie = []; // hatte die Schrift nie -> Altlast
+
+    for (const { name, subset, quelle } of schriften) {
+      for (const cp of sichtbar) {
+        if (subset.has(cp)) continue;
+        (quelle.has(cp) ? verschluckt : nie).push(zeig(name, cp));
+      }
+    }
+
+    verschluckt.length === 0
+      ? ok(
+          `Schrift-Subset verliert keines der ${sichtbar.length} sichtbaren Zeichen der sechs Routen`
+        )
+      : fail(
+          `Der Subset hat Zeichen verschluckt, die die Quellschrift hatte: ${verschluckt.join(' | ')} — VORRAT in scripts/fonts.mjs ergänzen, dann npm run fonts`
+        );
+
+    /* Kein FEHLER: diese Zeichen fehlten schon vor dem Subsetten, das Skript
+       kann sie nicht herbeizaubern. Sichtbar sind sie trotzdem — der Browser
+       holt sie aus einer Systemschrift, mit anderer Strichstärke mitten im
+       Satz. Behebbar nur über den Inhalt (anderes Zeichen, oder ein Icon aus
+       src/icons/), und bei Fremdtext ist das eine Entscheidung, keine
+       Aufräumarbeit. */
+    if (nie.length) {
+      warn(
+        `Zeichen, die KEINE der beiden Schriften je hatte (fallen seit jeher auf die Systemschrift): ${[...new Set(nie)].join(' | ')}`
+      );
+    }
+  }
+}
+
 await browser.close();
 
 /* ── Bericht ────────────────────────────────────────────────────────────── */

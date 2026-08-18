@@ -158,7 +158,28 @@ const graph = {
     <meta name="twitter:image" content={ogImage} />
 
     {
-      /* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu blockieren. */
+      /* Quicksand trägt die H1 und damit den LCP-Text — früh laden, ohne zu
+        blockieren. crossorigin ist auch bei gleicher Herkunft Pflicht:
+        Schriften werden im anonymen CORS-Modus geladen, und ohne das Attribut
+        lädt der Browser die Datei ein zweites Mal, statt den Preload zu
+        benutzen.
+
+        INTER WIRD BEWUSST NICHT VORGELADEN, und das ist gemessen, nicht
+        geschätzt. Der naheliegende Gedanke — Inter trägt den Fließtext, also
+        auch vorladen — wurde ausprobiert und wieder verworfen:
+
+          npm run perf, je drei Läufe, 1,6 Mbit/s und CPU 4x gedrosselt
+            ohne Inter-Preload   LCP 1028 / 1028 / 1040 ms
+            mit  Inter-Preload   LCP 1276 / 1276 / 1280 ms
+
+        240 ms schlechter, bei einer Streuung von ±6 ms innerhalb der Gruppen.
+        Der Grund: das LCP-Element dieser Seite ist das Hero-Bild, und auf
+        einer schmalen Leitung nimmt ein zweiter Preload mit hoher Priorität
+        dem Bild genau die Bandbreite weg. Der Gewinn wäre ein etwas früherer
+        Schriftwechsel im Fließtext gewesen, der Preis eine um eine Viertel-
+        sekunde später erscheinende Seite.
+
+        WER DAS WIEDER EINBAUEN WILL: erst npm run perf, dann entscheiden. */
     }
     <link
       rel="preload"

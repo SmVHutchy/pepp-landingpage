@@ -20,7 +20,9 @@
     "palette": "node scripts/palette.mjs",
     "brand-assets": "node scripts/brand-assets.mjs",
     "og-image": "node scripts/og-image.mjs",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "prepare": "git config core.hooksPath .githooks || true",
+    "fonts": "node scripts/fonts.mjs",
+    "perf": "node scripts/perf.mjs"
   },
   "dependencies": {
     "astro": "^5.6.1",

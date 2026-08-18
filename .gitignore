@@ -39,3 +39,7 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Sicherungskopien, die scripts/fonts.mjs vor dem Ersetzen anlegt.
+# Die Quellschriften liegen im Design System, nicht hier.
+public/fonts/*.woff2.vorher
