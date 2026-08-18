@@ -1,209 +1,482 @@
 ---
 /* Sektion 6 · Belohnungen (#belohnungen)
-   Off-White. Die zwei Währungen stehen in einem randlosen Dawn-BAND über die
-   volle Sektionsbreite — der einzige Ort, an dem der Gradient echte Fläche
-   wird, nicht nur ein 16-28px-Rahmen wie vorher.
+   Off-White. Aufbau in zwei Stufen: erst die Bühne — Kopf mittig, Pepp in der
+   Mitte, die vier Reward-Typen als Chips um ihn herum —, dann hinter einem
+   Schalter die ausführliche Ansicht mit den zwei Karten und dem Zitat.
 
-   Warum der Kopf NICHT auf dem Band steht: nachgerechnet erreicht
-   --text-secondary (#6E6A66) auf den Dawn-Stops nur 2,25 bis 3,61:1 und
-   verfehlt 4,5:1 überall. --text-primary läge bei 7,3 bis 11,7:1, wäre für
-   Label und Lead aber zu schwer. Also Text auf Off-White, Fläche darunter.
+   WARUM DAS DAWN-BAND WEG IST. Vorher lag der Verlauf als randloses Band in
+   voller Sättigung über die Sektionsbreite und trug zwei weisse Karten mit
+   Fliesstext. Das Design System sagt zum Dawn: „always soft and large" und
+   „never as a container for long text" — genau beides war verletzt. Die
+   Fläche schrie lauter als die Aussage, und die Karten sassen darin wie
+   ausgeschnitten. Jetzt ist der Verlauf da, wo ihn das System vorsieht:
+   als weicher Schein hinter dem Maskottchen, ohne Kante.
 
-   Das Band liegt ausserhalb von .mkt-container und hat seinen eigenen
-   Container innen — so reicht es von Kante zu Kante, ohne 100vw und ohne die
-   Seite waagerecht zu verbreitern. */
+   WARUM VIER CHIPS UND NICHT ZWEI. Die App kennt vier Reward-Typen — der
+   Auswahlschritt in „Quest erstellen" zeigt Geld · Medienzeit · Eigene ·
+   Keine (ui_kits/parent_app/QuestCreate.jsx:66). Die Sektion zeigte davon
+   zwei und liess die Aussage „du entscheidest" unbelegt. Die Chips sind die
+   vollständige Auswahl in derselben Reihenfolge wie im Produkt; die zwei
+   Karten dahinter erklären die zwei, die Erklärung brauchen.
+
+   WARUM DER SCHALTER NICHT SCHWARZ IST UND NICHT SO HEISST. Die Referenz
+   zeigt einen schwarzen Knopf mit „Mehr erfahren". Beides geht hier nicht:
+   Schwarz ist auf dieser Seite die Aktionsfarbe des einen Conversion-Ziels
+   (siehe Cta.astro), ein zweiter schwarzer Knopf mittig in einer Sektion
+   konkurriert genau damit — und „Mehr erfahren" steht in scripts/verify.mjs:82
+   auf der Verbotsliste, seitenweit, neben „Absenden" und „Jetzt kaufen".
+   Der Schalter ist deshalb eine weisse Pille mit Haarlinie und benennt, was
+   aufgeht, statt zu werben: dieselbe Silhouette, andere Lautstärke.
+
+   Natives <details>: ohne JavaScript bedienbar, per Tastatur erreichbar, der
+   Inhalt steht im DOM und ist damit indexierbar. */
 import { Image } from 'astro:assets';
+import Blob from '../Blob.astro';
 import Icon from '../Icon.astro';
 /* Freigestellt aus dem gelieferten Render, siehe scripts/freistellen.mjs.
    Das runde Off-White-Plättchen von vorher war nur eine Krücke, weil
    pepp-coin.png keinen Alphakanal hat. */
 import coin from '../../assets/brand/pepp-coin-freigestellt.png';
+/* moment-reward-unlocked.png stand vorher klein und angeschnitten unten rechts
+   neben dem Zitat. Dort war von der Szene nichts zu erkennen. Als Figur in der
+   Mitte trägt derselbe Render die Sektion — es ist der gelieferte Augenblick
+   „Belohnung freigeschaltet", also genau das, wovon die Sektion spricht. */
 import moment from '../../assets/mascot/moment-reward-unlocked.png';
+
+/* Reihenfolge und Beschriftung wie im Auswahlschritt der App. „Eigene" heisst
+   hier „Eigene Belohnung": im Produkt steht darüber die Zeile „Reward wählen",
+   auf der Seite steht der Chip für sich allein. */
+const REWARDS = [
+  {
+    label: 'Geld',
+    icon: 'euro',
+    tint: 'var(--pepp-gold-tint)',
+    ink: 'var(--ink-gold)',
+  },
+  {
+    label: 'Medienzeit',
+    icon: 'clock',
+    tint: 'var(--pepp-lilac-tint)',
+    ink: 'var(--ink-lilac)',
+  },
+  {
+    label: 'Eigene Belohnung',
+    icon: 'gift',
+    tint: 'var(--pepp-pink-tint)',
+    ink: 'var(--ink-pink)',
+  },
+  {
+    label: 'Keine',
+    icon: 'circle-slash',
+    tint: 'var(--surface-sunken)',
+    ink: 'var(--text-secondary)',
+  },
+];
 ---
 
 <section id="belohnungen" class="rewards">
-  <div class="rewards__glow" aria-hidden="true"></div>
-
   <div class="mkt-container rewards__inner">
-    <div class="mkt-head">
+    <div class="rewards__head">
       <p class="mkt-label" data-anim>Belohnungen</p>
-      <h2 class="mkt-h2" data-anim>Geld oder Medienzeit.</h2>
+      <h2 class="mkt-h2 rewards__h2" data-anim>Belohnen, wie es zu euch passt.</h2>
       <p class="mkt-lead rewards__lead" data-anim>
-        Zwei Währungen. Du entscheidest, welche zu welcher Aufgabe passt.
+        Geld, Medienzeit, eine eigene Belohnung &#8212; oder keine. Du entscheidest pro
+        Aufgabe.
       </p>
     </div>
-  </div>
 
-  <div class="rewards__band">
-    <div class="mkt-container rewards__grid">
-      <div class="rewards__card" data-anim="side">
-        {/* Freie Münze, kein Plättchen mehr. */}
-        <span class="rewards__medal">
-          <Image
-            src={coin}
-            alt="Pepp Goldmünze"
-            width={96}
-            height={96}
-            densities={[1, 2]}
-            format="webp"
-            loading="lazy"
-          />
-        </span>
-        <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
-        <p class="rewards__body">
-          2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212;
-          nicht auf ein Konto.
-        </p>
-        <ul class="rewards__points mkt-list-reset">
-          <li>
-            <Icon name="check" size={20} color="var(--pepp-success)" />
-            Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
-          </li>
-          <li>
-            <Icon name="check" size={20} color="var(--pepp-success)" />
-            Sparziel mit eigenem Bild: der Pott hat ein Ziel.
-          </li>
-        </ul>
-      </div>
-
-      <div class="rewards__card" data-anim="card">
-        <span class="rewards__medal rewards__medal--lilac">
-          <Icon name="clock" size={44} color="var(--text-inverse)" />
-        </span>
-        <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
-        <p class="rewards__body">
-          30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
-          Wochenziel und Obergrenze.
-        </p>
-        <ul class="rewards__points mkt-list-reset">
-          <li>
-            <Icon name="target" size={20} color="var(--pepp-success)" />
-            Wochenziel setzen, tägliche Obergrenze festlegen.
-          </li>
-          <li>
-            <Icon name="pause" size={20} color="var(--pepp-success)" />
-            Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <div class="mkt-container rewards__inner rewards__closing">
     {
-      /* Die Notiz ist der einzige Absatz der Seite, der redaktioneller
-        Kommentar statt Produktaussage ist — die Aussage selbst steht im Zitat
-        darüber. Natives <details> wie im FAQ: ohne JavaScript bedienbar, per
-        Tastatur erreichbar, im DOM und damit indexierbar. */
+      /* Die Bühne. Ab 901px ein Raster aus drei Spalten: Chips links, Figur in
+        der Mitte über beide Zeilen, Chips rechts. Darunter steht die Figur
+        oben und die Chips laufen als umbrechende Reihe darunter — abseits
+        vom Raster gibt es dort keine Seiten, zwischen die etwas passt.
+
+        display:contents an der Liste löst nur den Kasten auf, die vier <li>
+        werden dadurch selbst Rasterfelder. role="list" steht daneben, weil
+        Safari mit display:contents sonst die Listensemantik verliert. */
     }
-    <div class="rewards__quote mkt-card" data-anim="card">
-      <p class="rewards__quote-text">
-        &#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;
-      </p>
-      <details class="rewards__quote-more">
+    <div class="rewards__scene">
+      <div class="rewards__aura" aria-hidden="true">
+        <Blob ton="pink" groesse="100%" deckkraft={0.5} weg={-40} />
+      </div>
+
+      <div class="rewards__figure" data-anim="card">
+        <Image
+          src={moment}
+          alt="Pepp springt mit einer Goldmünze — eine Belohnung ist freigeschaltet."
+          width={400}
+          height={392}
+          widths={[240, 320, 400, 560, 800]}
+          sizes="(max-width: 900px) 60vw, (min-width: 1340px) 400px, 30vw"
+          format="webp"
+          loading="lazy"
+        />
+      </div>
+
+      <ul class="rewards__chips mkt-list-reset" role="list">
         {
-          /* Die Notiz besteht aus zwei Sätzen: Befund, dann was Pepp daraus
-            macht. Der Befund bleibt sichtbar und wird das <summary>, die
-            Antwort klappt auf. Beide Sätze stehen wortgleich im Handoff — ein
-            eigener Aufklapp-Text wie „Mehr dazu" wäre erfunden gewesen. */
+          REWARDS.map((reward) => (
+            <li class="rewards__chip" data-anim="card">
+              <span
+                class="rewards__chip-tile mkt-tile"
+                style={`background:${reward.tint}`}
+              >
+                <Icon name={reward.icon} size={20} color={reward.ink} />
+              </span>
+              {reward.label}
+            </li>
+          ))
         }
-        <summary>
-          Bildschirmzeit ist in vielen Familien der größere Streitpunkt als Taschengeld.
-        </summary>
-        <p class="rewards__quote-note">
-          In Pepp ist sie eine Belohnung mit klaren Grenzen.
-        </p>
-      </details>
+      </ul>
     </div>
 
     {
-      /* moment-reward-unlocked.png: der gelieferte Render zum Augenblick
-        „Belohnung freigeschaltet". Er steht neben dem Zitat, nicht als
-        96px-Medaille in einer Karte — als Medaille wäre von der Szene nichts
-        zu erkennen. Dekoration, deshalb aria-hidden und leeres alt: die
-        Aussage tragen Zitat und Karten. */
+      /* Die ausführliche Ansicht. Sie steht hinter dem Schalter, weil sie die
+        Aussage vertieft und nicht trägt: wer nur wissen will, dass es vier
+        Wege gibt, hat das oben gelesen. */
     }
-    <div class="rewards__figure" data-anim="card" aria-hidden="true">
-      <Image
-        src={moment}
-        alt=""
-        width={300}
-        height={294}
-        densities={[1, 2]}
-        format="webp"
-        loading="lazy"
-      />
-    </div>
+    <details class="rewards__more">
+      <summary class="rewards__toggle">
+        <span class="rewards__toggle-label rewards__toggle-label--closed">
+          Beide Münzen im Detail
+        </span>
+        <span class="rewards__toggle-label rewards__toggle-label--open">
+          Weniger anzeigen
+        </span>
+        <span class="rewards__toggle-icon">
+          <Icon name="arrow-right" size={18} />
+        </span>
+      </summary>
+
+      <div class="rewards__detail">
+        <div class="rewards__grid">
+          <div class="rewards__card">
+            {/* Freie Münze, kein Plättchen mehr. */}
+            <span class="rewards__medal">
+              <Image
+                src={coin}
+                alt="Pepp Goldmünze"
+                width={96}
+                height={96}
+                densities={[1, 2]}
+                format="webp"
+                loading="lazy"
+              />
+            </span>
+            <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
+            <p class="rewards__body">
+              2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212;
+              nicht auf ein Konto.
+            </p>
+            <ul class="rewards__points mkt-list-reset">
+              <li>
+                <Icon name="check" size={20} color="var(--pepp-success)" />
+                Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
+              </li>
+              <li>
+                <Icon name="check" size={20} color="var(--pepp-success)" />
+                Sparziel mit eigenem Bild: der Pott hat ein Ziel.
+              </li>
+            </ul>
+          </div>
+
+          <div class="rewards__card">
+            <span class="rewards__medal rewards__medal--lilac">
+              <Icon name="clock" size={44} color="var(--text-inverse)" />
+            </span>
+            <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
+            <p class="rewards__body">
+              30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
+              Wochenziel und Obergrenze.
+            </p>
+            <ul class="rewards__points mkt-list-reset">
+              <li>
+                <Icon name="target" size={20} color="var(--pepp-success)" />
+                Wochenziel setzen, tägliche Obergrenze festlegen.
+              </li>
+              <li>
+                <Icon name="pause" size={20} color="var(--pepp-success)" />
+                Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {
+          /* Das Zitat hatte vorher ein eigenes <details> um den Nachsatz. Ein
+            Aufklapper im Aufklapper ist eine Tür zu viel — beide Sätze stehen
+            jetzt sichtbar, wortgleich zum Handoff. */
+        }
+        <blockquote class="rewards__quote mkt-card">
+          <p class="rewards__quote-text">
+            &#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;
+          </p>
+          <p class="rewards__quote-note">
+            Bildschirmzeit ist in vielen Familien der größere Streitpunkt als
+            Taschengeld. In Pepp ist sie eine Belohnung mit klaren Grenzen.
+          </p>
+        </blockquote>
+      </div>
+    </details>
   </div>
 </section>
 
 <style>
   .rewards {
     position: relative;
+    /* Der Schein der Bühne läuft nach aussen aus; die Sektion beschneidet ihn,
+       damit die Seite bei 320px nicht waagerecht scrollt. */
     overflow: hidden;
     background: var(--bg-app);
     padding-block: var(--mkt-section-y);
   }
 
-  /* Dawn nur als Schein, nicht als Fläche: 14 % hinter 30px Blur. */
-  .rewards__glow {
-    position: absolute;
-    top: -200px;
-    right: -200px;
-    width: min(820px, 80vw);
-    height: 820px;
-    border-radius: var(--radius-pill);
-    background: var(--gradient-dawn);
-    opacity: 0.14;
-    filter: blur(30px);
-    pointer-events: none;
-  }
-
   .rewards__inner {
     position: relative;
+    z-index: 1;
   }
 
-  /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
+  /* Der Kopf steht mittig, nicht wie sonst zweispaltig links: die Bühne
+     darunter ist symmetrisch, und ein linksbündiger Kopf über einer mittigen
+     Figur kippt das Bild. Deshalb hier auch kein .mkt-head — dessen
+     Desktop-Regel würde den Lead nach rechts neben die Headline setzen. */
+  .rewards__head {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: var(--space-5);
+  }
+
+  .rewards__head > * {
+    margin: 0;
+  }
+
+  /* --measure-headline (16ch) ist für linksbündige Headlines gerechnet. Mittig
+     und mit fünf Wörtern bräche das auf drei ungleiche Zeilen; 18ch ergibt die
+     zwei Zeilen der Referenz. */
+  .rewards__h2 {
+    max-width: 18ch;
+  }
+
   .rewards__lead {
     font-size: var(--type-bodyl-size);
     line-height: var(--type-bodyl-lh);
   }
 
-  /* Randloses Band über die volle Sektionsbreite. Kein border-radius: ein
-     Radius würde es wieder zu einem Panel machen, und genau das war es vorher.
-     Der eigene Container liegt innen, damit die Karten im Raster bleiben. */
-  .rewards__band {
+  /* ── Bühne ─────────────────────────────────────────────────────────────
+     Unter 901px: Figur oben, Chips als umbrechende Reihe darunter. */
+  .rewards__scene {
     position: relative;
     margin-top: var(--mkt-stack-gap);
-    background: var(--gradient-dawn);
-    padding-block: clamp(28px, 4vw, 56px);
+    display: grid;
+    justify-items: center;
+    gap: clamp(24px, 3vw, 40px);
+  }
+
+  /* Der Schein liegt hinter der Figur und ist das einzige Stück Farbe der
+     Sektion, das Fläche wird. <Blob> bringt den radialen --glow-pink des
+     Design Systems mit und hängt am Scroll-Scrub (data-blob) — deshalb hier
+     nur die Position und keine eigene Farbe. */
+  .rewards__aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: min(760px, 92vw);
+    aspect-ratio: 1;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .rewards__figure {
+    position: relative;
+    z-index: 1;
+  }
+
+  .rewards__figure img {
+    display: block;
+    width: clamp(240px, 30vw, 400px);
+    height: auto;
+    /* --shadow-mascot ist im Design System genau dieser Wert — der Render
+       bringt keinen Bodenschatten mit. */
+    filter: drop-shadow(var(--shadow-mascot));
+  }
+
+  .rewards__chips {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  .rewards__chip {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-6) var(--space-3) var(--space-3);
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-1);
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  /* .mkt-tile ist 40px; hier reichen 32px, weil die Pille sonst zu hoch wird. */
+  .rewards__chip-tile {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media (min-width: 901px) {
+    /* Drei Spalten: Chips · Figur · Chips. Die Figur steht über beide Zeilen,
+       die vier Chips sitzen in den Ecken und werden je einzeln ein Stück
+       versetzt — gleiche Abstände lesen sich als Tabelle, nicht als Szene.
+
+       CSS `translate` und nicht `transform`: die Reveal-Animation schreibt in
+       `transform`, beide Eigenschaften werden getrennt gerechnet und addiert
+       sich. Der Versatz überlebt also die Animation. */
+    .rewards__scene {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: center;
+      column-gap: clamp(16px, 3vw, 48px);
+      row-gap: 0;
+    }
+
+    .rewards__chips {
+      display: contents;
+    }
+
+    .rewards__figure {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .rewards__chip:nth-child(1) {
+      grid-area: 1 / 1;
+      justify-self: end;
+      translate: -8px 12px;
+    }
+
+    .rewards__chip:nth-child(2) {
+      grid-area: 1 / 3;
+      justify-self: start;
+      translate: 6px -16px;
+    }
+
+    .rewards__chip:nth-child(3) {
+      grid-area: 2 / 1;
+      justify-self: end;
+      translate: 16px -8px;
+    }
+
+    .rewards__chip:nth-child(4) {
+      grid-area: 2 / 3;
+      justify-self: start;
+      translate: -6px 14px;
+    }
+  }
+
+  /* ── Schalter und ausführliche Ansicht ─────────────────────────────────── */
+
+  .rewards__more {
+    margin-top: clamp(32px, 4vw, 56px);
+  }
+
+  .rewards__toggle {
+    cursor: pointer;
+    /* list-style plus ::-webkit-details-marker: das Dreieck ist in beiden
+       Engines weg. Gleiches Muster wie im FAQ. */
+    list-style: none;
+    width: fit-content;
+    margin-inline: auto;
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    height: var(--height-cta);
+    padding: 0 var(--space-4) 0 var(--space-7);
+    background: var(--action-secondary-bg);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-1);
+    font-family: var(--font-ui);
+    /* 15px wie im Nav-CTA, nicht 17px wie im Hero-CTA: die Pille muss mit der
+       längeren Beschriftung bei 320px noch in die 280px Inhaltsbreite passen. */
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    transition:
+      background var(--dur-fast) var(--ease-standard),
+      transform var(--dur-fast) var(--ease-standard);
+  }
+
+  .rewards__toggle::-webkit-details-marker {
+    display: none;
+  }
+
+  .rewards__toggle:hover {
+    background: var(--surface-hover);
+  }
+
+  .rewards__toggle:active {
+    transform: scale(var(--press-scale));
+  }
+
+  /* Der Pfeil sitzt in der schwarzen Scheibe der Referenz — 40px, also
+     dieselbe Höhe wie der Nav-CTA, und die einzige schwarze Fläche hier. */
+  .rewards__toggle-icon {
+    width: var(--height-cta-nav);
+    height: var(--height-cta-nav);
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    background: var(--action-primary-bg);
+    color: var(--action-primary-fg);
+    transition: rotate var(--dur-base) var(--ease-standard);
+  }
+
+  .rewards__more[open] .rewards__toggle-icon {
+    rotate: -90deg;
+  }
+
+  .rewards__more:not([open]) .rewards__toggle-label--open,
+  .rewards__more[open] .rewards__toggle-label--closed {
+    display: none;
+  }
+
+  /* Die Höhe eines <details> lässt sich in Safari noch nicht animieren. Der
+     Inhalt hebt sich deshalb nur an seinen Platz — die Höhe springt.
+
+     NUR transform, KEINE Deckkraft. Es ist dieselbe Regel wie im Kopf von
+     site.js: kein Startzustand, der Inhalt verschwinden lässt. Ein Keyframe,
+     der bei opacity 0 beginnt, macht den Text unsichtbar, sobald die
+     Animation nicht durchläuft — angehaltene rAF im Hintergrundtab, ein
+     Rendering-Aussetzer, ein Browser, der die Regel kennt aber nicht
+     ausführt. Bei transform ist der schlimmste Fall ein Text, der 16px
+     zu tief steht. Die globale reduced-motion-Regel setzt die Dauer auf 0. */
+  @keyframes rewards-detail-in {
+    from {
+      transform: translateY(16px);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .rewards__detail {
+    margin-top: clamp(24px, 3vw, 40px);
+    animation: rewards-detail-in var(--dur-base) var(--ease-out-soft);
   }
 
   .rewards__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: var(--mkt-card-gap);
-  }
-
-  .rewards__closing {
-    margin-top: clamp(32px, 4vw, 56px);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: clamp(24px, 3vw, 40px);
-    align-items: center;
-  }
-
-  .rewards__figure img {
-    display: block;
-    width: min(300px, 100%);
-    height: auto;
-    margin-inline: auto;
-  }
-
-  @media (min-width: 901px) {
-    .rewards__closing {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
   }
 
   .rewards__card {
@@ -277,7 +550,7 @@ import moment from '../../assets/mascot/moment-reward-unlocked.png';
 
   /* Zitat in Coral — als Text erlaubt, Coral ist nie Buttonfläche. */
   .rewards__quote {
-    margin-top: clamp(32px, 4vw, 48px);
+    margin: var(--mkt-card-gap) 0 0;
     padding: clamp(24px, 2.6vw, 36px);
     max-width: 640px;
   }
@@ -293,23 +566,8 @@ import moment from '../../assets/mascot/moment-reward-unlocked.png';
     max-width: 22ch;
   }
 
-  .rewards__quote-more {
-    margin-top: var(--space-5);
-  }
-
-  /* Hier bleibt der Marker sichtbar, anders als im FAQ: das <summary> ist ein
-     ganzer Satz und würde sonst wie normaler Fließtext lesen — dass er
-     aufklappbar ist, muss man sehen. */
-  .rewards__quote-more summary {
-    cursor: pointer;
-    font-size: var(--type-body-size);
-    line-height: var(--type-body-lh);
-    color: var(--text-secondary);
-    max-width: var(--measure-body);
-  }
-
   .rewards__quote-note {
-    margin: var(--space-4) 0 0;
+    margin: var(--space-5) 0 0;
     font-size: var(--type-body-size);
     line-height: var(--type-body-lh);
     color: var(--text-secondary);
