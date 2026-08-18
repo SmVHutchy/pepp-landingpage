@@ -9,6 +9,19 @@
 import Icon from '../Icon.astro';
 import { STORE, OPERATOR } from '../../data/site.js';
 
+/* Die Rechtszeile wird hier zusammengesetzt und NICHT im Markup aus mehreren
+   Ausdrücken, zwischen denen ein Zeilenumbruch steht. Genau das stand hier
+   vorher, und Astro 7 hat die Umbrüche weggekürzt: ausgeliefert wurde
+   „GmbH ·Hans-Vogel-Straße 59, 90765Fürth". Unter Astro 5 trug der Umbruch
+   noch ein Leerzeichen, hier hing also eine sichtbare Ausgabe an der
+   Quelltextformatierung. Als eine Zeichenkette kann weder der Compiler noch
+   ein Prettier-Umbruch etwas daran verschieben. */
+const rechtszeile = [
+  `© ${OPERATOR.copyrightYear} Pepp`,
+  OPERATOR.legalName,
+  `${OPERATOR.street}, ${OPERATOR.postalCode} ${OPERATOR.city}`,
+].join(' · ');
+
 const product = [
   { href: '/#funktionen', label: 'Funktionen' },
   { href: '/#belohnungen', label: 'Belohnungen' },
@@ -89,11 +102,7 @@ const legal = [
   </div>
 
   <div class="foot__legal">
-    <p>
-      &#169; {OPERATOR.copyrightYear} Pepp &#183; {OPERATOR.legalName} &#183;
-      {OPERATOR.street}, {OPERATOR.postalCode}
-      {OPERATOR.city}
-    </p>
+    <p>{rechtszeile}</p>
   </div>
 </footer>
 

@@ -27,6 +27,18 @@
  * optimiert das Falsche.
  *
  * Die Schwellen sind Googles Core-Web-Vitals-Grenzen für „gut".
+ *
+ * DAS ARBEITSVERZEICHNIS MUSS AUF EINER LOKALEN PLATTE LIEGEN. Bis zum
+ * 18.08.2026 lag es auf //NAS_9R/9R_Drive, einer SMB-Freigabe, und dieser
+ * Dateiserver las jede Antwort von dort. 200 kleine Dateien brauchten über
+ * das Netzlaufwerk 439 ms, von der lokalen SSD 13 ms — Faktor 34. Die
+ * Wartezeit landete ungefiltert in FCP und LCP: gemessen wurden 3712 ms, was
+ * wie ein Einbruch durch das Astro-7-Upgrade aussah. Von der SSD sind es
+ * 752 ms bei identischem Quellstand. Es war nie Astro.
+ *
+ * Ausgeliefert wird die Seite von einem Hoster mit lokaler Platte. Ein Lauf
+ * über ein Netzlaufwerk misst das Netzlaufwerk, nicht die Seite, und zwei
+ * Läufe von verschiedenen Ablageorten sind nicht vergleichbar.
  */
 import { chromium } from 'playwright';
 import { createServer } from 'node:http';
