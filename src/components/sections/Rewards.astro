@@ -182,52 +182,57 @@ const REWARDS = [
 
       <div class="rewards__detail">
         <div class="rewards__grid">
-          <div class="rewards__card">
-            {/* Freie Münze, kein Plättchen mehr. */}
-            <span class="rewards__medal">
+          <div class="rewards__card" data-anim="card">
+            <span
+              class="mkt-figure__panel rewards__panel"
+              style="background:var(--pepp-gold-tint)"
+            >
               <Image
                 src={coin}
                 alt="Pepp Goldmünze"
-                width={96}
-                height={96}
+                width={240}
+                height={240}
                 densities={[1, 2]}
                 format="webp"
                 loading="lazy"
               />
             </span>
-            <h3 class="rewards__title">Goldmünze &#183; Taschengeld</h3>
-            <p class="rewards__body">
+            <h3 class="mkt-figure__title">Goldmünze &#183; Taschengeld</h3>
+            <p class="mkt-figure__body">
               2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212;
               nicht auf ein Konto.
             </p>
             <ul class="rewards__points mkt-list-reset">
               <li>
-                <Icon name="check" size={20} color="var(--pepp-success)" />
+                <Icon name="check" size={20} color="var(--ink-gold)" />
                 Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
               </li>
               <li>
-                <Icon name="check" size={20} color="var(--pepp-success)" />
+                <Icon name="check" size={20} color="var(--ink-gold)" />
                 Sparziel mit eigenem Bild: der Pott hat ein Ziel.
               </li>
             </ul>
           </div>
 
-          <div class="rewards__card">
-            <span class="rewards__medal rewards__medal--lilac">
-              <Icon name="clock" size={44} color="var(--text-inverse)" />
+          <div class="rewards__card" data-anim="card">
+            <span
+              class="mkt-figure__panel rewards__panel"
+              style="background:var(--pepp-lilac-tint)"
+            >
+              <Icon name="clock" size={128} color="var(--ink-lilac)" strokeWidth={1} />
             </span>
-            <h3 class="rewards__title">Zeitmünze &#183; Medienzeit</h3>
-            <p class="rewards__body">
+            <h3 class="mkt-figure__title">Zeitmünze &#183; Medienzeit</h3>
+            <p class="mkt-figure__body">
               30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
               Wochenziel und Obergrenze.
             </p>
             <ul class="rewards__points mkt-list-reset">
               <li>
-                <Icon name="target" size={20} color="var(--pepp-success)" />
+                <Icon name="target" size={20} color="var(--ink-lilac)" />
                 Wochenziel setzen, tägliche Obergrenze festlegen.
               </li>
               <li>
-                <Icon name="pause" size={20} color="var(--pepp-success)" />
+                <Icon name="pause" size={20} color="var(--ink-lilac)" />
                 Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
               </li>
             </ul>
@@ -261,6 +266,35 @@ const REWARDS = [
     overflow: hidden;
     background: var(--bg-app);
     padding-block: var(--mkt-section-y);
+  }
+
+  /* Wie „Alltag" und „Sicherheit" füllt die Sektion ab Desktop den Bildschirm,
+     statt ihre Höhe aus dem Inhalt zu ziehen. Bei 1440x1080 waren die beiden
+     Nachbarn exakt 1080 hoch und diese hier 1034 — 46 Pixel, die man beim
+     Scrollen nicht als Zahl sieht, aber als Ruck: die Bühne stand einen Tick
+     zu hoch im Bild, während die Sektionen davor und danach sauber standen.
+
+     Anders als dort steht hier KEIN data-haftet im Markup. Die Rechnung
+     „genau 100svh und keinen Pixel mehr" aus Problem.astro gilt deshalb
+     nicht — sie hängt an initSticky(), das hier nichts zu tun hat. 100svh ist
+     hier schlicht das Mass der Nachbarn.
+
+     min-height statt height: aufgeklappt trägt die Sektion zwei Karten und das
+     Zitat und ist dann deutlich höher als ein Bildschirm. Mit height wäre der
+     Inhalt gestaucht, und .rewards schneidet mit overflow:hidden ab.
+
+     width auf dem Container, weil `margin-inline: auto` an einem Grid-Item die
+     Streckung abschaltet — die lange Begründung steht in Problem.astro. */
+  @media (min-width: 901px) {
+    .rewards {
+      display: grid;
+      align-items: center;
+      min-height: 100svh;
+    }
+
+    .rewards > .rewards__inner {
+      width: 100%;
+    }
   }
 
   .rewards__inner {
@@ -511,57 +545,44 @@ const REWARDS = [
     gap: var(--mkt-card-gap);
   }
 
+  /* Rezept 2 · Tint-Figur, dasselbe wie im „Alltag". Vorher war das hier ein
+     weisser Kasten mit Haarlinie und --shadow-2 — also .mkt-card von Hand
+     nachgebaut, aber mit 36px Padding statt 32 und einer Schattenstufe zu
+     viel. Zwei Karten, die dem geteilten Rezept fast, aber nicht ganz folgen,
+     sind schlechter als zwei, die es gar nicht tun: der Unterschied liest
+     sich als Fehler, nicht als Absicht.
+
+     Jetzt trägt die getönte Fläche die Figur und Titel, Text und Punkte
+     stehen nackt darunter. Titel und Body kommen aus .mkt-figure__* in
+     global.css, deshalb steht hier zu beiden nichts mehr.
+
+     Der Ton der Fläche und der --ink-*-Hue darauf sind je Karte gesetzt und
+     stehen im Markup: Gold für die Goldmünze, Lila für die Zeitmünze —
+     dieselben Töne, die die Chips oben für Geld und Medienzeit tragen. */
   .rewards__card {
-    background: var(--surface-card);
-    border: var(--border-hair) solid var(--border-hairline);
-    border-radius: var(--radius-2xl);
-    padding: clamp(24px, 2.6vw, 36px);
-    box-shadow: var(--shadow-2);
+    display: flex;
+    flex-direction: column;
   }
 
-  .rewards__medal {
-    width: 96px;
-    height: 96px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  /* Die Karten stehen zu zweit, nicht zu dritt wie im „Alltag" — die Fläche
+     wird dadurch fast doppelt so breit. Bei 4/3 stünde die Münze in einem
+     halben Bildschirm Leere. 16/9 hält die Fläche flach genug, dass Figur und
+     Text noch als eine Karte gelesen werden. */
+  .rewards__panel {
+    aspect-ratio: 16 / 9;
   }
 
   /* Kein Plättchen, kein overflow:hidden: die Münze ist freigestellt und
-     schwebt. Der Schatten kommt per CSS, nicht eingebrannt im Bild. */
-  .rewards__medal img {
+     schwebt auf dem Tint. Der Schatten kommt per CSS, nicht eingebrannt im
+     Bild. Aus --ink-gold gemischt, nicht als Hex-Literal: der Wert bleibt an
+     das Token gebunden, wenn sich der Goldton im System ändert. */
+  .rewards__panel img {
     display: block;
-    width: 96px;
-    height: 96px;
-    object-fit: contain;
-    /* Aus --ink-gold gemischt, nicht als Hex-Literal: der Wert bleibt an das
-       Token gebunden, wenn sich der Goldton im System ändert. */
+    width: clamp(96px, 26%, 160px);
+    height: auto;
     filter: drop-shadow(
       0 8px 16px color-mix(in srgb, var(--ink-gold) 28%, transparent)
     );
-  }
-
-  .rewards__medal--lilac {
-    border-radius: var(--radius-pill);
-    background: var(--gradient-lilac);
-  }
-
-  .rewards__title {
-    margin: var(--space-6) 0 0;
-    font-family: var(--font-display);
-    font-weight: var(--weight-bold);
-    font-size: var(--type-h2-size);
-    line-height: var(--type-h2-lh);
-    letter-spacing: var(--type-h2-tracking);
-    color: var(--text-primary);
-  }
-
-  .rewards__body {
-    margin: var(--space-3) 0 0;
-    font-size: var(--type-body-size);
-    line-height: var(--type-body-lh);
-    color: var(--text-secondary);
-    max-width: 38ch;
   }
 
   .rewards__points {
@@ -580,10 +601,21 @@ const REWARDS = [
     color: var(--text-secondary);
   }
 
-  /* Zitat in Coral — als Text erlaubt, Coral ist nie Buttonfläche. */
+  /* Zitat in Coral — als Text erlaubt, Coral ist nie Buttonfläche.
+
+     margin-inline: auto rückt die Karte in die Mitte. Vorher stand sie mit
+     640px Breite linksbündig unter einem 1116px breiten Raster: gemessen
+     beides bei x=155, rechts blieben 476px leer. Das las sich wie ein
+     Umbruchfehler, nicht wie eine gesetzte Kante.
+
+     Padding auf das Mass von .mkt-card zurück (22–32px statt 24–36px) — die
+     Klasse steht ohnehin im Markup, die eigene Zeile hat sie nur überschrieben.
+
+     Der Text bleibt linksbündig. Mittig gesetzter Fliesstext hat an jedem
+     Zeilenanfang eine andere Kante, und der Nachsatz läuft über drei Zeilen. */
   .rewards__quote {
-    margin: var(--mkt-card-gap) 0 0;
-    padding: clamp(24px, 2.6vw, 36px);
+    margin: var(--mkt-card-gap) auto 0;
+    padding: clamp(22px, 2.2vw, 32px);
     max-width: 640px;
   }
 
