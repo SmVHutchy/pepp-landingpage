@@ -24,18 +24,18 @@ import BlobFeld from '../BlobFeld.astro';
 import Cta from '../Cta.astro';
 import Icon from '../Icon.astro';
 
-import { PRICING, STORE } from '../../data/site.js';
+import { STORE } from '../../data/site.js';
 
 import mascot from '../../assets/mascot/pepp-coin-play.png';
 import coin from '../../assets/brand/pepp-coin-freigestellt.png';
 
-/* Testdauer aus PRICING statt als Text. Sonst steht die Zahl an einer
-   weiteren Stelle und läuft bei einer Änderung auseinander — Fund 8 aus
-   docs/AUDIT-2026-08-17.md. */
-const microTrust = [
-  `${PRICING.trialDays} Tage gratis`,
-  'Kein Bankkonto nötig',
-  'Jederzeit kündbar',
+/* Zwei Vertrauenspunkte direkt im Hero — kurz, sichtbar, nicht
+   widersprüchlich zur Security-Sektion. Die finanziellen und datenschutz-
+   relevanten Claims (kein Bankkonto, kein Datenverkauf) leben ausführlich in
+   Sektion 10, statt hier und dort zu wiederholen. */
+const trustPoints = [
+  { icon: 'shield-check', label: 'Made in Germany' },
+  { icon: 'circle-slash', label: 'Werbefrei' },
 ];
 ---
 
@@ -43,6 +43,7 @@ const microTrust = [
   {/* Von Liam im Blob-Editor gesetzt. */}
   <BlobFeld>
     <Blob
+      class="hero__blob hero__blob--1"
       form="blob3"
       groesse="1480px"
       top="-17.7%"
@@ -53,6 +54,7 @@ const microTrust = [
       weg={0}
     />
     <Blob
+      class="hero__blob hero__blob--2"
       ton="pink"
       groesse="1080px"
       top="-7.9%"
@@ -61,6 +63,7 @@ const microTrust = [
       weg={-60}
     />
     <Blob
+      class="hero__blob hero__blob--3"
       ton="peach"
       groesse="1510px"
       top="-6.6%"
@@ -116,17 +119,6 @@ const microTrust = [
           Google Play
         </a>
       </div>
-
-      <ul class="hero__trust mkt-list-reset">
-        {
-          microTrust.map((item) => (
-            <li>
-              <Icon name="check" size={16} color="var(--pepp-success)" />
-              {item}
-            </li>
-          ))
-        }
-      </ul>
     </div>
 
     <div class="hero__visual">
@@ -163,7 +155,7 @@ const microTrust = [
           width={580}
           height={649}
           widths={[240, 360, 480, 580, 760, 1043]}
-          sizes="(max-width: 600px) 240px, (min-width: 1450px) 580px, 40vw"
+          sizes="(max-width: 600px) 260px, (min-width: 1450px) 580px, 40vw"
           format="webp"
           loading="eager"
           fetchpriority="high"
@@ -192,6 +184,19 @@ const microTrust = [
       </div>
     </div>
   </div>
+
+  <div class="hero__trustbar">
+    <ul class="hero__trustbar-list mkt-list-reset">
+      {
+        trustPoints.map((point) => (
+          <li>
+            <Icon name={point.icon} size={20} color="var(--pepp-ink)" />
+            {point.label}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
@@ -199,36 +204,66 @@ const microTrust = [
     position: relative;
     overflow: hidden;
     padding: clamp(24px, 4vw, 48px) 0 0;
+    /* Auf Mobile soll der Hero mindestens den Bereich zwischen Navigation und
+       unterem Bildrand füllen, damit die Trust-Bar am unteren Rand klebt. */
+    min-height: calc(100svh - var(--height-nav));
+    display: flex;
+    flex-direction: column;
   }
 
-  /* Der erste Bildschirm ist eine Einheit: Navigation oben, Hero dazwischen,
-     die weisse Trust-Leiste als Abschlusskante unten. Der Hero reicht deshalb
-     genau bis zu ihrer Oberkante.
+  .hero__grid {
+    flex: 1 0 auto;
+  }
+
+  /* Der erste Bildschirm ist eine Einheit: Navigation oben, Hero-Inhalt
+     mittig, die weisse Trust-Leiste als Abschlusskante unten.
 
      min-height, nicht height — auf einem flachen Fenster darf der Inhalt die
-     Sektion weiterhin aufziehen, statt gestaucht zu werden. Unter rund 800px
-     Fensterhöhe rutscht die Leiste dann unter die Kante; das ist die richtige
-     Reihenfolge der Zugeständnisse.
+     Sektion weiterhin aufziehen, statt gestaucht zu werden.
 
      svh statt vh: auf iOS ist vh die Höhe MIT eingefahrener Adressleiste. Mit
      ausgefahrener Leiste — also beim Laden — wäre die Sektion damit höher als
      der sichtbare Bereich, und die Trust-Leiste läge unter der Kante, genau in
-     dem Moment, in dem sie zu sehen sein soll.
-
-     Erst ab 901px: darunter steht die Copy über der Figur, der Hero ist von
-     sich aus höher als der Bildschirm, und die Trust-Leiste bricht auf zwei
-     Zeilen um — --height-trust stimmt dort nicht mehr. */
+     dem Moment, in dem sie zu sehen sein soll. */
   @media (min-width: 901px) {
     .hero {
       display: grid;
-      align-items: center;
-      /* --border-hair ist die untere Haarlinie der Navigation. Ohne sie
-         steht die Unterkante der Trust-Leiste einen Pixel unter dem Bildrand
-         — gemessen, nicht vermutet: 73 + 944 + 64 = 1081 auf 1080. */
-      min-height: calc(
-        100svh - var(--height-nav) - var(--height-trust) - var(--border-hair)
-      );
-      padding-block: clamp(24px, 4vw, 48px);
+      /* Inhalt nimmt den verfügbaren Platz, Trust-Leiste sitzt unten. */
+      grid-template-rows: 1fr auto;
+      /* --border-hair ist die untere Haarlinie der Navigation. */
+      min-height: calc(100svh - var(--height-nav) - var(--border-hair));
+      padding-block: clamp(24px, 4vw, 48px) 0;
+    }
+
+    .hero__grid {
+      align-self: center;
+    }
+  }
+
+  /* Kompakter Modus für Laptops und kleine Desktop-Fenster: der Inhalt soll
+     nicht über den verfügbaren Platz hinauswachsen, damit die Trust-Leiste
+     unten immer noch im ersten Screen liegt. */
+  @media (min-width: 901px) and (max-height: 850px) {
+    .hero {
+      padding-block: clamp(16px, 2.5vw, 32px);
+    }
+
+    .hero__chip {
+      margin-bottom: clamp(12px, 1.5vw, 16px);
+    }
+
+    .hero__subline {
+      margin-top: clamp(12px, 1.5vw, 16px);
+    }
+
+    .hero__actions,
+    .hero__stores {
+      margin-top: clamp(16px, 2vw, 24px);
+    }
+
+    .hero__mascot {
+      max-height: min(55svh, 460px);
+      max-width: 460px;
     }
   }
 
@@ -320,20 +355,115 @@ const microTrust = [
     color: var(--pepp-ink);
   }
 
-  .hero__trust {
-    margin: clamp(24px, 3vw, 32px) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-3) var(--space-6);
+  /* Trust-Bar direkt im Hero. Auf Mobile erscheint sie als weisse Leiste am
+     unteren Rand der Sektion, auf Desktop als Abschlusskante des ersten
+     Screens. */
+  .hero__trustbar {
+    position: relative;
+    z-index: 2;
+    border-top: var(--border-hair) solid var(--border-hairline);
+    background: var(--surface-card);
   }
 
-  .hero__trust li {
+  .hero__trustbar-list {
+    margin-inline: auto;
+    padding: var(--space-6) var(--mkt-gutter);
+    max-width: var(--mkt-content-width);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .hero__trustbar-list li {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    font-size: 14px;
-    font-weight: var(--weight-medium);
+    gap: 10px;
+    font-size: var(--type-body-size);
+    font-weight: var(--weight-semibold);
     color: var(--text-secondary);
+  }
+
+  @media (max-width: 600px) {
+    .hero__trustbar-list {
+      justify-content: center;
+      gap: var(--space-3) var(--space-5);
+      padding: var(--space-4) var(--mkt-gutter);
+    }
+
+    .hero__trustbar-list li {
+      font-size: 13px;
+      gap: 8px;
+    }
+
+    .hero__trustbar-list li :global(svg) {
+      width: 16px;
+      height: 16px;
+    }
+
+    .hero__mascot {
+      width: clamp(200px, 55vw, 260px);
+      max-height: min(32svh, 220px);
+    }
+  }
+
+  /* Sehr kleine Handys wie iPhone SE (375 × 667): der Inhalt passt nur, wenn
+     Polster, Typografie und Figur zusätzlich komprimiert werden. */
+  @media (max-width: 600px) and (max-height: 700px) {
+    .hero {
+      padding-top: 16px;
+    }
+
+    .hero__copy {
+      padding-bottom: 20px;
+    }
+
+    .hero__chip {
+      margin-bottom: 8px;
+      padding: 4px 12px 4px 8px;
+      font-size: 12px;
+    }
+
+    .hero__chip :global(svg) {
+      width: 14px;
+      height: 14px;
+    }
+
+    .mkt-h1 {
+      font-size: 30px;
+    }
+
+    .hero__subline {
+      font-size: 15px;
+      margin-top: 8px;
+    }
+
+    .hero__actions {
+      margin-top: 12px;
+    }
+
+    .hero__textlink {
+      font-size: 14px;
+    }
+
+    .hero__stores {
+      margin-top: 12px;
+    }
+
+    .hero__store {
+      height: 38px;
+      padding: 0 14px;
+      font-size: 13px;
+    }
+
+    .hero__store :global(svg) {
+      width: 16px;
+      height: 16px;
+    }
+
+    .hero__mascot {
+      max-height: min(26svh, 160px);
+    }
   }
 
   /* Masse aus .foot__store im Footer übernommen — es ist derselbe Knopf an
@@ -347,6 +477,15 @@ const microTrust = [
     flex-wrap: wrap;
     gap: var(--space-4);
     margin-top: var(--space-6);
+  }
+
+  /* Unter 600px nimmt der Hero zu viel auf: CTA, Textlink, Trustbar und
+     Maskottchen teilen sich den ersten Screen. Die Store-Buttons sind im
+     Footer und in der Sticky-Leiste erreichbar, deshalb fallen sie hier raus. */
+  @media (max-width: 600px) {
+    .hero__stores {
+      display: none;
+    }
   }
 
   .hero__store {
@@ -407,6 +546,9 @@ const microTrust = [
        (580px), lädt der Browser sonst die falsche Auflösung. */
     width: clamp(240px, 40vw, 580px);
     height: auto;
+    /* Auf kleinen Höhen soll die Figur nicht über den verfügbaren Platz
+       hinauswachsen und die Copy nach oben drücken. */
+    max-height: min(72svh, 580px);
     display: block;
     /* --shadow-mascot ist im Design System genau dieser Wert. Ich hatte ihn
        zuerst als Literal hingeschrieben — das war ein Doppel des Tokens und
@@ -459,6 +601,48 @@ const microTrust = [
   @media (prefers-reduced-motion: no-preference) {
     .hero__loader img {
       animation: pepp-coin-spin var(--dur-coin-spin) linear infinite;
+    }
+  }
+  /* Langsame Hintergrundbewegung der drei Hero-Blobs. Jeder Blob schwebt in
+     einer eigenen Bahn, damit die Fläche nicht wie ein starres Bild wirkt.
+     Die Werte sind bewusst subtil — der Effekt soll störungsfrei im
+     Hintergrund bleiben, nicht ins Auge springen. */
+  @media (prefers-reduced-motion: no-preference) and (min-width: 601px) {
+    .hero__blob {
+      animation: blob-float var(--dur-blob-float, 18s) ease-in-out infinite alternate;
+    }
+
+    .hero__blob--1 {
+      --dur-blob-float: 22s;
+      animation-delay: -4s;
+    }
+
+    .hero__blob--2 {
+      --dur-blob-float: 16s;
+      animation-delay: -10s;
+    }
+
+    .hero__blob--3 {
+      --dur-blob-float: 26s;
+      animation-delay: -2s;
+    }
+  }
+
+  @keyframes blob-float {
+    0% {
+      transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    25% {
+      transform: translate(4%, -5%) scale(1.08) rotate(2deg);
+    }
+    50% {
+      transform: translate(-3%, 4%) scale(0.96) rotate(-1.5deg);
+    }
+    75% {
+      transform: translate(5%, -2%) scale(1.05) rotate(1deg);
+    }
+    100% {
+      transform: translate(-2%, 3%) scale(1.02) rotate(-0.5deg);
     }
   }
 </style>

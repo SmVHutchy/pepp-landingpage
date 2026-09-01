@@ -3,10 +3,9 @@
    Weiss mit Hairline oben. Die Rechtslinks zeigen auf eigene Seiten dieser
    Domain — in der Design-Referenz gingen sie noch auf taschengeldapp.com.
 
-   Die Store-Buttons sind bewusst KEINE Cta-Komponente: sie sind sekundär
-   (Off-White auf Weiss, Pill, Hairline) und tragen nicht den CTA-Text.
-   Der einzige Primär-CTA bleibt schwarz und heisst immer gleich. */
-import Icon from '../Icon.astro';
+   Die Store-Links im Footer nutzen die offiziellen App-Store- und
+   Google-Play-Badges (lokalisiert auf Deutsch). Sie sind sekundär zum
+   einzigen Primär-CTA, der schwarz bleibt und immer denselben Text trägt. */
 import { STORE, OPERATOR } from '../../data/site.js';
 
 /* Die Rechtszeile wird hier zusammengesetzt und NICHT im Markup aus mehreren
@@ -89,13 +88,23 @@ const legal = [
     <div>
       <p class="mkt-label foot__head">App laden</p>
       <div class="foot__stores">
-        <a href={STORE.ios} class="foot__store">
-          <Icon name="apple-brand" size={20} color="var(--pepp-ink)" />
-          App Store
+        <a href={STORE.ios} class="foot__store" aria-label="Laden im App Store">
+          <img
+            src="/badges/app-store-de.svg"
+            alt="Laden im App Store"
+            width="120"
+            height="40"
+            loading="lazy"
+          />
         </a>
-        <a href={STORE.android} class="foot__store">
-          <Icon name="google-brand" size={20} color="var(--pepp-ink)" />
-          Google Play
+        <a href={STORE.android} class="foot__store" aria-label="Jetzt bei Google Play">
+          <img
+            src="/badges/google-play-de.svg"
+            alt="Jetzt bei Google Play"
+            width="135"
+            height="40"
+            loading="lazy"
+          />
         </a>
       </div>
     </div>
@@ -103,6 +112,11 @@ const legal = [
 
   <div class="foot__legal">
     <p>{rechtszeile}</p>
+    <p class="foot__trademarks">
+      Apple und das Apple Logo sind Marken von Apple Inc. App Store ist eine
+      Dienstleistungsmarke von Apple Inc. Google Play und das Google Play Logo sind
+      Marken von Google LLC.
+    </p>
   </div>
 </footer>
 
@@ -174,23 +188,15 @@ const legal = [
   }
 
   .foot__store {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    height: 44px;
-    padding: 0 18px;
-    border-radius: var(--radius-pill);
-    border: var(--border-hair) solid var(--border-hairline);
-    background: var(--bg-app);
-    font-size: var(--type-body-size);
-    font-weight: var(--weight-semibold);
-    white-space: nowrap;
-    color: var(--pepp-ink);
+    display: block;
+    line-height: 0;
     text-decoration: none;
   }
 
-  .foot__store:hover {
-    background: var(--surface-hover);
+  .foot__store img {
+    display: block;
+    width: auto;
+    height: 40px;
   }
 
   .foot__legal {
@@ -205,5 +211,11 @@ const legal = [
     font-size: 13px;
     line-height: 20px;
     color: var(--text-secondary);
+  }
+
+  .foot__trademarks {
+    margin-top: var(--space-3);
+    font-size: 11px;
+    line-height: 16px;
   }
 </style>
