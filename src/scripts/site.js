@@ -520,6 +520,34 @@ function initSprung() {
   }
 }
 
+/* Pepps Blick in der Alltag-Sektion: wenn die dritte (blaue) Karte hereinkommt,
+   dreht das abgeschnittene Pepp-Bild leicht zur Kamera. Das Bild hängt im
+   Container, der bereits den Sprung macht — deshalb wird hier nur die eigene
+   CSS-Variable --mk-blick animiert, statt transform direkt zu überschreiben.
+
+   Der Trigger ist die blaue Karte, nicht die Figur: auf schmalen Schirmen liegt
+   die Figur weiter unten und wäre an ihrem eigenen Trigger schon vorbei. */
+function initSprungBlick() {
+  const pepp = document.querySelector('.problem__pepp .maskottchen__bild');
+  const blaueKarte = document.querySelector('.problem__cards li:nth-child(3)');
+  if (!pepp || !blaueKarte) return;
+
+  gsap.fromTo(
+    pepp,
+    { '--mk-blick': `${MOTION.sprungBlick.drehung}deg` },
+    {
+      '--mk-blick': '0deg',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: blaueKarte,
+        start: MOTION.sprungBlick.start,
+        end: MOTION.sprungBlick.end,
+        scrub: MOTION.sprungBlick.scrub,
+      },
+    }
+  );
+}
+
 /* Snout Trail: die Schnauze läuft die Linie entlang und zeichnet sie dabei.
    Die Geste steht im Design System (components/brand/SnoutTrail.jsx) und läuft
    dort einmal auf Zeit ab. Hier hängt sie am Scroll: der Fortschritt der
@@ -702,6 +730,7 @@ function buildReveals() {
   initBlobs();
   initPeek();
   initSprung();
+  initSprungBlick();
   initQuestRun();
   initMechanicCarousel();
 

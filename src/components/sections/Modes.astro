@@ -58,17 +58,16 @@ const childPoints = [
   </BlobFeld>
 
   {
-    /* Von Liam im Editor gesetzt.
-
-      ACHTUNG, DIESE FIGUR IST NICHT ZU SEHEN. right="804.4%" heisst 804,4 %
-      der eigenen Breite: bei 230px sind das 1850px vom rechten Sektionsrand
-      nach innen — auf einem 1440er Fenster steht sie damit weit links
-      ausserhalb, und bottom="349.4%" hebt sie zusätzlich 898px über die
-      Unterkante. Gemessen liegt sie zu 0 % in ihrer Sektion.
-      Sie steht hier, weil sie so gesetzt wurde, nicht weil sie so gedacht
-      ist — wer sie sucht, findet sie im Editor unter „modes". */
+    /* Der grosse Dawn-Blob würde auf schmalen Handys die ganze Sektion
+       überdecken. Er wird dort ausgeblendet; der kleinere pink Blob bleibt. */
   }
-  <Maskottchen figur="pepp-coin-play" groesse="230px" bottom="349.4%" right="804.4%" />
+  <style>
+    @media (max-width: 600px) {
+      .modes :global(.blob--dawn) {
+        display: none;
+      }
+    }
+  </style>
 
   <div class="mkt-container">
     {

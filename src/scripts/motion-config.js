@@ -164,6 +164,17 @@ export const MOTION = {
     end: 'center 55%',
   },
 
+  /* Pepps kleiner Blick in der Alltag-Sektion: wenn die dritte (blaue) Karte
+     hereinkommt, dreht das abgeschnittene Pepp-Bild leicht zur Kamera, als
+     würde es prüfen, was da vorbeiscrollt. Subtil gehalten — unter 10° — damit
+     es als lebendiges Detail, nicht als eigene Animation gelesen wird. */
+  sprungBlick: {
+    drehung: -9,
+    scrub: 0.8,
+    start: 'top 72%',
+    end: 'top 40%',
+  },
+
   /* Snout Trail über den vier Schritten in „Vier Schritte, dann läuft es".
      Die Geste stammt aus dem Design System (components/brand/SnoutTrail.jsx):
      die Schnauze ist der Stift, die Linie entsteht hinter ihr. Dort läuft sie

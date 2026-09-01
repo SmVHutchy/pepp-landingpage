@@ -236,4 +236,12 @@ const cards = [
     color: var(--text-secondary);
     max-width: var(--measure-body);
   }
+  /* Auf schmalen Handys überlagern sich die beiden oberen 1800px-Blobs und
+     erzeugen einen kontrastarmen Fleck. Der untere Blob bleibt erhalten. */
+  @media (max-width: 600px) {
+    .family :global(.blob:nth-child(1)),
+    .family :global(.blob:nth-child(2)) {
+      display: none;
+    }
+  }
 </style>

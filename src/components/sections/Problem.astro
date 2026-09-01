@@ -90,6 +90,22 @@ const cards = [
       weichzeichnen={64}
       weg={-60}
     />
+    {
+      /*
+      Ersatz für das abgeschnittene Pepp auf kleinen Schirmen: ein warmer
+      Glow, der beim Scrollen leicht nach oben schwebt und der blauen Karte
+      eine weiche Kante gibt. Auf Desktop bleibt Pepp sichtbar; der Blob
+      begleitet ihn nur als zusätzliche Tiefe.
+    */
+    }
+    <Blob
+      ton="peach"
+      groesse="640px"
+      bottom="-14%"
+      right="50%"
+      deckkraft={0.32}
+      weg={-75}
+    />
   </BlobFeld>
 
   <div class="mkt-container">
@@ -140,7 +156,14 @@ const cards = [
       1440x1080: Skala 0,62 mit 280px Versatz am Anfang, kurzer Überschwung auf
       1,03 am Scheitel, dann 1,0 bei 0. */
   }
-  <Maskottchen figur="pepp-jump" groesse="490px" bottom="36.1%" right="62.8%" springt />
+  <Maskottchen
+    figur="pepp-jump"
+    groesse="490px"
+    bottom="36.1%"
+    right="62.8%"
+    springt
+    class="problem__pepp"
+  />
 </section>
 
 <style>
@@ -209,4 +232,13 @@ const cards = [
      Das gilt weiter — nur passiert es jetzt im Vorbeiziehen statt an einer
      festen Kante, und die Figur ist ein paar Sekunden länger ganz zu sehen.
      Genau dafür war sie gedacht. */
+
+  /* Auf schmalen Schirmen ragt Pepp hinter den Karten abgeschnitten hervor.
+     Statt ihn halb zu zeigen, blenden wir ihn aus — die visuelle Auflösung
+     übernimmt dann der zusätzliche Glow-Blob im BlobFeld. */
+  @media (max-width: 900px) {
+    .problem__pepp {
+      display: none;
+    }
+  }
 </style>

@@ -47,6 +47,10 @@ import { FORMEN, FORM_VERHAELTNIS, maskeVon } from '../data/blob-formen.js';
 
 interface Props {
   /**
+   * Zusätzliche CSS-Klassen für das Blob-Element.
+   */
+  class?: string;
+  /**
    * Marken-Blob im Dawn-Verlauf. Eine der fünf Formen des Design Systems.
    * Wird `form` gesetzt, ist `ton` ohne Wirkung.
    */
@@ -126,6 +130,7 @@ const {
   bottom,
   deckkraft = 0.5,
   weg = -60,
+  class: className,
 } = Astro.props;
 
 /* Die Bezugsgrössen für Prozentangaben: die eigene Breite und die eigene
@@ -178,8 +183,7 @@ const stil = [
 ---
 
 <div
-  class="blob"
-  class:list={[form ? 'blob--dawn' : `blob--${ton}`]}
+  class:list={['blob', form ? 'blob--dawn' : `blob--${ton}`, className]}
   style={stil}
   data-blob={weg}
   data-form={form}

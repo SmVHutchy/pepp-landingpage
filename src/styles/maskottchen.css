@@ -60,6 +60,10 @@
   display: block;
   width: 100%;
   height: auto;
-  transform: rotate(var(--mk-drehung, 0deg)) scaleX(var(--mk-spiegel, 1));
+  /* --mk-blick wird von site.js für Pepps kleinen Scroll-Blick in der
+     Alltag-Sektion gesetzt. Er addiert sich zur eingestellten Drehung, statt
+     sie zu überschreiben, damit Spiegelung und Setzdrehung erhalten bleiben. */
+  transform: rotate(calc(var(--mk-drehung, 0deg) + var(--mk-blick, 0deg)))
+    scaleX(var(--mk-spiegel, 1));
   filter: drop-shadow(var(--shadow-mascot));
 }

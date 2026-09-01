@@ -140,4 +140,11 @@ const cards = [
   .sec__rows {
     margin-top: var(--mkt-stack-gap);
   }
+  /* Auf schmalen Handys nimmt die Figur fast die ganze Sektionsbreite ein und
+     wirkt hinter dem Text störend. */
+  @media (max-width: 600px) {
+    .sec :global(.maskottchen) {
+      display: none;
+    }
+  }
 </style>
