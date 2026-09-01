@@ -78,9 +78,13 @@ const ABNAHME = `
 ABNAHME nach jeder Änderung, in dieser Reihenfolge:
 
 1. npm run build                             — muss durchlaufen
-2. Preview starten und Bereitschaft belegen:
-     npm run preview -- --port 4321          (im Hintergrund)
-     curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"   → muss 200 sein
+2. Preview: EINER LÄUFT SCHON auf [::1]:4321. Prüf zuerst
+     curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"
+   Antwortet er 200, starte KEINEN zweiten — astro preview serviert aus dist/,
+   dein npm run build aus Schritt 1 wirkt dort also sofort. Ein zweiter Start
+   scheitert nur an EADDRINUSE und kostet dich Zeit.
+   Antwortet er nicht: npm run preview -- --port 4321 im Hintergrund, dann
+   erneut curl bis 200.
    npm run dev gibt es hier NICHT: Astros Startbudget von 30 s reicht auf der
    SMB-Freigabe nicht. Und astro preview bindet nur IPv6 — deshalb [::1],
    niemals localhost.
@@ -728,8 +732,9 @@ Agenten auf echten Zeilen arbeiten und nicht auf Zahlen aus einem alten Bericht.
 
 1. git status --porcelain — ist der Baum sauber? Wenn nicht: LISTE, was offen ist.
 2. npm run build — läuft er?
-3. Preview starten (npm run preview -- --port 4321, im Hintergrund), mit
-   curl gegen ${PREVIEW} auf 200 warten, dann
+3. Preview: einer LÄUFT SCHON auf [::1]:4321. Erst curl gegen ${PREVIEW};
+   bei 200 keinen zweiten starten (astro preview serviert aus dist/), sonst
+   npm run preview -- --port 4321 im Hintergrund und auf 200 warten. Dann
    LOCAL_URL="${PREVIEW}" node scripts/verify.mjs
    Gib die Zusammenfassungszeile wörtlich zurück.
 

@@ -89,9 +89,13 @@ const ABNAHME = `
 ABNAHME nach jeder Änderung:
 
 1. npm run build                             — muss durchlaufen
-2. Preview starten und Bereitschaft belegen:
-     npm run preview -- --port 4321          (im Hintergrund)
-     curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"   → muss 200 sein
+2. Preview: EINER LÄUFT SCHON auf [::1]:4321. Prüf zuerst
+     curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"
+   Antwortet er 200, starte KEINEN zweiten — astro preview serviert aus dist/,
+   dein npm run build aus Schritt 1 wirkt dort also sofort. Ein zweiter Start
+   scheitert nur an EADDRINUSE und kostet dich Zeit.
+   Antwortet er nicht: npm run preview -- --port 4321 im Hintergrund, dann
+   erneut curl bis 200.
    npm run dev gibt es hier NICHT (SMB-Freigabe, Astros 30-s-Budget reicht nicht).
    astro preview bindet nur IPv6 — [::1], niemals localhost.
 3. LOCAL_URL="${PREVIEW}" node scripts/verify.mjs
