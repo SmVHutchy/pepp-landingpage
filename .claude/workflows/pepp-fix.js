@@ -17,7 +17,7 @@ export const meta = {
    bewusst schmal: wenige Agenten, dafür jeder mit klarem Auftrag und harter
    Abnahme durch das projekteigene verify.mjs. */
 
-const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/pepp_final';
+const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/02_PROJEKTE/pepp-landingpage';
 
 const REGELN = `
 PROJEKT: Pepp Landingpage, Astro 5 static. WURZEL: ${ROOT}

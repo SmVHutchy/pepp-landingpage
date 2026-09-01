@@ -8,7 +8,7 @@ Alle Zeilenangaben mit `wc -l` gemessen, alle Verwendungsnachweise per `grep` be
 
 ---
 
-Stand: Arbeitskopie unter `/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/pepp_final`, gemessen mit `wc -l`, `du`, `grep`. Alle Pfade absolut ab dieser Wurzel.
+Stand: Arbeitskopie unter `/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/02_PROJEKTE/pepp-landingpage`, gemessen mit `wc -l`, `du`, `grep`. Alle Pfade absolut ab dieser Wurzel.
 
 ---
 

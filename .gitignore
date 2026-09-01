@@ -20,6 +20,11 @@ Pepp Final Design System/
 # .claude/launch.json bleibt drin (Konfiguration des Dev-Servers, siehe
 # docs/SETUP.md). Schreibstil-Skills und Ähnliches sind persönlich.
 .claude/skills/
+# settings.local.json trägt Endpunkt und Zugangsschlüssel der lokalen
+# Agenten-Konfiguration im Klartext. Sie ist persönlich und gehört nie ins
+# Repo — bis 01.09.2026 war sie weder ignoriert noch versioniert und wäre
+# beim nächsten "git add ." mitgegangen.
+.claude/settings.local.json
 
 # ── Betriebssystem und Editoren ──────────────────────────────────────────
 .DS_Store
