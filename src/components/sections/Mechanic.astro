@@ -8,15 +8,17 @@ import Icon from '../Icon.astro';
 
 import anlegen from '../../assets/screens/eltern-06-anlegen-details.png';
 import quests from '../../assets/screens/eltern-03-quests.png';
+import beweise from '../../assets/screens/eltern-02-start-beweise.png';
 import questListe from '../../assets/screens/kind-03-quest-liste.png';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
 
 /* Schritt 3 zeigt in der Referenz `eltern-07-pruefen.png`. Diese Datei ist
-   weder im Design-Bundle noch in der Dateiliste des Design-Projekts enthalten
-   — auch die Referenz selbst kann sie nicht laden. Solange sie fehlt, bleibt
-   der Screen auf dem vorherigen Bild stehen: kein Platzhalter, keine
-   Ersatzgrafik. Sobald die Datei in src/assets/screens/ liegt, hier eintragen. */
+   weder im Design-Bundle noch in der Dateiliste des Design-Projekts enthalten.
+   Als Ersatz dient der Startbildschirm mit dem offenen Beweis-Stapel: er zeigt
+   die Kartenstapel-Mechanik, ohne einen fehlenden Screen zu erfinden. Sobald
+   `eltern-07-pruefen.png` in src/assets/screens/ liegt, kann sie hier direkt
+   eingetragen werden. */
 /* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
    getrennt: der erste Satz steht in --text-primary semibold, der Rest in
    --text-secondary. Gleiche Größe, gleicher Absatz, kein Wort geändert. Diese
@@ -31,7 +33,7 @@ const steps = [
     screen: anlegen,
     alt: 'Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart',
     title: 'Kategorie, Belohnung, Frist',
-    lead: 'Sieben Kategorien mit Schnellauswahl: Haushalt, Schule, Haustiere, Draußen, Routinen, Medienzeit, Sparen.',
+    lead: 'Schnellauswahl aus sieben Kategorien.',
     body: 'Dann 2,50 € oder 30 Min dranhängen — und eine Frist setzen.',
   },
   {
@@ -48,7 +50,8 @@ const steps = [
     icon: 'camera',
     tint: 'var(--pepp-blue-tint)',
     ink: 'var(--ink-blue)',
-    screen: null, // eltern-07-pruefen.png fehlt
+    screen: beweise,
+    alt: 'Pepp Eltern-App: Beweis-Stapel wartet auf Prüfung',
     title: 'Prüfen als Kartenstapel',
     lead: 'Foto oder Antippen als Nachweis — du entscheidest pro Quest.',
     body: 'Beweise liegen als Stapel bereit: rechts wischen gibt frei, links schickt zurück.',
@@ -60,8 +63,8 @@ const steps = [
     screen: questListe,
     alt: 'Pepp Kinder-App: Quest-Liste nach Dringlichkeit',
     title: 'Zurückschicken, ohne von vorn',
-    lead: 'Beweis unscharf? Zurückschicken heißt nicht neu machen — das Kind liefert nur den Nachweis nach.',
-    body: 'Und eine „Für alle"-Quest gehört dem Kind, das zuerst annimmt.',
+    lead: 'Beweis ungenügend?',
+    body: 'Zurückschicken heißt nicht neu machen — das Kind liefert nur den Nachweis nach.',
   },
 ];
 

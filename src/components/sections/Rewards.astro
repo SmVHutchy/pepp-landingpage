@@ -163,23 +163,12 @@ const REWARDS = [
     </div>
 
     {
-      /* Die ausführliche Ansicht. Sie steht hinter dem Schalter, weil sie die
-        Aussage vertieft und nicht trägt: wer nur wissen will, dass es vier
-        Wege gibt, hat das oben gelesen. */
+      /* Die ausführliche Ansicht. Früher stand sie hinter einem Schalter; jetzt
+        ist sie direkt sichtbar, weil die Unterscheidung Geld vs. Medienzeit die
+        zentrale Differenzierung der App ist und nicht hinter einem Klick
+        verschwinden soll. */
     }
-    <details class="rewards__more">
-      <summary class="rewards__toggle">
-        <span class="rewards__toggle-label rewards__toggle-label--closed">
-          Beide Münzen im Detail
-        </span>
-        <span class="rewards__toggle-label rewards__toggle-label--open">
-          Weniger anzeigen
-        </span>
-        <span class="rewards__toggle-icon">
-          <Icon name="arrow-right" size={18} />
-        </span>
-      </summary>
-
+    <div class="rewards__more">
       <div class="rewards__detail">
         <div class="rewards__grid">
           <div class="rewards__card" data-anim="card">
@@ -254,7 +243,7 @@ const REWARDS = [
           </p>
         </blockquote>
       </div>
-    </details>
+    </div>
   </div>
 </section>
 
@@ -447,96 +436,16 @@ const REWARDS = [
     }
   }
 
-  /* ── Schalter und ausführliche Ansicht ─────────────────────────────────── */
+  /* ── Ausführliche Ansicht ────────────────────────────────────────────────
+     Früher stand sie hinter einem Schalter; jetzt ist sie direkt sichtbar,
+     damit die Unterscheidung Geld vs. Medienzeit sofort erfassbar ist. */
 
   .rewards__more {
     margin-top: clamp(32px, 4vw, 56px);
   }
 
-  .rewards__toggle {
-    cursor: pointer;
-    /* list-style plus ::-webkit-details-marker: das Dreieck ist in beiden
-       Engines weg. Gleiches Muster wie im FAQ. */
-    list-style: none;
-    width: fit-content;
-    margin-inline: auto;
-    display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    height: var(--height-cta);
-    padding: 0 var(--space-4) 0 var(--space-7);
-    background: var(--action-secondary-bg);
-    border: var(--border-hair) solid var(--border-hairline);
-    border-radius: var(--radius-pill);
-    box-shadow: var(--shadow-1);
-    font-family: var(--font-ui);
-    /* 15px wie im Nav-CTA, nicht 17px wie im Hero-CTA: die Pille muss mit der
-       längeren Beschriftung bei 320px noch in die 280px Inhaltsbreite passen. */
-    font-size: var(--type-body-size);
-    font-weight: var(--weight-semibold);
-    color: var(--text-primary);
-    transition:
-      background var(--dur-fast) var(--ease-standard),
-      transform var(--dur-fast) var(--ease-standard);
-  }
-
-  .rewards__toggle::-webkit-details-marker {
-    display: none;
-  }
-
-  .rewards__toggle:hover {
-    background: var(--surface-hover);
-  }
-
-  .rewards__toggle:active {
-    transform: scale(var(--press-scale));
-  }
-
-  /* Der Pfeil sitzt in der schwarzen Scheibe der Referenz — 40px, also
-     dieselbe Höhe wie der Nav-CTA, und die einzige schwarze Fläche hier. */
-  .rewards__toggle-icon {
-    width: var(--height-cta-nav);
-    height: var(--height-cta-nav);
-    flex: 0 0 auto;
-    display: grid;
-    place-items: center;
-    border-radius: var(--radius-pill);
-    background: var(--action-primary-bg);
-    color: var(--action-primary-fg);
-    transition: rotate var(--dur-base) var(--ease-standard);
-  }
-
-  .rewards__more[open] .rewards__toggle-icon {
-    rotate: -90deg;
-  }
-
-  .rewards__more:not([open]) .rewards__toggle-label--open,
-  .rewards__more[open] .rewards__toggle-label--closed {
-    display: none;
-  }
-
-  /* Die Höhe eines <details> lässt sich in Safari noch nicht animieren. Der
-     Inhalt hebt sich deshalb nur an seinen Platz — die Höhe springt.
-
-     NUR transform, KEINE Deckkraft. Es ist dieselbe Regel wie im Kopf von
-     site.js: kein Startzustand, der Inhalt verschwinden lässt. Ein Keyframe,
-     der bei opacity 0 beginnt, macht den Text unsichtbar, sobald die
-     Animation nicht durchläuft — angehaltene rAF im Hintergrundtab, ein
-     Rendering-Aussetzer, ein Browser, der die Regel kennt aber nicht
-     ausführt. Bei transform ist der schlimmste Fall ein Text, der 16px
-     zu tief steht. Die globale reduced-motion-Regel setzt die Dauer auf 0. */
-  @keyframes rewards-detail-in {
-    from {
-      transform: translateY(16px);
-    }
-    to {
-      transform: translateY(0);
-    }
-  }
-
   .rewards__detail {
     margin-top: clamp(24px, 3vw, 40px);
-    animation: rewards-detail-in var(--dur-base) var(--ease-out-soft);
   }
 
   .rewards__grid {
