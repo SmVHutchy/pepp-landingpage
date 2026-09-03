@@ -4,7 +4,6 @@
    Welten unterscheiden sich in der Fläche, nicht im Text. Die Screens sind
    unten angeschnitten (negativer margin plus overflow:hidden). */
 import { Image } from 'astro:assets';
-import Maskottchen from '../Maskottchen.astro';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
@@ -12,16 +11,28 @@ import BlobFeld from '../BlobFeld.astro';
 import eltern from '../../assets/screens/eltern-03-quests.png';
 import kind from '../../assets/screens/kind-03-quest-liste.png';
 
+/* Beide Listen nennen Handlungen, keine Zustände: was in dieser Ansicht zu tun
+   ist, steht in ihrer Spalte. Vorher stand oben „4 Dinge warten auf dich" —
+   das beschrieb, was die App sagt, nicht was der Elternteil damit macht. Der
+   Kunde hat die Zeile am 01.09.2026 gestrichen; die anderen beiden sind bei
+   der Gelegenheit auf dasselbe Muster gezogen.
+
+   Die Verben sind an den Screens belegt, die daneben stehen: Sortieren nach
+   Kind und Zustand und das Freigeben oder Zurückschicken eines Beweises
+   stehen ausführlich in Mechanic.astro. */
 const parentPoints = [
-  '„4 Dinge warten auf dich“ — und sonst nichts.',
-  'Grenzen, Wünsche und Medienzeit pro Kind.',
-  'Nichts wird ausgezahlt, bevor du es bestätigst.',
+  'Quests anlegen und nach Kind und Zustand sortieren.',
+  'Grenzen, Wünsche und Medienzeit pro Kind festlegen.',
+  'Beweise prüfen und freigeben — oder zurückschicken.',
 ];
 
+/* Der zweite Punkt nannte bis 01.09.2026 einen Lego-Rennwagen für 20,00 € als
+   Sparziel. Der Kunde will kein Produktbeispiel auf der Seite — geblieben ist
+   die Fähigkeit, um die es geht: das Kind legt das Ziel selbst an. */
 const childPoints = [
   'Quests annehmen, Beweis schicken, Pott füllen.',
-  'Sparziel selbst setzen — Lego‑Rennwagen, 20,00 €.',
-  'Kind‑Modus läuft auch auf deinem Handy, PIN‑geschützt.',
+  'Ein eigenes Sparziel anlegen und ein Bild dazu wählen.',
+  'Kind-Modus läuft auch auf deinem Handy, PIN-geschützt.',
 ];
 ---
 
@@ -73,14 +84,18 @@ const childPoints = [
     {
       /* Der Satz stand als freistehender Absatz UNTER den Panels und las sich
         dort als „und noch mehr Text". Inhaltlich ist er die These der Sektion,
-        also der Lead, der ihr fehlte. Wortlaut unverändert, nur verschoben. */
+        also der Lead, der ihr fehlte.
+
+        Ein Wort ist seither geändert: „das Kind entscheidet" heisst jetzt
+        „dein Kind entscheidet". Die Leserin ist der Elternteil, und „das Kind"
+        redet über ein fremdes. */
     }
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Zwei Seiten</p>
       <h2 class="mkt-h2 mkt-h2--sm" data-anim>Eine App, zwei Welten.</h2>
       <p class="mkt-lead modes__note" data-anim>
         Pepp soll Kindern nicht das Gefühl geben, kontrolliert zu werden. Du setzt den
-        Rahmen &#8212; das Kind entscheidet darin.
+        Rahmen &#8212; dein Kind entscheidet darin.
       </p>
     </div>
 
@@ -116,7 +131,7 @@ const childPoints = [
       <div class="modes__panel modes__panel--child" data-anim="side">
         <div class="modes__inset">
           <p class="mkt-label modes__kicker">Kindermodus</p>
-          <h3 class="modes__title">Bunt, belohnend, eigenständig.</h3>
+          <h3 class="modes__title">Motivierend, belohnend, eigenständig.</h3>
           <ul class="modes__points mkt-list-reset">
             {
               childPoints.map((point) => (

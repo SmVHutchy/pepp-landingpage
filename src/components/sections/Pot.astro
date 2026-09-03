@@ -12,6 +12,15 @@ import BlobFeld from '../BlobFeld.astro';
 import pott from '../../assets/screens/kind-01-start-taschengeld.png';
 import sparziel from '../../assets/screens/kind-12-sparziel.png';
 
+/* Die Sektion redet den Elternteil an und spricht über SEIN Kind. Bis
+   01.09.2026 stand hier zweimal die dritte Person — „das Kind knackt selbst"
+   und ein Fortschritt, „den man sieht". Beides beschrieb irgendein Kind und
+   irgendeinen Betrachter; gelesen wird die Seite aber von jemandem, der ein
+   bestimmtes Kind im Kopf hat. Geduzt wird weiterhin nur der Elternteil, nie
+   das Kind — die Seite spricht über es, nicht zu ihm.
+
+   Im zweiten Punkt stand ein Lego-Rennwagen für 20,00 € als Sparziel. Der
+   Kunde will kein Produktbeispiel; übrig bleibt das Sparziel selbst. */
 const points = [
   {
     icon: 'coins',
@@ -21,11 +30,11 @@ const points = [
   {
     icon: 'target',
     lead: 'Sparziel mit Bild.',
-    body: 'Der Lego‑Rennwagen für 20,00 € macht das Ziel greifbar.',
+    body: 'Dein Kind sieht, worauf es hinspart.',
   },
   {
     icon: 'hand-coins',
-    lead: 'Das Kind knackt selbst.',
+    lead: 'Dein Kind knackt selbst.',
     body: 'Bar auf die Hand, aufs Sparkonto oder ein Wunsch — du bestätigst.',
   },
 ];
@@ -69,8 +78,8 @@ const points = [
         <p class="mkt-label" data-anim>Der Pott</p>
         <h2 class="mkt-h2 mkt-h2--sm" data-anim>Warten wird sichtbar.</h2>
         <p class="mkt-lead pot__lead" data-anim>
-          Jede freigegebene Belohnung füllt den Ring um Pepp. Kein Zahlenkonto, sondern
-          ein Fortschritt, den man sieht.
+          Jede Belohnung, die du freigibst, füllt den Ring um Pepp. Kein Zahlenkonto,
+          sondern ein Fortschritt, den dein Kind sieht.
         </p>
 
         <ul class="pot__points mkt-list-reset">
@@ -104,7 +113,7 @@ const points = [
         />
         <Image
           src={sparziel}
-          alt="Pepp Kinder-App: Sparziel Lego-Rennwagen bearbeiten"
+          alt="Pepp Kinder-App: Sparziel anlegen mit Bild, Name und Zielbetrag"
           width={280}
           height={606}
           densities={[1, 2]}

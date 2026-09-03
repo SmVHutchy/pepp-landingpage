@@ -67,8 +67,18 @@ const included = [
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Preis</p>
       <h2 class="mkt-h2" data-anim>Heute gratis starten. Morgen weniger Stress.</h2>
+      {
+        /* Wortlaut vom Kunden, 01.09.2026. Die Zahl bleibt {PRICING.trialDays}
+          und wird NICHT als Ziffer getippt: der CTA-Text, die FAQ, die
+          Trust-Zeile unten und diese Zeile müssen dieselbe Testdauer nennen,
+          sonst widerspricht die Seite sich selbst. Genau dieser Fehlertyp ist
+          als Fund 8 in docs/AUDIT-2026-08-17.md:311 dokumentiert — dort mit
+          fünf hart getippten „14 Tage". Die Regel dahinter ist ADR-009 in
+          docs/DECISIONS.md. */
+      }
       <p class="mkt-lead price__lead" data-anim>
-        {PRICING.trialDays} Tage voller Zugriff &#8212; kostenlos. Danach ein Preis, ein Familien-Account.
+        {PRICING.trialDays} Tage voller kostenloser Zugriff. Danach ein Preis, ein Familien-Account,
+        jederzeit kündbar.
       </p>
     </div>
 

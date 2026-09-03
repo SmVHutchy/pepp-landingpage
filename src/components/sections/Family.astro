@@ -10,7 +10,13 @@ import quest from '../../assets/mascot/pepp-quest.png';
 /* Farbtöne wie in „So funktioniert's": dieselben Tile-Tints, andere Reihenfolge.
    Die Icons standen vorher nackt auf der Karte — als einzige Icons der Seite
    ohne Fläche. Die Sektion bleibt trotzdem flach: ein Tint ist Farbe, kein
-   Schatten. */
+   Schatten.
+
+   Karte 2, 3 und 4 tragen seit dem 01.09.2026 den Wortlaut des Kunden. Was
+   dabei wegfiel: die Namen Emma und Ben (erfundenes Beispiel), der Nachsatz
+   „Keine Einladungsmails, keine Codes abtippen" (nennt, was es NICHT gibt,
+   statt was passiert) und „umschalten mit PIN" — der PIN steht weiterhin im
+   Kindermodus-Panel in Modes.astro, wo er hingehört. Karte 1 ist unberührt. */
 const cards = [
   {
     icon: 'message-circle',
@@ -23,22 +29,22 @@ const cards = [
     icon: 'users',
     tint: 'var(--pepp-lilac-tint)',
     ink: 'var(--ink-lilac)',
-    title: 'Mehrere Kinder, zweites Elternteil',
-    body: 'Emma und Ben mit eigenen Grenzen. Beide Eltern sehen dasselbe.',
+    title: 'Eigene Quests und Grenzen',
+    body: 'Individuelle Quests und Grenzen für deine Kinder — beide Eltern sehen dasselbe und verwalten.',
   },
   {
     icon: 'badge-check',
     tint: 'var(--pepp-blue-tint)',
     ink: 'var(--ink-blue)',
     title: 'Beitreten per QR-Code',
-    body: 'Code zeigen, scannen, dabei. Keine Einladungsmails, keine Codes abtippen.',
+    body: 'Code zeigen, scannen und mit dem Sparen loslegen.',
   },
   {
     icon: 'smartphone',
     tint: 'var(--pepp-peach-tint)',
     ink: 'var(--ink-peach)',
     title: 'Kein eigenes Handy nötig',
-    body: 'Der Kind-Modus läuft auf deinem Gerät — umschalten mit PIN.',
+    body: 'Der Kind-Modus läuft auch auf deinem Gerät.',
   },
 ];
 ---

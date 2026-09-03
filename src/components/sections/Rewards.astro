@@ -1,8 +1,7 @@
 ---
 /* Sektion 6 · Belohnungen (#belohnungen)
-   Off-White. Aufbau in zwei Stufen: erst die Bühne — Kopf mittig, Pepp in der
-   Mitte, die vier Reward-Typen als Chips um ihn herum —, dann hinter einem
-   Schalter die ausführliche Ansicht mit den zwei Karten und dem Zitat.
+   Off-White. Eine Bühne, mehr nicht: Kopf mittig, Pepp in der Mitte, die vier
+   Reward-Typen als Chips um ihn herum.
 
    WARUM DAS DAWN-BAND WEG IST. Vorher lag der Verlauf als randloses Band in
    voller Sättigung über die Sektionsbreite und trug zwei weisse Karten mit
@@ -16,28 +15,24 @@
    Auswahlschritt in „Quest erstellen" zeigt Geld · Medienzeit · Eigene ·
    Keine (ui_kits/parent_app/QuestCreate.jsx:66). Die Sektion zeigte davon
    zwei und liess die Aussage „du entscheidest" unbelegt. Die Chips sind die
-   vollständige Auswahl in derselben Reihenfolge wie im Produkt; die zwei
-   Karten dahinter erklären die zwei, die Erklärung brauchen.
+   vollständige Auswahl in derselben Reihenfolge wie im Produkt — und sie sind
+   seit dem Kundendurchgang vom 01.09.2026 die einzige Aufzählung hier.
 
-   WARUM DER SCHALTER NICHT SCHWARZ IST UND NICHT SO HEISST. Die Referenz
-   zeigt einen schwarzen Knopf mit „Mehr erfahren". Beides geht hier nicht:
-   Schwarz ist auf dieser Seite die Aktionsfarbe des einen Conversion-Ziels
-   (siehe Cta.astro), ein zweiter schwarzer Knopf mittig in einer Sektion
-   konkurriert genau damit — und „Mehr erfahren" steht in scripts/verify.mjs:82
-   auf der Verbotsliste, seitenweit, neben „Absenden" und „Jetzt kaufen".
-   Der Schalter ist deshalb eine weisse Pille mit Haarlinie und benennt, was
-   aufgeht, statt zu werben: dieselbe Silhouette, andere Lautstärke.
+   WARUM UNTER DER BÜHNE NICHTS MEHR STEHT. Bis dahin folgten zwei Detailkarten
+   (Goldmünze · Taschengeld, Zeitmünze · Medienzeit) und darunter das Zitat
+   „Medienzeit wird verdient, nicht verhandelt." Zusammen 727px von 1705px bei
+   1440x900 — knapp die Hälfte der Sektion für eine Aussage, die die vier Chips
+   darüber schon tragen. Der Kunde hat alle drei gestrichen, das Zitat
+   ausdrücklich eingeschlossen.
 
-   Natives <details>: ohne JavaScript bedienbar, per Tastatur erreichbar, der
-   Inhalt steht im DOM und ist damit indexierbar. */
+   Mit dem Teilbaum fielen zwei ältere Begründungen weg, die ohnehin ins Leere
+   zeigten: der Absatz zum Schalter („weisse Pille statt schwarzem Knopf") und
+   der zum nativen <details>. Beide beschrieben Markup, das schon Commit
+   6f10f13 aufgelöst hatte, als die Detailansicht dauerhaft aufgeklappt wurde. */
 import { Image } from 'astro:assets';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
 import Icon from '../Icon.astro';
-/* Freigestellt aus dem gelieferten Render, siehe scripts/freistellen.mjs.
-   Das runde Off-White-Plättchen von vorher war nur eine Krücke, weil
-   pepp-coin.png keinen Alphakanal hat. */
-import coin from '../../assets/brand/pepp-coin-freigestellt.png';
 /* moment-reward-unlocked.png stand vorher klein und angeschnitten unten rechts
    neben dem Zitat. Dort war von der Szene nichts zu erkennen. Als Figur in der
    Mitte trägt derselbe Render die Sektion — es ist der gelieferte Augenblick
@@ -110,7 +105,7 @@ const REWARDS = [
   <div class="mkt-container rewards__inner">
     <div class="rewards__head">
       <p class="mkt-label" data-anim>Belohnungen</p>
-      <h2 class="mkt-h2 rewards__h2" data-anim>Belohnen, wie es zu euch passt.</h2>
+      <h2 class="mkt-h2 rewards__h2" data-anim>Belohnen nach deinen Regeln.</h2>
       <p class="mkt-lead rewards__lead" data-anim>
         Geld, Medienzeit, eine eigene Belohnung &#8212; oder keine. Du entscheidest pro
         Aufgabe.
@@ -161,97 +156,22 @@ const REWARDS = [
         }
       </ul>
     </div>
-
-    {
-      /* Die ausführliche Ansicht. Früher stand sie hinter einem Schalter; jetzt
-        ist sie direkt sichtbar, weil die Unterscheidung Geld vs. Medienzeit die
-        zentrale Differenzierung der App ist und nicht hinter einem Klick
-        verschwinden soll. */
-    }
-    <div class="rewards__more">
-      <div class="rewards__detail">
-        <div class="rewards__grid">
-          <div class="rewards__card" data-anim="card">
-            <span
-              class="mkt-figure__panel rewards__panel"
-              style="background:var(--pepp-gold-tint)"
-            >
-              <Image
-                src={coin}
-                alt="Pepp Goldmünze"
-                width={240}
-                height={240}
-                densities={[1, 2]}
-                format="webp"
-                loading="lazy"
-              />
-            </span>
-            <h3 class="mkt-figure__title">Goldmünze &#183; Taschengeld</h3>
-            <p class="mkt-figure__body">
-              2,50 &#8364; für die Spülmaschine. Der Betrag wandert in den Pott &#8212;
-              nicht auf ein Konto.
-            </p>
-            <ul class="rewards__points mkt-list-reset">
-              <li>
-                <Icon name="check" size={20} color="var(--ink-gold)" />
-                Ausgezahlt wird bar oder aufs Sparkonto &#8212; von dir.
-              </li>
-              <li>
-                <Icon name="check" size={20} color="var(--ink-gold)" />
-                Sparziel mit eigenem Bild: der Pott hat ein Ziel.
-              </li>
-            </ul>
-          </div>
-
-          <div class="rewards__card" data-anim="card">
-            <span
-              class="mkt-figure__panel rewards__panel"
-              style="background:var(--pepp-lilac-tint)"
-            >
-              <Icon name="clock" size={128} color="var(--ink-lilac)" strokeWidth={1} />
-            </span>
-            <h3 class="mkt-figure__title">Zeitmünze &#183; Medienzeit</h3>
-            <p class="mkt-figure__body">
-              30 Min extra für Hund Gassi. Bildschirmzeit als Belohnung &#8212; mit
-              Wochenziel und Obergrenze.
-            </p>
-            <ul class="rewards__points mkt-list-reset">
-              <li>
-                <Icon name="target" size={20} color="var(--ink-lilac)" />
-                Wochenziel setzen, tägliche Obergrenze festlegen.
-              </li>
-              <li>
-                <Icon name="pause" size={20} color="var(--ink-lilac)" />
-                Ist das Limit voll, lässt Pepp die Quest nicht annehmen.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {
-          /* Das Zitat hatte vorher ein eigenes <details> um den Nachsatz. Ein
-            Aufklapper im Aufklapper ist eine Tür zu viel — beide Sätze stehen
-            jetzt sichtbar, wortgleich zum Handoff. */
-        }
-        <blockquote class="rewards__quote mkt-card">
-          <p class="rewards__quote-text">
-            &#8222;Medienzeit wird verdient, nicht verhandelt.&#8220;
-          </p>
-          <p class="rewards__quote-note">
-            Bildschirmzeit ist in vielen Familien der größere Streitpunkt als
-            Taschengeld. In Pepp ist sie eine Belohnung mit klaren Grenzen.
-          </p>
-        </blockquote>
-      </div>
-    </div>
   </div>
 </section>
 
 <style>
   .rewards {
     position: relative;
-    /* Der Schein der Bühne läuft nach aussen aus; die Sektion beschneidet ihn,
-       damit die Seite bei 320px nicht waagerecht scrollt. */
+    /* Beschneidet .rewards__aura an der Sektionskante. Der Schein ist 760px
+       hoch und steht 55px über die Unterkante hinaus (gemessen 1440x900,
+       01.09.2026) — ohne den Beschnitt läuft rosa Licht in „Die Mechanik".
+
+       Die frühere Begründung „damit die Seite bei 320px nicht waagerecht
+       scrollt" trifft nicht mehr zu und wurde nachgeprüft: ohne diese Zeile
+       gebaut bleibt scrollWidth bei 320px exakt 320px. Waagerecht halten die
+       Seite body{overflow-x:hidden} (global.css:19) und die eigene Clip-Ebene
+       der Blobs (BlobFeld.astro) — die grossen Blobs hängen dort drin, nur die
+       Aura nicht. */
     overflow: hidden;
     background: var(--bg-app);
     padding-block: var(--mkt-section-y);
@@ -268,9 +188,13 @@ const REWARDS = [
      nicht — sie hängt an initSticky(), das hier nichts zu tun hat. 100svh ist
      hier schlicht das Mass der Nachbarn.
 
-     min-height statt height: aufgeklappt trägt die Sektion zwei Karten und das
-     Zitat und ist dann deutlich höher als ein Bildschirm. Mit height wäre der
-     Inhalt gestaucht, und .rewards schneidet mit overflow:hidden ab.
+     min-height statt height: seit die Detailkarten und das Zitat weg sind,
+     misst der Inhalt 922px (1440, gemessen 01.09.2026). Auf einem 900er oder
+     800er Laptopschirm ist er damit immer noch höher als 100svh und die
+     Sektion bleibt inhaltsgetrieben; erst ab etwa 922px Fensterhöhe greift der
+     Boden und zieht sie auf das Mass der Nachbarn. Mit height statt min-height
+     wäre es umgekehrt: der Inhalt würde auf 800 gestaucht und .rewards
+     schnitte ihn mit overflow:hidden ab.
 
      width auf dem Container, weil `margin-inline: auto` an einem Grid-Item die
      Streckung abschaltet — die lange Begründung steht in Problem.astro. */
@@ -306,9 +230,10 @@ const REWARDS = [
     margin: 0;
   }
 
-  /* --measure-headline (16ch) ist für linksbündige Headlines gerechnet. Mittig
-     und mit fünf Wörtern bräche das auf drei ungleiche Zeilen; 18ch ergibt die
-     zwei Zeilen der Referenz. */
+  /* --measure-headline (16ch) ist für linksbündige Headlines gerechnet und
+     bräche eine mittige Zeile in drei ungleiche Stücke. 18ch hält die
+     Kundenfassung „Belohnen nach deinen Regeln." bei zwei Zeilen — gemessen
+     356x112px bei 1440 und 205x65px bei 390 und 320, also überall zweizeilig. */
   .rewards__h2 {
     max-width: 18ch;
   }
@@ -436,114 +361,9 @@ const REWARDS = [
     }
   }
 
-  /* ── Ausführliche Ansicht ────────────────────────────────────────────────
-     Früher stand sie hinter einem Schalter; jetzt ist sie direkt sichtbar,
-     damit die Unterscheidung Geld vs. Medienzeit sofort erfassbar ist. */
-
-  .rewards__more {
-    margin-top: clamp(32px, 4vw, 56px);
-  }
-
-  .rewards__detail {
-    margin-top: clamp(24px, 3vw, 40px);
-  }
-
-  .rewards__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-    gap: var(--mkt-card-gap);
-  }
-
-  /* Rezept 2 · Tint-Figur, dasselbe wie im „Alltag". Vorher war das hier ein
-     weisser Kasten mit Haarlinie und --shadow-2 — also .mkt-card von Hand
-     nachgebaut, aber mit 36px Padding statt 32 und einer Schattenstufe zu
-     viel. Zwei Karten, die dem geteilten Rezept fast, aber nicht ganz folgen,
-     sind schlechter als zwei, die es gar nicht tun: der Unterschied liest
-     sich als Fehler, nicht als Absicht.
-
-     Jetzt trägt die getönte Fläche die Figur und Titel, Text und Punkte
-     stehen nackt darunter. Titel und Body kommen aus .mkt-figure__* in
-     global.css, deshalb steht hier zu beiden nichts mehr.
-
-     Der Ton der Fläche und der --ink-*-Hue darauf sind je Karte gesetzt und
-     stehen im Markup: Gold für die Goldmünze, Lila für die Zeitmünze —
-     dieselben Töne, die die Chips oben für Geld und Medienzeit tragen. */
-  .rewards__card {
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* Die Karten stehen zu zweit, nicht zu dritt wie im „Alltag" — die Fläche
-     wird dadurch fast doppelt so breit. Bei 4/3 stünde die Münze in einem
-     halben Bildschirm Leere. 16/9 hält die Fläche flach genug, dass Figur und
-     Text noch als eine Karte gelesen werden. */
-  .rewards__panel {
-    aspect-ratio: 16 / 9;
-  }
-
-  /* Kein Plättchen, kein overflow:hidden: die Münze ist freigestellt und
-     schwebt auf dem Tint. Der Schatten kommt per CSS, nicht eingebrannt im
-     Bild. Aus --ink-gold gemischt, nicht als Hex-Literal: der Wert bleibt an
-     das Token gebunden, wenn sich der Goldton im System ändert. */
-  .rewards__panel img {
-    display: block;
-    width: clamp(96px, 26%, 160px);
-    height: auto;
-    filter: drop-shadow(
-      0 8px 16px color-mix(in srgb, var(--ink-gold) 28%, transparent)
-    );
-  }
-
-  .rewards__points {
-    margin-top: var(--space-6);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .rewards__points li {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: var(--type-body-size);
-    line-height: var(--type-body-lh);
-    color: var(--text-secondary);
-  }
-
-  /* Zitat in Coral — als Text erlaubt, Coral ist nie Buttonfläche.
-
-     margin-inline: auto rückt die Karte in die Mitte. Vorher stand sie mit
-     640px Breite linksbündig unter einem 1116px breiten Raster: gemessen
-     beides bei x=155, rechts blieben 476px leer. Das las sich wie ein
-     Umbruchfehler, nicht wie eine gesetzte Kante.
-
-     Padding auf das Mass von .mkt-card zurück (22–32px statt 24–36px) — die
-     Klasse steht ohnehin im Markup, die eigene Zeile hat sie nur überschrieben.
-
-     Der Text bleibt linksbündig. Mittig gesetzter Fliesstext hat an jedem
-     Zeilenanfang eine andere Kante, und der Nachsatz läuft über drei Zeilen. */
-  .rewards__quote {
-    margin: var(--mkt-card-gap) auto 0;
-    padding: clamp(22px, 2.2vw, 32px);
-    max-width: 640px;
-  }
-
-  .rewards__quote-text {
-    margin: 0;
-    font-family: var(--font-display);
-    font-weight: var(--weight-bold);
-    font-size: var(--type-mkt-quote);
-    line-height: 1.2;
-    letter-spacing: var(--tracking-tight);
-    color: var(--pepp-coral);
-    max-width: 22ch;
-  }
-
-  .rewards__quote-note {
-    margin: var(--space-5) 0 0;
-    font-size: var(--type-body-size);
-    line-height: var(--type-body-lh);
-    color: var(--text-secondary);
-    max-width: var(--measure-body);
-  }
+  /* Die Regeln für .rewards__more, .rewards__card, .rewards__panel,
+     .rewards__points und .rewards__quote sind mit ihrem Markup gegangen. Sie
+     hatten ausser der Sektion keinen zweiten Nutzer — .mkt-figure__* in
+     global.css, das die Karten für Titel und Body benutzten, bleibt und wird
+     weiterhin vom „Alltag" gebraucht. */
 </style>
