@@ -1,143 +1,181 @@
-# Pepp — Marketing-Landingpage
+<div align="center">
 
-## Übergabe — was noch zu tun ist
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hero-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="docs/assets/hero-light.svg">
+  <img alt="Pepp — Aufgaben, Taschengeld und Medienzeit für Familien" src="docs/assets/hero-light.svg" width="720">
+</picture>
 
-Stand: 03.09.2026. **Die Seite selbst ist fertig und wird hier nicht mehr angefasst.** Was fehlt,
-ist keine Programmierarbeit mehr, sondern acht Entscheidungen bzw. Lieferungen vom Kunden.
+### Marketing-Landingpage für Pepp
 
-| Status                                         | Bereich                   | Anzahl  |
-| ---------------------------------------------- | ------------------------- | ------- |
-| Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
-| Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
-| Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
+Statische Seite mit einem einzigen Ziel: zum App-Download führen.
 
-### Erledigt
+![Astro](https://img.shields.io/badge/Astro-7.2.2-BC52EE?style=flat&logo=astro&logoColor=white)
+![Node](https://img.shields.io/badge/Node-22.22.3-5FA04E?style=flat&logo=nodedotjs&logoColor=white)
+![verify](https://img.shields.io/badge/verify-19%2F19-brightgreen?style=flat)
+![Status](https://img.shields.io/badge/Status-nicht%20live-orange?style=flat)
 
-- **CTA-Knopf in der Navigation** brach auf dem Handy um und war teilweise unsichtbar — behoben
-  (`src/components/Cta.astro`).
-- **Standarddateien**, die früher fehlten (og-image, robots.txt, sitemap.xml, Favicon-Set,
-  Web-Manifest, eigene 404-Seite) — sind jetzt alle im Projekt vorhanden.
-
-### Braucht eine Entscheidung oder Lieferung vom Kunden
-
-| #   | Was fehlt                                                                                                                                                    | Wer liefert         | Was passiert ohne Antwort                                                            |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------ |
-| 1   | **Rechtstext-Widerspruch:** AGB nennen 23,88 €/Jahr + Lifetime-Tarif 79,99 €, die Preissektion 23,90 €/Jahr ohne Lifetime. Welche Zahlen gelten?             | Kunde (Rechtsfrage) | Nutzer sieht auf der Seite einen anderen Preis als im Vertrag — rechtlich angreifbar |
-| 2   | **Barrierefreiheitserklärung:** Kontaktstelle, Durchsetzungsstelle, Prüfdatum fehlen — stehen aktuell als sichtbarer Platzhaltertext live auf der Seite      | Kunde               | Verstößt gegen das BFSG                                                              |
-| 3   | **Hosting-Anbieter** noch nicht gewählt — keinerlei Deploy-Konfiguration im Repo                                                                             | Kunde               | Seite kann nicht live gehen                                                          |
-| 4   | **Finale Domain** — steht noch auf Platzhalter `taschengeldapp.com`                                                                                          | Kunde               | Betrifft Canonical-URLs, QR-Code im Hero, Sitemap                                    |
-| 5   | **Fünf Zugänge**: Domain/DNS, Hosting-Konto, App-Store-Konto, Play-Console-Konto, Design-Originaldateien                                                     | Kunde               | Übergabe bleibt unvollständig                                                        |
-| 6   | **Social-Proof-Sektion** ist absichtlich leer — echte Kundenzitate/Store-Bewertungen fehlen (erfundene Inhalte sind bewusst nicht drin)                      | Kunde               | Sektion bleibt ausgeblendet                                                          |
-| 7   | **Ein App-Screenshot fehlt** (`eltern-07-pruefen.png`) — zeigt aktuell ersatzweise ein anderes Bild                                                          | Kunde / Design      | Kein Fehler, aber nicht der finale Screen                                            |
-| 8   | **Zwei Maskottchen-Bilder** haben ein sichtbares Artefakt, das sich nicht automatisiert entfernen lässt — braucht neue Freisteller aus der Original-3D-Szene | Kunde / Design      | Bleiben mit kleinem Makel im Bild                                                    |
-
-### Danach, vor dem eigentlichen Livegang
-
-- [ ] `node scripts/verify.mjs` läuft grün
-- [ ] Rechtstexte sind anwaltlich freigegeben
-- [ ] Sobald Hoster feststeht: Security-Header, HTTPS, `/impressum`-Routing prüfen
-      (Details: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))
-
-**Mehr Detail je Punkt** (Fundstelle im Code, genaue Begründung): [docs/STATUS.md](docs/STATUS.md)
-und [docs/OFFEN-KUNDE.md](docs/OFFEN-KUNDE.md). Vollständiger technischer Audit-Bericht (127
-Positionen, historisch, teils überholt): [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
+</div>
 
 ---
 
+> [!IMPORTANT]
+> **Die Seite ist fertig gebaut.** Was noch fehlt, ist keine Programmierarbeit mehr, sondern
+> **acht Entscheidungen bzw. Lieferungen vom Kunden** — zwei davon blockieren den Livegang
+> rechtlich. → [Übergabe](#übergabe--was-noch-offen-ist)
+
+<div align="center">
+  <img alt="Die Pepp-Landingpage in der Desktop-Ansicht" src="docs/assets/screenshot-hero.png" width="860">
+</div>
+
 ## Über dieses Projekt
 
-Statische Marketing-Seite für **Pepp**, die deutsche Familien-App für Aufgaben, Taschengeld und
-Medienzeit. Sie hat ein einziges Ziel: zum App-Download führen. Es gibt keinen Anwendungszustand,
-kein SPA-Framework und keine externen Ressourcen zur Laufzeit — die Seite ist rein statisches HTML.
+Marketing-Seite für **Pepp**, die deutsche Familien-App für Aufgaben, Taschengeld und Medienzeit.
+Kein SPA-Framework, kein Anwendungszustand, keine externen Ressourcen zur Laufzeit — reines
+statisches HTML.
 
-Sie besteht aus fünf Seiten: der eigentlichen Landingpage mit 15 Sektionen, plus Impressum,
-Datenschutz, AGB und Barrierefreiheitserklärung.
+Fünf Seiten: die Landingpage mit 15 Sektionen, dazu Impressum, Datenschutz, AGB und
+Barrierefreiheitserklärung.
 
 ## Schnellstart
 
 ```bash
-git clone <repo-url> && cd pepp-landingpage
+git clone https://github.com/SmVHutchy/pepp-landingpage.git
+cd pepp-landingpage
 npm install
 npm run dev
 ```
 
-Danach läuft der Dev-Server auf <http://localhost:4321>. Mehr braucht es nicht — es gibt keine
-Umgebungsvariablen und keine `.env`-Datei (Details: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)).
+Läuft danach auf <http://localhost:4321>. Mehr braucht es nicht — keine Umgebungsvariablen, keine
+`.env` ([Details](docs/ENVIRONMENT.md)).
 
 ## Stack
 
-| Was       | Womit                                                                                        |
-| --------- | -------------------------------------------------------------------------------------------- |
-| Generator | Astro 7.2.2, `output: 'static'`                                                              |
-| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                                |
-| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)                        |
-| Animation | GSAP 3.12.5 mit ScrollTrigger                                                                |
-| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                           |
-| Node      | v22.22.3, npm 10.9.8 (siehe `.nvmrc`; `engines` in `package.json`: `>=20.3.0 <21 \|\| >=22`) |
+| Was       | Womit                                                         |
+| --------- | ------------------------------------------------------------- |
+| Generator | Astro 7.2.2, `output: 'static'`                               |
+| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props |
+| Styling   | CSS Custom Properties, keine Utility-Bibliothek               |
+| Animation | GSAP 3.12.5 mit ScrollTrigger                                 |
+| Bilder    | `astro:assets` mit sharp — PNG wird beim Build zu WebP        |
+| Node      | v22.22.3 (siehe `.nvmrc`), npm 10.9.8                         |
 
-## Die wichtigsten Befehle
+## Die wichtigste Regel
 
-Diese Befehle stehen in `package.json` und laufen alle:
+**Preise und Store-URLs stehen an genau einer Stelle:** [`src/data/site.js`](src/data/site.js).
 
-| Befehl            | Macht                                              | Status                     |
-| ----------------- | -------------------------------------------------- | -------------------------- |
-| `npm run dev`     | Startet den Dev-Server auf Port 4321               | funktioniert               |
-| `npm run build`   | Baut die Seite nach `dist/` (6 Seiten, ~7 s)       | funktioniert               |
-| `npm run preview` | Serviert den `dist/`-Build lokal                   | funktioniert, siehe unten¹ |
-| `npm run check`   | `astro check` im strict-Modus                      | funktioniert, 0 Fehler     |
-| `npm run format`  | Formatiert das ganze Projekt mit Prettier          | funktioniert               |
-| `npm run verify`  | **Die Abnahme-Prüfung** — 19 automatisierte Regeln | funktioniert, 19/19        |
+```mermaid
+flowchart LR
+    A["src/data/site.js<br/>Preise · Store-URLs"] --> B[Preissektion]
+    A --> C[FAQ]
+    A --> D["JSON-LD<br/>(strukturierte Daten)"]
+    E["src/legal/agb.html<br/>fest eingetragene Preise"] -.->|"widerspricht — bekannter Bug"| A
+    style E stroke-dasharray: 4 4
+```
 
-¹ siehe [Fallstricke](#fallstricke) unten.
+Preise also nie an mehreren Stellen gleichzeitig ändern. Die eine Ausnahme ist ein bekannter Bug:
+Die AGB in [`src/legal/agb.html`](src/legal/agb.html) tragen eigene Preise, die den zentralen
+widersprechen — siehe [Punkt 1](#blockiert-den-livegang).
 
-### `npm run verify` — vor jedem Commit ausführen
+## Befehle
 
-Das ist das Qualitätstor des Projekts: 19 harte Regeln, unter anderem CTA-Disziplin, verbotene
-Begriffe, Kontrast, genau eine `<h1>` pro Seite, Bedienbarkeit ohne JavaScript, Reduced Motion
-und Reflow bei 320 px Breite. Der Dev-Server muss dafür laufen:
+| Befehl            | Macht                              | Status                               |
+| ----------------- | ---------------------------------- | ------------------------------------ |
+| `npm run dev`     | Dev-Server auf Port 4321           | ✓                                    |
+| `npm run build`   | Baut nach `dist/` (6 Seiten, ~7 s) | ✓                                    |
+| `npm run preview` | Serviert den `dist/`-Build lokal   | ✓, siehe [Fallstricke](#fallstricke) |
+| `npm run check`   | `astro check` im strict-Modus      | ✓, 0 Fehler                          |
+| `npm run format`  | Prettier über das ganze Projekt    | ✓                                    |
+| `npm run verify`  | **Abnahme-Prüfung**, 19 Regeln     | ✓ 19/19                              |
+
+### `npm run verify` — vor jedem Commit
+
+Das Qualitätstor des Projekts: 19 harte Regeln — CTA-Disziplin, verbotene Begriffe, Kontrast, genau
+eine `<h1>` pro Seite, Bedienbarkeit ohne JavaScript, Reduced Motion, Reflow bei 320 px. Der
+Dev-Server muss laufen:
 
 ```bash
-npm run dev &          # muss im Hintergrund laufen
+npm run dev &
 node scripts/verify.mjs
 ```
 
-Stand 17.08.2026: **19 von 19 bestanden.** Jeder neue Fehler, der danach auftaucht, gehört dir.
+Stand 17.08.2026: **19 von 19 bestanden.** Jeder neue Fehler danach gehört dir.
 
-### Weitere Werkzeuge in `scripts/`
+<details>
+<summary><strong>Weitere Werkzeuge in <code>scripts/</code></strong></summary>
 
 Die Playwright-basierten Skripte brauchen einen laufenden Dev-Server.
 
 | Befehl                                         | Macht                                                                  |
 | ---------------------------------------------- | ---------------------------------------------------------------------- |
 | `node scripts/verify.mjs`                      | Die Abnahme-Prüfung (siehe oben)                                       |
-| `node scripts/shots.mjs [1440\|390\|320]`      | Screenshottet jede Sektion des eigenen Stands nach `.compare/`         |
+| `node scripts/shots.mjs [1440\|390\|320]`      | Screenshottet jede Sektion nach `.compare/`                            |
 | `node scripts/compare.mjs [sektion]`           | Vergleicht diese Screenshots mit der Design-Referenz                   |
 | `node scripts/measure.mjs [--save]`            | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie |
 | `node scripts/palette.mjs [1440\|390\|320]`    | Prüft die Flächenverteilung gegen die 60/30/10-Regel                   |
 | `node scripts/freistellen.mjs <quelle> <ziel>` | Stellt gelieferte Renders frei und entsäumt sie                        |
 
+</details>
+
 ## Fallstricke
 
-Ein paar Dinge, die beim Arbeiten an diesem Projekt überraschen können:
-
 - **Dev-Server hängt sich nach vielen Dateiänderungen auf.** `npm run verify` meldet dann Fehler,
-  die der echte Build gar nicht hat (zweimal reproduziert). Abhilfe: Dev-Server neu starten und
-  noch einmal messen.
+  die der echte Build nicht hat. Abhilfe: neu starten, noch einmal messen.
 
-- **`npm run preview` lauscht nur auf IPv6.** Der Server bindet an `[::1]`, nicht an `127.0.0.1`.
-  Falls `curl http://localhost:4321` leer bleibt, läuft der Server trotzdem — einfach so testen:
+- **`npm run preview` lauscht nur auf IPv6** (`[::1]`, nicht `127.0.0.1`). Wenn
+  `curl http://localhost:4321` leer bleibt, läuft der Server trotzdem:
 
   ```bash
   curl http://[::1]:4321/
   ```
 
-- **Die Playwright-Werkzeuge brauchen installierte Browser.** Fehlen sie:
-  `npx playwright install chromium`.
+- **Playwright braucht installierte Browser:** `npx playwright install chromium`.
 
-- **Der Ordner „Pepp Final Design System/" liegt nicht im Repo.** Es ist ein 241 MB großes
-  Nachschlagewerk, aber keine Build-Abhängigkeit. Wo er liegt und wofür man ihn braucht, steht in
-  [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); die Begründung dazu in
-  [docs/DECISIONS.md](docs/DECISIONS.md) (ADR-002).
+- **Der Ordner „Pepp Final Design System/" liegt nicht im Repo** — 241 MB Nachschlagewerk, keine
+  Build-Abhängigkeit. Wo er liegt: [ARCHITECTURE.md](docs/ARCHITECTURE.md), Begründung in
+  [DECISIONS.md](docs/DECISIONS.md) (ADR-002).
+
+---
+
+## Übergabe — was noch offen ist
+
+**Stand: 03.09.2026.**
+
+**Erledigt:** Der CTA-Knopf in der Navigation brach auf dem Handy um und war teilweise unsichtbar.
+Die früher fehlenden Standarddateien (og-image, `robots.txt`, `sitemap.xml`, Favicon-Set,
+Web-Manifest, 404-Seite) sind jetzt alle da. Pepp in „Der Alltag" überlappte beim Scrollen die
+Trustbar — behoben.
+
+**Ohne Kunde offen: nichts.** Alles Folgende braucht eine Entscheidung oder Lieferung von außen.
+
+### Blockiert den Livegang
+
+| #   | Was fehlt                                                                                                                                  | Wer   | Ohne Antwort                                                           |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----- | ---------------------------------------------------------------------- |
+| 1   | **Rechtstext-Widerspruch:** AGB nennen 23,88 €/Jahr + Lifetime 79,99 €, die Preissektion 23,90 €/Jahr ohne Lifetime. Welche Zahlen gelten? | Kunde | Nutzer sieht einen anderen Preis als im Vertrag — rechtlich angreifbar |
+| 2   | **Barrierefreiheitserklärung:** Kontaktstelle, Durchsetzungsstelle, Prüfdatum fehlen — stehen als Platzhaltertext live auf der Seite       | Kunde | Verstößt gegen das BFSG                                                |
+| 3   | **Hosting-Anbieter** nicht gewählt — keine Deploy-Konfiguration im Repo                                                                    | Kunde | Seite kann nicht live gehen                                            |
+| 4   | **Finale Domain** — steht auf Platzhalter `taschengeldapp.com`                                                                             | Kunde | Betrifft Canonical-URLs, QR-Code im Hero, Sitemap                      |
+
+### Kosmetisch oder organisatorisch
+
+| #   | Was fehlt                                                                                           | Wer            | Ohne Antwort                              |
+| --- | --------------------------------------------------------------------------------------------------- | -------------- | ----------------------------------------- |
+| 5   | **Fünf Zugänge:** Domain/DNS, Hosting, App Store, Play Console, Design-Originaldateien              | Kunde          | Übergabe bleibt unvollständig             |
+| 6   | **Social-Proof-Sektion** ist absichtlich leer — echte Zitate und Store-Bewertungen fehlen           | Kunde          | Sektion bleibt ausgeblendet               |
+| 7   | **Ein App-Screenshot fehlt** (`eltern-07-pruefen.png`) — zeigt ersatzweise ein anderes Bild         | Kunde / Design | Kein Fehler, aber nicht der finale Screen |
+| 8   | **Zwei Maskottchen-Bilder** haben ein Artefakt — brauchen neue Freisteller aus der 3D-Originalszene | Kunde / Design | Bleiben mit kleinem Makel im Bild         |
+
+### Checkliste vor dem Livegang
+
+- [ ] `node scripts/verify.mjs` läuft grün
+- [ ] Rechtstexte anwaltlich freigegeben
+- [ ] Sobald der Hoster feststeht: Security-Header, HTTPS, `/impressum`-Routing prüfen
+      ([DEPLOYMENT.md](docs/DEPLOYMENT.md))
+
+**Mehr Detail je Punkt:** [STATUS.md](docs/STATUS.md) und [OFFEN-KUNDE.md](docs/OFFEN-KUNDE.md).
+Vollständiger Audit-Bericht (127 Positionen, historisch, teils überholt):
+[AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
 
 ## Wo finde ich was?
 
@@ -151,13 +189,3 @@ Ein paar Dinge, die beim Arbeiten an diesem Projekt überraschen können:
 | Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)       |
 | Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)     |
 | Was tue ich, wenn etwas kaputt ist  | [docs/RUNBOOK.md](docs/RUNBOOK.md)           |
-
-## Die wichtigste Regel im Projekt
-
-**Preise und Store-URLs stehen an genau einer einzigen Stelle:**
-[`src/data/site.js`](src/data/site.js). Preissektion, FAQ und JSON-LD lesen alle von dort — ändere
-Preise also nie an mehreren Stellen gleichzeitig.
-
-Eine Ausnahme gibt es, und sie ist ein bekannter Bug: Die AGB in
-[`src/legal/agb.html`](src/legal/agb.html) enthalten fest eingetragene Preise, die den Preisen an
-der zentralen Stelle widersprechen — siehe Punkt 1 in der Übergabe oben.
