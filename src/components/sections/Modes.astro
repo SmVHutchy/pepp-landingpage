@@ -1,11 +1,22 @@
 ---
 /* Sektion 8 · Elternmodus ∥ Kindermodus
-   Off-White. Zwei Panels: links weiss und ruhig, rechts auf Dawn — die beiden
-   Welten unterscheiden sich in der Fläche, nicht im Text. Die Screens sind
-   unten angeschnitten (negativer margin plus overflow:hidden) — ab 901px.
-   Darunter fallen sie ganz weg, siehe .modes__stage. Die beiden Panels sind
-   dann reine Karten und tragen die Unterscheidung allein in der Fläche:
-   weiss mit Hairline gegen Dawn mit weissem .modes__inset. */
+   Off-White. Zwei Panels, beide weiss. „Dawn wird Kante, Inset entfällt" —
+   so hat der Kunde den Entscheid formuliert, und genau das ist die Sektion
+   jetzt: der Verlauf steht nicht mehr als Fläche hinter dem Kindtext, sondern
+   als Kante um die Karte. 6px an der Oberkante beider Karten, auf der
+   Kinderkarte zusätzlich 2px ringsum. Die Elternkarte behält ihre Hairline.
+
+   Dadurch sind die beiden Karten geometrisch gleich: gleiche Spalte,
+   gleiches Polster, gleicher Abstand vom oberen Kartenrand bis zum Kicker
+   (6px Band + clamp(24px, 2.6vw, 40px) Polster auf beiden Seiten). Vorher
+   sass der Kindtext zusätzlich hinter einem 24px-Passepartout und dem
+   eigenen Polster des Insets — er begann 44 bis 68px vom Kartenrand
+   entfernt, der Elterntext 24 bis 40px. Dieser Versatz ist damit weg.
+
+   Die Screens sind unten angeschnitten (negativer margin plus
+   overflow:hidden) — ab 901px. Darunter fallen sie ganz weg, siehe
+   .modes__stage; die beiden Panels sind dann reine Karten und tragen die
+   Unterscheidung allein in der Kante. */
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
@@ -159,7 +170,13 @@ const childPoints = [
       </div>
 
       <div class="modes__panel modes__panel--child" data-anim="side">
-        <div class="modes__inset">
+        {
+          /* Nackter <div> wie in der Elternkarte, kein .modes__inset mehr:
+             die Karte ist selbst weiss, eine zweite weisse Fläche darin hätte
+             nichts mehr zu trennen. Beide Karten haben damit denselben
+             Aufbau — Textblock, dann Bühne. */
+        }
+        <div>
           <p class="mkt-label modes__kicker">Kindermodus</p>
           <h3 class="modes__title">Motivierend, belohnend, eigenständig.</h3>
           <p class="modes__sub">Die Ansicht deines Kindes: annehmen und erledigen.</p>
@@ -198,37 +215,89 @@ const childPoints = [
     margin-top: var(--mkt-stack-gap);
   }
 
+  /* Die Kante, beide Karten. Zwei Hintergrundschichten in EINER Regel:
+     unten der Verlauf, auf die border-box gespannt, darüber eine weisse
+     Fläche, die nur bis zur padding-box reicht. Sichtbar bleibt der Verlauf
+     also genau dort, wo der Rahmen durchsichtig ist — die Rahmenbreite pro
+     Seite legt fest, wie dick die Kante wird.
+
+     Das ist der Grund für diese Bauweise und nicht für zwei Verläufe (Band
+     oben, Rand ringsum): Oberband und Seitenlinie sind hier dieselbe
+     Verlaufsschicht, an derselben Stelle abgetastet. An der oberen Ecke
+     läuft eine Kante durch, die von 6px auf 2px ausdünnt; zwei getrennte
+     Verläufe hätten sich dort mit zwei verschiedenen Farben getroffen.
+
+     Beide Karten stehen in derselben Rasterzeile und werden vom Raster auf
+     dieselbe Höhe gestreckt (align-items: stretch, der Vorgabewert). Die
+     Verlaufsschicht ist damit auf beiden Karten gleich gross, und die beiden
+     6px-Bänder lesen sich als ein Motiv über die Sektion hinweg, nicht als
+     zwei zufällige Ausschnitte.
+
+     Der Radius steht nur hier, aussen: --radius-panel (36px). Die Innenkante
+     rechnet die Engine daraus je Achse um die Rahmenbreite herunter. Ein
+     zweiter, selbst gesetzter Radius für innen wäre genau die Stelle, an der
+     die Ecke bricht — deshalb steht keiner da. */
   .modes__panel {
+    /* Vorgabe des Kunden. Bewusst keine --space-Stufe: das Band ist eine
+       Kante und kein Abstand, und die Leiter kennt zwischen 4 und 8px
+       nichts. */
+    --modes-band: 6px;
     overflow: hidden;
     border-radius: var(--radius-panel);
     padding: clamp(24px, 2.6vw, 40px);
     display: flex;
     flex-direction: column;
     gap: var(--space-7);
+    background:
+      linear-gradient(var(--surface-card), var(--surface-card)) padding-box,
+      var(--gradient-dawn) border-box;
   }
 
+  /* Hairline bleibt, nur die Oberkante wird durchsichtig und lässt das Band
+     durch. Die Hairline ist deckend (#EBE3DA) und verdeckt den Verlauf an den
+     drei anderen Seiten vollständig. */
   .modes__panel--parent {
-    background: var(--surface-card);
     border: var(--border-hair) solid var(--border-hairline);
+    border-top: var(--modes-band) solid transparent;
     box-shadow: var(--shadow-1);
   }
 
+  /* Ringsum durchsichtig: --border-strong (2px) an drei Seiten, das Band
+     oben. Der Verlauf ersetzt hier den Passepartout, der die Karte bisher
+     umrandet hat. */
   .modes__panel--child {
     position: relative;
-    background: var(--gradient-dawn);
+    border: solid transparent;
+    border-width: var(--modes-band) var(--border-strong) var(--border-strong);
   }
 
-  /* Auf Dawn braucht der Text eine eigene weisse Fläche — sonst reicht der
-     Kontrast nicht und Pastell würde zur Textunterlage. */
-  .modes__inset {
-    position: relative;
-    background: var(--surface-card);
-    border-radius: var(--radius-2xl);
-    padding: clamp(20px, 2vw, 28px);
+  /* Im erzwungenen Kontrastmodus setzt Chromium background-image zurück —
+     nachgewiesen an derselben Stelle wie bei .mkt-label[data-anim] in
+     global.css. Ohne diese Regel wäre die Kante dort weg, und mit ihr die
+     einzige Begrenzung der Kinderkarte: durchsichtige Rahmen bleiben im
+     erzwungenen Modus durchsichtig. Beide Karten bekommen deshalb eine
+     Systemfarbe.
+
+     Die Regel steht NACH den beiden Kartenregeln, nicht davor: sie hat
+     dieselbe Spezifität wie .modes__panel--parent, und bei gleicher
+     Spezifität gewinnt die spätere. */
+  @media (forced-colors: active) {
+    .modes__panel {
+      border-color: CanvasText;
+    }
   }
 
+  /* Der Kicker nimmt das Band über sich als Farbe auf. Nicht als Verlauf:
+     die Verlaufsfüllung im Text ist den neun Sektions-Eyebrows vorbehalten
+     (global.css, .mkt-label[data-anim]) — diese beiden Zeilen tragen kein
+     data-anim und fallen deshalb ohnehin nicht unter jene Regel.
+     --ink-pink ist laut Token-Datei der abgedunkelte Pink/Coral-Hue, also
+     derselbe Hue, der im Band darüber steht. Gemessen 5,9:1 auf Weiss, bei
+     12px/700 (--type-label-size) — beide Karten sind weiss, der Wert gilt
+     also für beide Kicker. */
   .modes__kicker {
     margin-bottom: 0;
+    color: var(--ink-pink);
   }
 
   .modes__title {
@@ -239,6 +308,12 @@ const childPoints = [
     letter-spacing: var(--type-h2-tracking);
     margin: var(--space-3) 0 0;
     color: var(--text-primary);
+    /* „Ruhig, klar, entschieden." ist eine Zeile, „Motivierend, belohnend,
+       eigenständig." zwei — ohne Reserve stand alles darunter (Zeile,
+       Punkte, Gerätebild) zwischen den Karten um eine Zeilenhöhe versetzt.
+       2,3em statt fix 74px, weil die Grösse selbst mit clamp() atmet: em
+       folgt dem Font-Size jeder Breite, eine Pixelzahl würde es nicht. */
+    min-height: calc(2 * 1.15em);
   }
 
   /* Kleiner als der Fliesstext der Punkte: die Zeile ordnet ein, sie zählt
