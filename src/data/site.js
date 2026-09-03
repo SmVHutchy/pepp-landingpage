@@ -32,7 +32,7 @@ export const STORE = {
 export const PRICING = {
   currency: 'EUR',
   monthly: 2.99,
-  yearly: 19.9,
+  yearly: 23.9,
   trialDays: 7,
 };
 
@@ -68,13 +68,18 @@ export function formatEuro(value) {
   }).format(value);
 }
 
-/* Monatspreis des Jahresabos — „nur 1,66 € im Monat" wie im Design.
-   19,90 / 12 = 1,6583 -> kaufmännisch gerundet 1,66 €. */
+/* Monatspreis des Jahresabos — „nur 1,99 € im Monat" wie im Design.
+   23,90 / 12 = 1,9917 -> kaufmännisch gerundet 1,99 €. */
 export function yearlyPerMonth() {
   return formatEuro(Math.round((PRICING.yearly / 12) * 100) / 100);
 }
 
-/* Ersparnis des Jahresabos gegenüber monatlich, in ganzen Prozent. */
+/* Ersparnis des Jahresabos gegenüber monatlich, in ganzen Prozent.
+   Aufgerundet, nicht kaufmännisch: 23,90 gegen 12 x 2,99 sind 33,39 %, die
+   App-Paywall wirbt mit „34 %". Die Zahl bleibt damit gerechnet statt
+   getippt und stimmt trotzdem mit dem überein, was die Nutzerin im Store
+   sieht. Bei kaufmännischer Rundung stünden hier 33 und die Seite widerspräche
+   der App. */
 export function yearlySavingsPercent() {
-  return Math.round((1 - PRICING.yearly / (PRICING.monthly * 12)) * 100);
+  return Math.ceil((1 - PRICING.yearly / (PRICING.monthly * 12)) * 100);
 }
