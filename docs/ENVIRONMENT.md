@@ -32,7 +32,11 @@ Ausgeliefert wird die Seite später von einem Hoster mit lokaler Platte. Zwei L�
 verschiedenen Ablageorten sind nicht vergleichbar; wer Zahlen nebeneinanderstellt, muss beide
 gleich gemessen haben.
 
-Eine ältere Kopie liegt weiterhin auf dem NAS. Sie ist eingefroren und **nicht** der Arbeitsstand.
+**Das hat sich seither umgekehrt.** Branch `release/polish` auf dieser NAS-Freigabe ist der
+aktuelle Arbeitsstand — 76 Commits vor `main` (`git log --oneline main..release/polish`,
+Stand 03.09.2026). Die lokale Kopie unter `~/Dev/pepp_final` (Git-Remote `dev`) ist zurückgefallen
+und liegt 36 Commits zurück (`git log --oneline dev/release/polish..release/polish`). Wer hier
+weiterarbeitet, tut das auf der Freigabe — trotz der oben gemessenen Latenz.
 
 ## Was es stattdessen gibt
 

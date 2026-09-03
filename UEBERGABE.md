@@ -82,18 +82,16 @@ npm run build && npm run preview     # http://localhost:4321
 Dasselbe Muster meldet `announce doctor` für sein `work/`-Verzeichnis: ein Lesezugriff
 auf der Freigabe kostet rund zwei Größenordnungen mehr als lokal.
 
-### ⚠️ Uncommittete Arbeit im Repo
+### Uncommittete Arbeit im Repo — erledigt
 
-Branch `release/polish`, letzter Commit **19.08.2026** — es liegen aber Änderungen aus
-Sessions bis zum **24.08.** uncommittet im Arbeitsverzeichnis:
+Die frühere Warnung an dieser Stelle betraf 15 geänderte Dateien unter `src/`, die gelöschte
+`TrustBar.astro` und ein neues, nicht hinzugefügtes `public/badges/` — Stand vom 24.08.2026 auf
+Branch `release/polish`, damals uncommittet. Das ist inzwischen committet: `TrustBar.astro` wurde
+im Zuge des Umbaus des ersten Bildschirms entfernt, `public/badges/` wurde eingepflegt und später
+noch einmal auf die Original-Store-Grafiken korrigiert.
 
-- 15 geänderte Dateien unter `src/` (u. a. `Hero.astro` mit +230/−45 Zeilen,
-  `site.js`, `maskottchen.css`)
-- `src/components/sections/TrustBar.astro` **gelöscht**
-- `public/badges/` **neu**, noch nicht hinzugefügt
-
-**Das gehört committet oder bewusst verworfen, bevor Liams Zugang wegfällt.**
-Nicht angefasst — das ist eine Entscheidung, keine Aufräumarbeit.
+**Aktueller Stand (verifiziert 03.09.2026):** `git status --short` ist sauber, keine
+uncommittete Arbeit im Repo. `release/polish` liegt bei HEAD `eb17694`.
 
 _(Nicht Teil dieser Arbeit: `docs/AUDIT-2026-08-17.md`, `docs/INVENTAR.md` und
 `.claude/workflows/pepp-fix.js` wurden am 27.08. nur in ihren Pfadangaben korrigiert.)_
