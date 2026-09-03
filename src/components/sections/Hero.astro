@@ -221,8 +221,15 @@ const trustPoints = [
     overflow: hidden;
     padding: clamp(24px, 4vw, 48px) 0 0;
     /* Auf Mobile soll der Hero mindestens den Bereich zwischen Navigation und
-       unterem Bildrand füllen, damit die Trust-Bar am unteren Rand klebt. */
-    min-height: calc(100svh - var(--height-nav));
+       unterem Bildrand füllen, damit die Trust-Bar am unteren Rand klebt.
+
+       --border-hair ist die untere Haarlinie der Navigation und gehört hier
+       genauso abgezogen wie in der 901er-Regel weiter unten, die das schon
+       tut. Ohne sie war die Sektion genau ein Pixel zu hoch: gemessen bei
+       390x844 lag die Unterkante der Trust-Leiste bei 845,0 — die Leiste, die
+       als Abschluss des ersten Bildschirms gedacht ist, stand angeschnitten
+       unter der Falz. */
+    min-height: calc(100svh - var(--height-nav) - var(--border-hair));
     display: flex;
     flex-direction: column;
   }
@@ -411,11 +418,6 @@ const trustPoints = [
       width: 16px;
       height: 16px;
     }
-
-    .hero__mascot {
-      width: clamp(200px, 55vw, 260px);
-      max-height: min(32svh, 220px);
-    }
   }
 
   /* Sehr kleine Handys wie iPhone SE (375 × 667): der Inhalt passt nur, wenn
@@ -448,10 +450,6 @@ const trustPoints = [
 
     .hero__stores {
       margin-top: 12px;
-    }
-
-    .hero__mascot {
-      max-height: min(26svh, 160px);
     }
   }
 
@@ -544,10 +542,13 @@ const trustPoints = [
     /* Der Höhendeckel steht als eigener Wert, weil er an zwei Stellen
        gebraucht wird: als Breitendeckel über das Seitenverhältnis und als
        max-height. Die max-height greift nie — die Breite hält die Höhe schon
-       darunter —, aber sie ist die Zeile, die die schwächeren
-       .hero__mascot-Regeln in den Medienblöcken weiter oben überschreibt.
-       Fällt sie weg, werden deren max-height wieder wirksam und stauchen die
-       Figur auf dem Handy (gemessen 390x844: 240x220 statt 240x268,7). */
+       darunter. Bis zum 03.09.2026 war sie zusätzlich ein Gegengewicht: in
+       den Medienblöcken oben standen zwei .hero__mascot-Regeln mit derselben
+       Spezifität, und ohne diese Zeile wären deren max-height wirksam
+       geworden und hätten die Figur gestaucht (gemessen 390x844: 240x220
+       statt 240x268,7). Beide Blöcke sind gelöscht — sie waren vollständig
+       tot, weil die Regel hier width, height und max-height setzt. Die
+       Kopplung ist damit weg, es bleibt der Deckel. */
     --mascot-cap-h: min(72svh, 580px);
     /* Grösser als der Vorgänger (34vw/520px): auf 1440px sind das bis zu 576
        statt 490 Pixel. Die Bühnenspalte ist rund 517px breit, die Figur ragt
