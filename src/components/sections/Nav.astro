@@ -29,14 +29,7 @@ const links = [
 <header class="nav-root" data-nav>
   <nav class="nav" aria-label="Hauptnavigation">
     <a class="nav__brand" href="/" aria-label="Pepp — zur Startseite">
-      <img
-        src="/logo/pepp-snout.svg"
-        alt=""
-        aria-hidden="true"
-        width="28"
-        height="28"
-      />
-      <img src="/logo/pepp-wordmark.svg" alt="Pepp" width="76" height="26" />
+      <img src="/logo/pepp-wortbildmarke.svg" alt="Pepp" width="3000" height="1143" />
     </a>
 
     <ul class="nav__links u-desk">
@@ -101,19 +94,21 @@ const links = [
     gap: var(--space-8);
   }
 
+  /* Seit der finalen Wort-Bild-Marke ist das ein einziges Bild statt Schnauze
+     plus Wortmarke nebeneinander — deshalb kein gap mehr. 114px ist die Breite,
+     die das alte Gespann belegte (28 + 10 + 76), die Hoehe steigt dabei von
+     42,5 auf 43,4px. width/height im Markup tragen das Seitenverhaeltnis der
+     Datei (3000:1143), damit der Browser den Platz vor dem Laden richtig
+     reserviert; die tatsaechliche Groesse steht hier. */
   .nav__brand {
     display: flex;
     align-items: center;
-    gap: 10px;
     flex: 0 0 auto;
   }
 
   .nav__brand img {
     display: block;
-  }
-
-  .nav__brand img:last-child {
-    width: 76px;
+    width: 114px;
     height: auto;
   }
 

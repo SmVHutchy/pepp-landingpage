@@ -41,18 +41,10 @@ const legal = [
     <div>
       <a href="/" class="foot__brand" aria-label="Pepp — zur Startseite">
         <img
-          src="/logo/pepp-snout.svg"
-          alt=""
-          aria-hidden="true"
-          width="28"
-          height="28"
-          loading="lazy"
-        />
-        <img
-          src="/logo/pepp-wordmark.svg"
+          src="/logo/pepp-wortbildmarke.svg"
           alt="Pepp"
-          width="76"
-          height="26"
+          width="3000"
+          height="1143"
           loading="lazy"
         />
       </a>
@@ -136,18 +128,15 @@ const legal = [
     gap: clamp(32px, 4vw, 48px);
   }
 
+  /* Eine Wort-Bild-Marke statt zwei Bildern, siehe Nav.astro. */
   .foot__brand {
     display: flex;
     align-items: center;
-    gap: 10px;
   }
 
   .foot__brand img {
     display: block;
-  }
-
-  .foot__brand img:last-child {
-    width: 76px;
+    width: 114px;
     height: auto;
   }
 
