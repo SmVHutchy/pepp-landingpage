@@ -4,8 +4,6 @@
    Keine der verbotenen Begriffe steht hier ohne Verneinung. */
 import Icon from '../Icon.astro';
 import Maskottchen from '../Maskottchen.astro';
-import Blob from '../Blob.astro';
-import BlobFeld from '../BlobFeld.astro';
 
 /* Wortlaut aus dem Handoff. Die Trennung in `lead` und `body` ist weg: sie
    gehörte zum Reihen-Rezept, das den ersten Satz per <strong> hervorhob.
@@ -18,10 +16,16 @@ import BlobFeld from '../BlobFeld.astro';
    „DSGVO-konform, Server in der EU." war die einzige Zeile der Sektion, die
    eine Zusicherung statt einer Verneinung macht.
 
-   „Durch die App fließt kein echtes Geld." stand bis hierher im Lead der
-   Sektion. Der Lead ist auf „Pepp ist keine Banking-App." verkürzt, und der
-   Satz wäre sonst ersatzlos verschwunden; er sagt für Karte 1 dasselbe wie
-   ihre Überschrift, nur als Folge statt als Aufzählung. */
+   „Durch die App fließt kein echtes Geld." stand einmal im Lead der Sektion
+   und steht seither in Karte 1; er sagt dort dasselbe wie ihre Überschrift,
+   nur als Folge statt als Aufzählung.
+
+   Einen Lead hat die Sektion inzwischen gar nicht mehr: „Pepp ist keine
+   Banking-App." ist auf Kundenwunsch entfallen. Die H2 sagt mit „Kein Konto.
+   Keine Karte. Kein Datenhandel." bereits dreifach, was der Satz einfach
+   sagte, und die vier Karten sagen es ein viertes Mal ausführlich. Der Satz
+   war die einzige Stelle der Seite, die das Wort „Banking" führte — mit dem
+   Wegfall steht der Begriff nirgends mehr, auch nicht verneint. */
 const cards = [
   {
     icon: 'wallet',
@@ -53,19 +57,13 @@ const cards = [
     Sektion beruhigt statt zu verkaufen. */
 }
 <section class="sec mkt-section mkt-section--sm mkt-section--chapter" data-haftet>
-  {/* Kapitelfläche. Unten links — die Sektion beruhigt, ein Bogen reicht. */}
-  {/* Von Liam im Blob-Editor gesetzt. */}
-  <BlobFeld>
-    <Blob
-      form="blob3"
-      groesse="820px"
-      bottom="40.8%"
-      left="37.2%"
-      deckkraft={0.89}
-      weichzeichnen={72}
-      weg={-50}
-    />
-  </BlobFeld>
+  {
+    /* KEIN BLOB. Hier stand einer: blob3, 820px, unten links, Deckkraft 0,89.
+     Der Kunde nimmt ihn auf Wunsch heraus — auf jeder Breite, nicht nur auf
+     dem Handy. Die Sektion ist die einzige auf --mkt-surface-chapter; die
+     Kapitelfläche trägt den Farbmoment bereits allein, ein zweiter Bogen
+     darüber war einer zu viel. Pepp unten rechts bleibt. */
+  }
 
   {/* Von Liam im Editor gesetzt. Ragt unten rechts über die Sektionskante. */}
   <Maskottchen figur="pepp-on-a-roll" groesse="950px" bottom="-11.6%" right="-12.5%" />
@@ -76,7 +74,6 @@ const cards = [
       <h2 class="mkt-h2 mkt-h2--sm" data-anim>
         Kein Konto. Keine Karte. Kein Datenhandel.
       </h2>
-      <p class="mkt-lead sec__lead" data-anim>Pepp ist keine Banking-App.</p>
     </div>
 
     {
@@ -156,11 +153,6 @@ const cards = [
   }
 
   /* Kein margin-top: der Abstand kommt aus dem gap von .mkt-head. */
-  .sec__lead {
-    font-size: var(--type-bodyl-size);
-    line-height: var(--type-bodyl-lh);
-  }
-
   /* EINE REIHE, VIER SPALTEN — NICHT auto-fit und NICHT 2x2.
 
      Ab 901px ist die Spaltenzahl fest auf vier gesetzt, obwohl „Familie" für
