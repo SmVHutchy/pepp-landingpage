@@ -6,6 +6,7 @@
    Die Liste ist dieselbe, aus der das JSON-LD FAQPage entsteht — eine Frage
    kann nicht in der Seite stehen und im Schema fehlen. */
 import { FAQ } from '../../data/faq.js';
+import Icon from '../Icon.astro';
 ---
 
 {
@@ -23,11 +24,31 @@ import { FAQ } from '../../data/faq.js';
     }
     <h2 class="mkt-h2 mkt-h2--sm faq__title" data-anim>Häufige Fragen</h2>
 
-    <div class="faq__list">
+    <div class="faq__list" data-anim="card">
       {
         FAQ.map((entry) => (
-          <details data-anim="card">
-            <summary>{entry.q}</summary>
+          <details>
+            <summary>
+              {entry.q}
+              {/* Zwei Icons statt eines gedrehten: der Satz in src/icons/ hat
+                  plus.svg UND minus.svg, beide 24er-Raster, 2px Strich, runde
+                  Enden. Das Briefing schlug eine Drehung um 45° vor — die
+                  macht aus dem Plus aber ein ×, nicht ein Minus; den Weg zum
+                  Minus ginge nur der senkrechte Strich allein, um 90°. Das
+                  hieße, einen einzelnen <path> der Icon-Quelle über seine
+                  Position im SVG anzusprechen, und genau das bricht still,
+                  wenn der Icon-Ordner wie in Icon.astro angekündigt gegen das
+                  finale Set getauscht wird. Zwei benannte Icons überleben den
+                  Tausch; welches sichtbar ist, entscheidet [open] im CSS.
+
+                  Kein aria-* nötig: Icon.astro setzt ohne `title` von sich aus
+                  aria-hidden, und den Auf-/Zu-Zustand meldet <details> dem
+                  Screenreader ohnehin selbst. Das Zeichen ist reine Optik. */}
+              <span class="faq__sign">
+                <Icon name="plus" size={20} class="faq__sign--plus" />
+                <Icon name="minus" size={20} class="faq__sign--minus" />
+              </span>
+            </summary>
             <p>{entry.a}</p>
           </details>
         ))
@@ -47,11 +68,47 @@ import { FAQ } from '../../data/faq.js';
     margin-bottom: clamp(24px, 3vw, 40px);
   }
 
+  /* Ein Kasten um die ganze Liste statt eines Kästchens je Frage —
+     Kundenentscheid „H1". Fläche, Rahmen und Radius sind vom <details> hierher
+     gewandert, die 10px Abstand zwischen den Fragen entfallen ersatzlos:
+     getrennt wird ab jetzt von einer Haarlinie, und zwischen zwei Linien darf
+     kein Spalt stehen.
+
+     --radius-2xl statt --radius-xl. 20px war hier die einzige Ausnahme der
+     Seite: --radius-2xl trägt laut radius.css „marketing cards, hero
+     containers", und genau das ist dieser Kasten jetzt — dieselben 28px wie
+     .mkt-card, .mkt-figure__panel, das Preis-Panel und der Schlussblock.
+
+     padding-block, aber KEIN padding-inline: das Seitenpolster bleibt am
+     <details> (--space-7), damit die Trennlinien von Kante zu Kante laufen
+     statt eingerückt zu enden. Die 8px oben und unten sind der Fokusring: er
+     ist 2px breit mit 3px Offset (global.css), steht also 5px über dem
+     <summary> hinaus. Ohne Polster liefe er beim ersten und letzten Eintrag
+     über den Rahmen des Kastens. Mit --space-3 bleibt er 3px innerhalb.
+
+     Aus demselben Grund KEIN overflow:hidden. Nötig wäre es nur, wenn ein Kind
+     eine eigene Fläche in die Ecken trüge — trägt keines: die Trennlinien
+     sitzen zwischen den Einträgen und erreichen die Rundungen nie. Ein
+     overflow:hidden würde dafür jeden Fokusring am Rand abschneiden.
+
+     Die Summe oben und unten ist dieselbe: --space-3 + --space-6 = 28px über
+     der ersten Frage, --space-4 + --space-3 + --space-3 = 28px unter der
+     letzten Antwort. */
   .faq__list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    background: var(--surface-card);
+    border: var(--border-hair) solid var(--border-hairline);
+    border-radius: var(--radius-2xl);
+    padding-block: var(--space-3);
   }
+
+  /* data-anim="card" steht seit H1 hier und nicht mehr an jedem <details>.
+     Vor dem Kasten war jede Frage ihre eigene Fläche — zwölf einzelne Karten
+     einzeln einfliegen zu lassen, ergab zwölf Flächen. Jetzt ist die Fläche
+     eine einzige, ruhende; zwölf gestaffelte y:24-Reveals darin hätten wie
+     ein nachladendes Listing gewirkt, nicht wie das Erscheinen einer Karte.
+     Eine Karte, ein Reveal. */
 
   /* Das Polster oben sitzt am <summary>, nicht am <details>. Warum: der
      Klickbereich ist das <summary>, und das war ohne eigenes Polster nur so
@@ -61,12 +118,22 @@ import { FAQ } from '../../data/faq.js';
      12px zum Antworttext wandern nur vom Rahmen in den Knopf, unten gleicht
      --space-3 hier die Differenz aus. Gemessen bei 390px: die geschlossene
      Karte ist vorher wie nachher 64,9px hoch, die Sektion vorher wie nachher
-     790px. Der Klickbereich steigt dabei von 22,9 auf 54,9px. */
+     790px.
+
+     Die beiden Außenmaße im letzten Satz stammen aus dem Zustand VOR H1 — mit
+     zwölf einzelnen Kästen und 10px Abstand dazwischen. Der Klickbereich und
+     die Höhe der geschlossenen Karte ändern sich durch H1 nicht, die
+     Sektionshöhe schon; sie ist noch nicht nachgemessen. */
   details {
-    background: var(--surface-card);
-    border: var(--border-hair) solid var(--border-hairline);
-    border-radius: var(--radius-xl);
     padding: 0 var(--space-7) var(--space-3);
+  }
+
+  /* Haarlinie zwischen den Fragen, kein Rahmen um sie herum — dasselbe Rezept
+     wie .mkt-rows in global.css. border-top am zweiten bis letzten <details>
+     statt border-bottom am ersten bis vorletzten: so trägt weder die erste
+     noch die letzte Frage eine Linie, die in eine Rundung des Kastens läuft. */
+  details + details {
+    border-top: var(--border-hair) solid var(--border-hairline);
   }
 
   summary {
@@ -75,6 +142,18 @@ import { FAQ } from '../../data/faq.js';
     /* list-style:none plus ::-webkit-details-marker: das Dreieck ist in beiden
        Engines weg, der Klickbereich bleibt die ganze Zeile. */
     list-style: none;
+    /* flex erst seit H1: die Frage und das Auf-/Zu-Zeichen stehen jetzt in
+       einer Zeile, das Zeichen rechts. Der Fragetext ist ein anonymes
+       Flex-Element — er bleibt damit umbruchfähig und behält die ganze
+       Restbreite. `display` ungleich list-item nimmt dem <summary> nebenbei
+       auch in Chromium das Dreieck; die zwei Regeln darüber bleiben trotzdem
+       stehen, sie kosten nichts und decken die Engines ab, die das anders
+       halten. Am Aufklappen ändert `display` nichts, das hängt am Element,
+       nicht an seiner Formatierung — es bleibt bei null Zeilen JavaScript. */
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: var(--space-5);
     font-family: var(--font-display);
     font-weight: var(--weight-bold);
     font-size: clamp(17px, 1.6vw, 20px);
@@ -83,6 +162,47 @@ import { FAQ } from '../../data/faq.js';
   }
 
   summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* block-size: 1.35em ist genau eine Textzeile des <summary> (dessen
+     line-height steht drei Regeln höher). Zusammen mit align-items:start hält
+     das das Zeichen bei einer zweizeiligen Frage auf der ersten Zeile, statt
+     es zwischen beide zu setzen. 20px Icon in dieser Box: die Zeile ist am
+     unteren Ende der clamp() 22,9px hoch (gemessen bei 390px, siehe oben),
+     ein 24px-Icon stünde dort über.
+
+     Die Farbe steht hier und nicht als color-Prop am <Icon>: Icon.astro lässt
+     ohne Prop `currentColor` in der Quelle stehen, die Vererbung erledigt den
+     Rest. Nicht --text-primary wie der Fragetext — das Zeichen ist der
+     Nebendarsteller der Zeile. */
+  .faq__sign {
+    flex: none;
+    display: grid;
+    place-items: center;
+    block-size: 1.35em;
+    color: var(--text-secondary);
+  }
+
+  /* Geschlossen das Plus, offen das Minus — eine Regel statt zweier, damit
+     sich keine Reihenfolge in die Spezifität einmischen kann.
+
+     :global() um die beiden Icon-Klassen. Sie sind hier nicht zwingend: die
+     Scope-Marke hängt in dieser Astro-Fassung an der class-Prop, und Icon.astro
+     schreibt die durchgereichte class-Prop unverändert an sein Wurzel-<svg> —
+     die Marke landet also mit. Genau das ist aber eine Eigenschaft von
+     Icon.astro und keine Zusicherung: Problem.astro musste für dasselbe Icon
+     schon :global() nehmen, weil dort an [data-pepp-icon] gehängt wird, und
+     das reicht Astro nie durch. Gescopt bleibt der Anfang des Selektors
+     (.faq__sign), die Regel wirkt also nur in dieser Sektion.
+
+     display:none, nicht opacity:0 — ein opacity:0 im CSS lässt scripts/verify.mjs
+     durchfallen (Startzustände gehören ins JS). Beide Icons sind 20x20, das
+     Umschalten bewegt deshalb nichts in der Zeile. Ohne Übergang: es gibt
+     nichts zu überblenden, und damit steht der Endzustand unter
+     prefers-reduced-motion von selbst sofort. */
+  details[open] .faq__sign :global(.faq__sign--plus),
+  details:not([open]) .faq__sign :global(.faq__sign--minus) {
     display: none;
   }
 
