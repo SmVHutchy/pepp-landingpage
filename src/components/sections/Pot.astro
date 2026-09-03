@@ -88,6 +88,8 @@ const points = [
     />
   </BlobFeld>
 
+  <div class="mkt-kante-oben" aria-hidden="true"></div>
+
   <div class="mkt-container pot__inner">
     <div class="pot__grid">
       <div>
@@ -140,6 +142,9 @@ const points = [
       </div>
     </div>
   </div>
+
+  {/* Die Stossfuge zu „Sicherheit". Begründung im Stil unten. */}
+  <div class="pot__fuge" aria-hidden="true"></div>
 </section>
 
 <style>
@@ -150,6 +155,73 @@ const points = [
 
   .pot__inner {
     position: relative;
+  }
+
+  /* DIE STOSSFUGE ZU „SICHERHEIT" — EIN VERLAUF, KEINE KANTE.
+
+     Der harte Strich unter dieser Sektion ist NICHT die Fade-Maske der Bühne.
+     Nachgerechnet: .mkt-fade-edges deckt bis --fade-b und läuft bis 100 % DER
+     BÜHNE auf Alpha 0; die Bühne ist unter 901px genau 380px hoch, und genau
+     bei 380 schneidet ihr overflow:hidden. Was dort abgeschnitten wird, ist
+     bereits unsichtbar.
+
+     Der Strich sitzt tiefer, an der Sektionsfuge: diese Sektion endet in
+     Weiss (.mkt-section--card), „Sicherheit" beginnt in
+     --mkt-surface-chapter, ohne Radius und ohne Rahmen. Gemessen 0,0px Fuge —
+     also eine gerade Stosskante über die volle Breite, bei 390 genau 64,0px
+     unter der ausgelaufenen Bühne, bei 1440 129,6px.
+
+     HIER STAND 40px, UND DIE ZAHL WAR EIN MESSFEHLER. Wer ohne
+     prefers-reduced-motion misst und bei scrollY 0 stehen bleibt, erwischt
+     .pot__stage im Startzustand ihrer Reveal-Animation: getComputedStyle
+     liefert dort transform matrix(1,0,0,1,0,24) und opacity 0,001. Die Bühne
+     steht dann 24px zu tief und die Fuge scheinbar 24px kürzer. Gemessen wird
+     diese Strecke deshalb mit reducedMotion:'reduce' — dann transform none,
+     opacity 1, und die Zahl ist die des Layouts statt die eines Zwischenbilds.
+
+     Der Verlauf löst die untersten 64-120px dieser Sektion in die
+     Kapitelfarbe auf. An der Kante selbst stehen dann beide Flächen auf
+     demselben Wert und der Strich verschwindet. Am Pixel belegt, eine
+     textfreie Spalte bei 12 % der Breite, über die Kante hinweg: vorher
+     rgb(255,255,255) → rgb(247,241,232), ein Sprung von 23; nachher beidseits
+     rgb(247,241,232), Sprung 0. Der grösste Sprung zwischen zwei benachbarten
+     Zeilen im 200px-Fenster um die Kante liegt bei 1 (390) bzw. 2 (1440).
+
+     WARUM AUF DIESER SEITE DER FUGE UND NICHT AUF DER ANDEREN. Der Kommentar
+     an .mkt-section--chapter in global.css sagt: „Kein Radius und kein
+     Rahmen: die Fläche selbst ist die Zäsur, sie braucht keine Kante." Das
+     bleibt gültig — die Kapitelfläche wird hier gar nicht angefasst, sie
+     bekommt weder Radius noch Rahmen noch eine zweite Fläche darüber. Es ist
+     die Karte, die sich auflöst, nicht das Kapitel, das nachgibt.
+
+     Dazu kommt ein gemessener Grund. Die erste Fassung lag als ::before auf
+     .sec und kostete in scripts/a11y.mjs neun neue „incomplete" je Breite:
+     axe kann den Hintergrund eines Textes nicht mehr bestimmen, sobald ein
+     VORFAHR ein Pseudoelement mit Fläche trägt („Element's background color
+     could not be determined due to a pseudo element"). Betroffen waren die H2
+     und alle acht Titel und Texte der vier Karten, obwohl das Band 780px über
+     der ersten Karte endet. Hier unten ist das Band fast überall frei —
+     gemessen bei 390, 940, 1000 und 1440 liegt in den 64-120px über der Kante
+     kein Text, nur die ausgelaufene Bühne und das Sektionspolster. Ausnahme
+     ist das schmale Fenster 901-930: dort ragt die letzte Listenzeile („Dein
+     Kind knackt selbst") bis zu 8,5px in das Band. Ein Vorfahr mit
+     Pseudoelement wäre das Problem, ein Geschwister-Element ist es nicht —
+     .pot__fuge liegt neben dem Text, nicht über ihm.
+
+     Ein eigenes Element und kein ::after auf .pot, aus demselben Grund: ein
+     Pseudoelement hätte .pot zu genau so einem Vorfahren gemacht, und die
+     Sektion hat vier Textblöcke.
+
+     z-index kommt aus `.mkt-section > *` (global.css) und ist 1; das Band
+     steht im Markup nach .pot__inner und liegt damit über den Screens, aber
+     unter nichts, was Text trägt. */
+  .pot__fuge {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    height: clamp(64px, 12vw, 120px);
+    background: linear-gradient(to bottom, transparent, var(--mkt-surface-chapter));
+    pointer-events: none;
   }
 
   .pot__grid {
@@ -201,6 +273,34 @@ const points = [
     height: clamp(380px, 42vw, 560px);
     overflow: hidden;
     --fade-b: 80%;
+  }
+
+  /* AUF DEM HANDY LÄUFT DIE BÜHNE LÄNGER AUS.
+     Die Rampe von .mkt-fade-edges liegt zwischen --fade-b und 100 % DER
+     BÜHNE. Erst ab 1333px steht die Bühne auf ihrer Decke von 560px, 80 %
+     lassen dort 112px Rampe. Darunter greift der clamp-Boden: von 320 bis
+     rund 905px ist sie überall genau 380px hoch (42vw wären bei 390 nur 164),
+     und dieselben 80 % sind nur 76px — bei 390 wie bei 901. Die Bühnenhöhe
+     ist also NICHT der Unterschied zwischen Handy und Desktop.
+     Der Unterschied ist, wie weit die Screens unter die Bühnenkante laufen:
+     gemessen 93px bei 390, 312px bei 600 und 900, 155px bei 901, 132px bei
+     1440. Oben schliesst sich der Abstand von selbst — 112px Rampe gegen
+     132px Überhang. Unter 901px stehen 76px gegen bis zu 312px, und das liest
+     als Kante statt als Auslaufen. 55 % machen daraus 171px.
+     Ein Rest bleibt an der Stufe selbst: bei 901px liegen 76px Rampe gegen
+     155px Überhang. Das ist der Preis dafür, auf der Breakpoint-Leiter des
+     Hauses zu bleiben, statt für diesen einen Fall eine fünfte Stufe
+     einzuführen.
+
+     Die Regel steht NACH `.pot__stage`: eine Medienabfrage erhöht die
+     Spezifität nicht, entscheidend ist die Quellreihenfolge. Steht sie davor,
+     gewinnen die 80 % — genau so sind in dieser Datei nebenan schon Regeln
+     tot gegangen. Gemessen greift sie: getComputedStyle(.pot__stage)
+     --fade-b liefert bei 390 „55%", bei 1440 „80%". */
+  @media (max-width: 900px) {
+    .pot__stage {
+      --fade-b: 55%;
+    }
   }
 
   .pot__screen {
