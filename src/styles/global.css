@@ -43,6 +43,24 @@ body {
   top: var(--space-5);
 }
 
+/* Netz für alle Bilder: Der Standardwert von object-fit ist `fill` — passt die
+   Box nicht zum Seitenverhältnis der Datei, verzerrt der Browser das Bild
+   stillschweigend, statt es einzupassen. Vor dieser Zeile gab es im ganzen
+   src/ kein einziges object-fit, jedes max-height auf einem <img> mit fester
+   Breite war also eine unsichtbare Stauchung. Gefunden am Hero-Maskottchen:
+   576x580 statt 576x644,5 bei 1440x900, 9,9 % gestaucht, ohne dass es im
+   Screenshot als Fehler zu erkennen war.
+
+   `contain` ändert nichts, solange Box und Datei dasselbe Verhältnis haben.
+   Nachgemessen an allen 25 <img> der Startseite bei 1440x900: sechs weichen
+   überhaupt ab, und zwar um höchstens 0,145 % — die Geräte-Screens der
+   Mechanik stehen in einer 320x692-Box vor einer 320x693-Datei. Das sind
+   0,46 px Randstreifen, unter einem Gerätepixel. Wo die Verhältnisse weiter
+   auseinanderlaufen, wird ab jetzt eingepasst statt verzerrt. */
+img {
+  object-fit: contain;
+}
+
 /* Icons: nie am Baseline-Gap hängen, nie im Flex schrumpfen. */
 svg[data-pepp-icon] {
   display: block;

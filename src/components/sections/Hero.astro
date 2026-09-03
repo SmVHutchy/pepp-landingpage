@@ -74,12 +74,7 @@ const trustPoints = [
   </BlobFeld>
   <div class="hero__grid">
     <div class="hero__copy">
-      <p class="hero__chip">
-        <Icon name="sparkles" size={16} color="var(--pepp-coral)" />
-        In Pepp heißen Aufgaben Quests
-      </p>
-
-      <h1 class="mkt-h1">Aus Aufgaben werden Quests.</h1>
+      <h1 class="mkt-h1">Taschengeld-App für die ganze Familie</h1>
 
       <p class="hero__subline">
         Kinder sammeln Rewards. Eltern behalten den Überblick.
@@ -94,10 +89,14 @@ const trustPoints = [
       </div>
 
       {
-        /* Die beiden Store-Knöpfe sind bewusst KEINE Cta-Komponente — dasselbe
-          Muster wie im Footer: sekundär, Off-White auf Hairline, ohne den
-          CTA-Text. Der einzige Primär-CTA bleibt schwarz und heisst überall
-          gleich. Drei schwarze Flächen nebeneinander hätten das aufgelöst.
+        /* Die offiziellen Store-Badges, dieselben wie im Footer. Vorher standen
+          hier selbstgebaute Pillen — Icon plus Wortmarke auf Off-White —, damit
+          nicht drei schwarze Flächen nebeneinander stehen und der Primär-CTA
+          seine Sonderstellung verliert. Der Kunde hat sich aus Markengründen
+          gegen den Eigenbau entschieden: Apple und Google geben die Badges vor,
+          und zwei Fassungen desselben Knopfes auf einer Seite wären ohnehin ein
+          Bruch. Die schwarzen Flächen sind damit gewollt; unterschieden wird
+          jetzt über die Form — Pille mit CTA-Text gegen Store-Badge.
 
           Sie tragen KEIN data-cta. Die Store-Weiche in nav.js schaltet jedes
           [data-cta] auf Android in den Play Store um — hier wäre das falsch:
@@ -107,16 +106,29 @@ const trustPoints = [
           entscheiden wie der CTA. Vorher lag an dieser Stelle ein QR-Code mit
           Erklärzeile am unteren Rand der Spalte — ein Umweg über die Kamera
           für etwas, das auf dem Handy ein Fingertipp ist, und auf dem Desktop
-          eine 121px hohe Einheit im ersten Bildschirm. */
+          eine 121px hohe Einheit im ersten Bildschirm.
+
+          loading="eager" statt lazy wie im Footer: die Badges stehen im ersten
+          Bildschirm, ein verzögerter Ladestart wäre hier sichtbar. */
       }
       <div class="hero__stores">
-        <a href={STORE.ios} class="hero__store">
-          <Icon name="apple-brand" size={20} color="var(--pepp-ink)" />
-          App Store
+        <a href={STORE.ios} class="hero__store" aria-label="Laden im App Store">
+          <img
+            src="/badges/app-store-de.svg"
+            alt="Laden im App Store"
+            width="120"
+            height="40"
+            loading="eager"
+          />
         </a>
-        <a href={STORE.android} class="hero__store">
-          <Icon name="google-brand" size={20} color="var(--pepp-ink)" />
-          Google Play
+        <a href={STORE.android} class="hero__store" aria-label="Jetzt bei Google Play">
+          <img
+            src="/badges/google-play-de.svg"
+            alt="Jetzt bei Google Play"
+            width="135"
+            height="40"
+            loading="eager"
+          />
         </a>
       </div>
     </div>
@@ -248,10 +260,6 @@ const trustPoints = [
       padding-block: clamp(16px, 2.5vw, 32px);
     }
 
-    .hero__chip {
-      margin-bottom: clamp(12px, 1.5vw, 16px);
-    }
-
     .hero__subline {
       margin-top: clamp(12px, 1.5vw, 16px);
     }
@@ -261,8 +269,15 @@ const trustPoints = [
       margin-top: clamp(16px, 2vw, 24px);
     }
 
+    /* Nur die Breite wird hier gedeckelt. Ein max-height an dieser Stelle wäre
+       wirkungslos: die unbedingte .hero__mascot-Regel weiter unten hat dieselbe
+       Spezifität und steht später — eine Medienabfrage erhöht die Spezifität
+       nicht. Gemessen bei 1440x800: getComputedStyle(img).maxHeight lieferte
+       „576px" aus der unbedingten Regel, nicht den Wert von hier. Die tote
+       Zeile ist deshalb raus statt repariert: mit ihr wäre die Figur bei
+       1440x800 von 460x514,7 auf 440 Höhe gefallen — eine Stauchung, die es
+       heute nicht gibt. Der Höhendeckel steht unten, in der Breite gerechnet. */
     .hero__mascot {
-      max-height: min(55svh, 460px);
       max-width: 460px;
     }
   }
@@ -309,20 +324,6 @@ const trustPoints = [
     .hero__copy {
       padding-bottom: 0;
     }
-  }
-
-  .hero__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin: 0 0 clamp(16px, 2vw, 24px);
-    padding: 6px 14px 6px 10px;
-    background: var(--pepp-surface);
-    border: var(--border-hair) solid var(--border-hairline);
-    border-radius: var(--radius-pill);
-    font-size: var(--type-caption-size);
-    font-weight: var(--weight-semibold);
-    color: var(--text-secondary);
   }
 
   .hero__subline {
@@ -418,17 +419,6 @@ const trustPoints = [
       padding-bottom: 20px;
     }
 
-    .hero__chip {
-      margin-bottom: 8px;
-      padding: 4px 12px 4px 8px;
-      font-size: 12px;
-    }
-
-    .hero__chip :global(svg) {
-      width: 14px;
-      height: 14px;
-    }
-
     .mkt-h1 {
       font-size: 30px;
     }
@@ -450,28 +440,17 @@ const trustPoints = [
       margin-top: 12px;
     }
 
-    .hero__store {
-      height: 38px;
-      padding: 0 14px;
-      font-size: 13px;
-    }
-
-    .hero__store :global(svg) {
-      width: 16px;
-      height: 16px;
-    }
-
     .hero__mascot {
       max-height: min(26svh, 160px);
     }
   }
 
-  /* Masse aus .foot__store im Footer übernommen — es ist derselbe Knopf an
+  /* Masse aus .foot__store im Footer übernommen — es ist dasselbe Badge an
      einer zweiten Stelle, und zwei verschiedene Store-Knöpfe auf einer Seite
      wären ein Bruch. Nur die Richtung ist eine andere: im Footer stehen sie
      untereinander in einer schmalen Spalte, hier nebeneinander unter dem CTA.
-     flex-wrap, damit sie bei erhöhter Mindestschriftgrösse umbrechen statt
-     aus der Spalte zu laufen. */
+     flex-wrap, damit sie bei schmaler Spalte umbrechen statt aus ihr zu
+     laufen. */
   .hero__stores {
     display: flex;
     flex-wrap: wrap;
@@ -489,23 +468,17 @@ const trustPoints = [
   }
 
   .hero__store {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    height: 44px;
-    padding: 0 18px;
-    border-radius: var(--radius-pill);
-    border: var(--border-hair) solid var(--border-hairline);
-    background: var(--bg-app);
-    font-size: var(--type-body-size);
-    font-weight: var(--weight-semibold);
-    white-space: nowrap;
-    color: var(--pepp-ink);
+    display: block;
+    /* Das Badge ist ein Inline-Bild in einem Link: ohne line-height:0 zieht
+       der Zeilenkasten den Link ein paar Pixel höher als das Bild. */
+    line-height: 0;
     text-decoration: none;
   }
 
-  .hero__store:hover {
-    background: var(--surface-hover);
+  .hero__store img {
+    display: block;
+    width: auto;
+    height: 40px;
   }
 
   .hero__visual {
@@ -536,19 +509,39 @@ const trustPoints = [
   /* Feste Breite über clamp und aspect-ratio aus width/height am <Image>:
      die Höhe steht damit vor dem Laden und CLS bleibt 0. */
   .hero__mascot {
-    /* Grösser als der Vorgänger (34vw/520px): auf 1440px sind das 576 statt
-       490 Pixel. Die Bühnenspalte ist rund 517px breit, die Figur ragt also
-       links und rechts je ~30px darüber hinaus — in die Spalten-Lücke, nicht
-       in die Copy. Die Sektion hat overflow:hidden, mehr braucht es nicht.
+    /* Der Höhendeckel steht als eigener Wert, weil er an zwei Stellen
+       gebraucht wird: als Breitendeckel über das Seitenverhältnis und als
+       max-height. Die max-height greift nie — die Breite hält die Höhe schon
+       darunter —, aber sie ist die Zeile, die die schwächeren
+       .hero__mascot-Regeln in den Medienblöcken weiter oben überschreibt.
+       Fällt sie weg, werden deren max-height wieder wirksam und stauchen die
+       Figur auf dem Handy (gemessen 390x844: 240x220 statt 240x268,7). */
+    --mascot-cap-h: min(72svh, 580px);
+    /* Grösser als der Vorgänger (34vw/520px): auf 1440px sind das bis zu 576
+       statt 490 Pixel. Die Bühnenspalte ist rund 517px breit, die Figur ragt
+       also darüber hinaus — in die Spalten-Lücke, nicht in die Copy. Die
+       Sektion hat overflow:hidden, mehr braucht es nicht.
+
+       Der zweite Term ist der Höhendeckel, in der Breite gerechnet: 580/649
+       ist das Seitenverhältnis aus den width/height-Attributen des <Image>
+       oben. Als max-height notiert war der Deckel eine Stauchung — die Breite
+       steht durch clamp fest, height:auto löst über das Verhältnis auf, und
+       max-height kürzt danach nur die Höhe, ohne die Breite nachzuziehen.
+       Gemessen bei 1440x900: 576x580 statt 576x644,5, also 9,9 % gestaucht,
+       und ohne object-fit malt das <img> mit fill statt zu letterboxen. Als
+       Breitendeckel greift derselbe Wert, ohne das Verhältnis zu brechen:
+       518,4x580 bei 1440x900. Die Höhe ist damit weiterhin bei min(72svh,
+       580px) gedeckelt und drückt die Copy nicht nach oben.
 
        DIESE ZEILE IST AN DAS sizes-ATTRIBUT DES <Image> OBEN GEKOPPELT.
        Ändert sich der Boden (240px), die Steigung (40vw) oder die Decke
-       (580px), lädt der Browser sonst die falsche Auflösung. */
-    width: clamp(240px, 40vw, 580px);
+       (580px), lädt der Browser sonst die falsche Auflösung. Der Höhendeckel
+       braucht dort nichts: er macht die Box nur schmaler als 40vw, sizes
+       überschätzt dann höchstens — geladen wird bei 1440x900 wie vorher die
+       580px-Fassung. */
+    width: min(clamp(240px, 40vw, 580px), calc(var(--mascot-cap-h) * 580 / 649));
     height: auto;
-    /* Auf kleinen Höhen soll die Figur nicht über den verfügbaren Platz
-       hinauswachsen und die Copy nach oben drücken. */
-    max-height: min(72svh, 580px);
+    max-height: var(--mascot-cap-h);
     display: block;
     /* --shadow-mascot ist im Design System genau dieser Wert. Ich hatte ihn
        zuerst als Literal hingeschrieben — das war ein Doppel des Tokens und
