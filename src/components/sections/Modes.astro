@@ -91,14 +91,24 @@ const childPoints = [
 
         Ein Wort ist seither geändert: „das Kind entscheidet" heisst jetzt
         „dein Kind entscheidet". Die Leserin ist der Elternteil, und „das Kind"
-        redet über ein fremdes. */
+        redet über ein fremdes.
+
+        Der erste Satz ist am 01.09.2026 ausgetauscht. Er lautete: „Pepp soll
+        Kindern nicht das Gefühl geben, kontrolliert zu werden." Das ist eine
+        Haltung, und die Haltung stimmt — sie steht jetzt im Schlusssatz, der
+        unverändert bleibt. Was sie nicht leistete: sie sagte nirgends, DASS es
+        zwei Ansichten gibt. Genau das hat der Kunde bemängelt, und die H2
+        „Eine App, zwei Welten." allein trägt es nicht — „Welten" kann auch
+        Eltern und Kind meinen statt zweier Ansichten derselben App. Der neue
+        Satz benennt beide und sagt, was jede zeigt. */
     }
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Zwei Seiten</p>
       <h2 class="mkt-h2 mkt-h2--sm" data-anim>Eine App, zwei Welten.</h2>
       <p class="mkt-lead modes__note" data-anim>
-        Pepp soll Kindern nicht das Gefühl geben, kontrolliert zu werden. Du setzt den
-        Rahmen &#8212; dein Kind entscheidet darin.
+        Pepp zeigt denselben Alltag in zwei Ansichten. Du bekommst die geordnete
+        Übersicht über alle Quests, dein Kind eine einfache Liste, die sich abhaken
+        lässt. Du setzt den Rahmen &#8212; dein Kind entscheidet darin.
       </p>
     </div>
 
@@ -107,6 +117,14 @@ const childPoints = [
         <div>
           <p class="mkt-label modes__kicker">Elternmodus</p>
           <h3 class="modes__title">Ruhig, klar, entschieden.</h3>
+          {
+            /* Die beiden Titel beschreiben einen Ton, keine Ansicht. Diese
+               Zeile sagt, was man in der jeweiligen Ansicht tut — sie steht
+               zwischen Titel und Punkten, weil die Punkte sie ausbuchstabieren.
+               Verbpaare statt Dreierfiguren: die Punkte darunter sind bereits
+               drei, ein vierter Dreiklang darüber liest sich als Refrain. */
+          }
+          <p class="modes__sub">Deine Ansicht: planen und freigeben.</p>
           <ul class="modes__points mkt-list-reset">
             {
               parentPoints.map((point) => (
@@ -144,6 +162,7 @@ const childPoints = [
         <div class="modes__inset">
           <p class="mkt-label modes__kicker">Kindermodus</p>
           <h3 class="modes__title">Motivierend, belohnend, eigenständig.</h3>
+          <p class="modes__sub">Die Ansicht deines Kindes: annehmen und erledigen.</p>
           <ul class="modes__points mkt-list-reset">
             {
               childPoints.map((point) => (
@@ -220,6 +239,21 @@ const childPoints = [
     letter-spacing: var(--type-h2-tracking);
     margin: var(--space-3) 0 0;
     color: var(--text-primary);
+  }
+
+  /* Kleiner als der Fliesstext der Punkte: die Zeile ordnet ein, sie zählt
+     nicht auf. Stünde sie auf derselben Stufe wie die Punkte, läse sie sich
+     als vierter Punkt ohne Häkchen.
+
+     Nur die Grösse macht den Unterschied, nicht die Farbe: --text-tertiary
+     (#AAA199) käme auf Weiss auf 2,5:1 und wäre bei 13px ein neuer
+     A11y-Verstoss. --text-secondary (#6E6A66) liegt bei 5,4:1. */
+  .modes__sub {
+    margin: var(--space-3) 0 0;
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-lh);
+    font-weight: var(--type-caption-weight);
+    color: var(--text-secondary);
   }
 
   .modes__points {
