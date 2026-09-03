@@ -10,13 +10,13 @@ um die Punkte, die zwischen dem jetzigen Stand und dem Livegang noch fehlen.
 
 ## Auf einen Blick
 
-| Status                                            | Bereich                   | Anzahl  |
-| ------------------------------------------------- | ------------------------- | ------- |
-| ✅ Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
-| 🔴 Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
-| 🟡 Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
+| Status                                         | Bereich                   | Anzahl  |
+| ---------------------------------------------- | ------------------------- | ------- |
+| Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
+| Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
+| Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
 
-## ✅ Erledigt — nicht mehr offen
+## Erledigt — nicht mehr offen
 
 - **CTA-Knopf in der Navigation** brach auf dem Handy um und war teilweise unsichtbar. Behoben
   (`src/components/Cta.astro`).
@@ -26,7 +26,7 @@ um die Punkte, die zwischen dem jetzigen Stand und dem Livegang noch fehlen.
 > Die alten Audit- und Übergabe-Dokumente listen diese beiden Punkte noch als offen. Das ist
 > überholt, nicht mehr korrekt.
 
-## 🟡 Braucht eine Entscheidung oder Lieferung vom Kunden
+## Braucht eine Entscheidung oder Lieferung vom Kunden
 
 Kein einziger dieser Punkte lässt sich im Code allein lösen — hier wartet das Projekt auf eine
 Antwort oder ein Material.

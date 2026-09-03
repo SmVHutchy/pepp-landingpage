@@ -5,20 +5,20 @@
 Stand: 03.09.2026. **Die Seite selbst ist fertig und wird hier nicht mehr angefasst.** Was fehlt,
 ist keine Programmierarbeit mehr, sondern acht Entscheidungen bzw. Lieferungen vom Kunden.
 
-| Status                                            | Bereich                   | Anzahl  |
-| ------------------------------------------------- | ------------------------- | ------- |
-| ✅ Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
-| 🔴 Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
-| 🟡 Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
+| Status                                         | Bereich                   | Anzahl  |
+| ---------------------------------------------- | ------------------------- | ------- |
+| Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
+| Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
+| Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
 
-### ✅ Erledigt
+### Erledigt
 
 - **CTA-Knopf in der Navigation** brach auf dem Handy um und war teilweise unsichtbar — behoben
   (`src/components/Cta.astro`).
 - **Standarddateien**, die früher fehlten (og-image, robots.txt, sitemap.xml, Favicon-Set,
   Web-Manifest, eigene 404-Seite) — sind jetzt alle im Projekt vorhanden.
 
-### 🟡 Braucht eine Entscheidung oder Lieferung vom Kunden
+### Braucht eine Entscheidung oder Lieferung vom Kunden
 
 | #   | Was fehlt                                                                                                                                                    | Wer liefert         | Was passiert ohne Antwort                                                            |
 | --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------ |
