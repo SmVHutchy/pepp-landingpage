@@ -246,8 +246,10 @@ svg[data-pepp-icon] {
   }
 }
 
-/* Sektions-Label: das einzige CAPS auf der Seite. Steht in --text-secondary,
-   nicht --text-tertiary: #AAA199 erreicht nur 2,5:1 und ist reine Dekoration. */
+/* Label: das einzige CAPS auf der Seite. Steht in --text-secondary, nicht
+   --text-tertiary: #AAA199 erreicht nur 2,5:1 und ist reine Dekoration.
+   Das gilt weiter für alle Labels ohne [data-anim] — die neun
+   Sektions-Eyebrows tragen den Verlauf, siehe die Regel darunter. */
 .mkt-label {
   font-family: var(--font-ui);
   font-size: var(--type-label-size);
@@ -259,6 +261,82 @@ svg[data-pepp-icon] {
   text-transform: uppercase;
   color: var(--text-secondary);
   margin: 0 0 var(--space-5);
+}
+
+/* Die neun Sektions-Eyebrows tragen den Verlauf des Design Systems — die H2
+   darunter bleibt flach in --text-primary, das ist die Entscheidung des Kunden.
+   Der Selektor ist [data-anim], nicht .mkt-label: das Attribut steht an genau
+   diesen neun und an keinem der übrigen Labels (Footer-Köpfe, price__kicker,
+   modes__kicker, 404). Die bleiben in --text-secondary.
+
+   NICHT --gradient-dawn, sondern seine abgedunkelte Fassung. 12px bei Gewicht
+   700 ist keine grosse Schrift — fett zählt erst ab 18,66px —, die Schwelle
+   ist also 4,5:1 und nicht 3:1. Die vier Dawn-Stops liegen auf Weiss bei
+   1,49:1 (#FFC9A3), 2,13:1 (#FF8FB6), 1,84:1 (#C4B5FF) und 2,39:1 (#7AA7FF),
+   auf #FBF6F1 ab 1,38:1. Jeder einzelne ist damit schlechter als die 2,5:1,
+   mit denen zwei Absätze weiter oben --text-tertiary verworfen wurde.
+   Die --ink-*-Tokens (page-extensions.css:5-13) tragen dieselben Hues
+   abgedunkelt und sind genau dafür angelegt.
+
+   DREI Stops, nicht vier: --ink-blue ist ausgemessen und ausgeschieden. Auf
+   Weiss und Off-White trägt er noch (4,89:1 / 4,55:1), aber die neun Eyebrows
+   stehen nicht nur auf diesen beiden Flächen. Im Browser gegen den echten,
+   zusammengesetzten Untergrund gemessen — Sektionsfläche plus die Farbblobs
+   dahinter — fällt er unter „Belohnungen" (#FBEDEA) auf 4,28:1 und auf der
+   Kapitelfläche der Sicherheit (#F7F1E8) auf 4,35:1. Beides reisst die 4,5:1,
+   und unter „Belohnungen" wäre es eine Verschlechterung gegenüber dem flachen
+   --text-secondary, das dort 4,70:1 hatte. Mit --ink-lilac als Endpunkt liegt
+   der schlechteste Stop des Verlaufs auf acht der neun Eyebrows bei mindestens
+   4,61:1 (--ink-peach am Wortanfang).
+
+   Die Ausnahme ist „Der Alltag": der pinke Blob dahinter zieht den Grund auf
+   #F6D8E2, dort erreicht --ink-peach 3,97:1. Das ist keine Folge dieser Regel
+   — das flache --text-secondary kam dort auf 4,04:1 und riss die Schwelle
+   ebenso. Die Ursache ist die Deckkraft des Blobs in Problem.astro, nicht die
+   Textfarbe.
+
+   width: fit-content, weil der Kasten sonst die ganze Rasterspalte füllt: bei
+   1440px sind das 543px im zweispaltigen Sektionskopf und 1116px im
+   gestapelten, für Wörter von 38 bis 134px Breite. Der Verlauf liefe dann
+   neben der Schrift aus und im Wort stünde nur sein erstes Zehntel — das
+   Label wäre einfarbig peach. Einzeilig sind die Labels ohnehin, die Höhe
+   ändert sich dadurch nicht; measure.mjs meldet bei 1440, 390 und 320px
+   keine einzige Abweichung.
+
+   Die Farbe steht ausserhalb von @supports: fällt background-clip weg, bleibt
+   --ink-lilac stehen. */
+.mkt-label[data-anim] {
+  width: fit-content;
+  color: var(--ink-lilac);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .mkt-label[data-anim] {
+    background-image: linear-gradient(
+      135deg,
+      var(--ink-peach) 0%,
+      var(--ink-pink) 45%,
+      var(--ink-lilac) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+/* Erzwungener Kontrastmodus. Gegengeprüft mit forced-colors: active: Chromium
+   setzt dort background-image UND -webkit-text-fill-color von sich aus zurück,
+   die neun Labels bleiben also auch ohne diese Regel gefüllt (18–21 % dunkle
+   Pixel im Wortkasten, gegen 15–17 % im Normalfall). Sie steht trotzdem:
+   -webkit-text-fill-color ist eine Nicht-Standard-Eigenschaft und in der
+   Liste der erzwungenen Farben keiner Spezifikation zugesichert. Setzt eine
+   Engine sie nicht zurück, bleibt die Füllung transparent und das Label leer —
+   das ist der eine Fall, den diese vier Zeilen ausschliessen. */
+@media (forced-colors: active) {
+  .mkt-label[data-anim] {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
 }
 
 .mkt-lead {
