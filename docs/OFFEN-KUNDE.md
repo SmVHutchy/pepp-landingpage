@@ -198,3 +198,23 @@ Bodenplatte) im Produktionsbuild.
 
 **Antwort landet in.** `src/assets/mascot/moment-reward-unlocked.png` und
 `src/assets/mascot/pepp-wave.png` (Dateien ersetzen).
+
+---
+
+## 9 · GitHub-Zugriff für das Studio fehlt
+
+**Was fehlt.** Der Code liegt seit heute zusätzlich zur SMB-Freigabe in einem privaten
+GitHub-Repo: [`SmVHutchy/pepp-landingpage`](https://github.com/SmVHutchy/pepp-landingpage)
+(`main`, `release/polish`, Tag `v1`). Das Repo gehört dem persönlichen Account
+`SmVHutchy` — 9R Studios hat dort aktuell keinen Zugriff, weil der GitHub-Handle des
+Studios zum Zeitpunkt der Anlage nicht bekannt war.
+
+**Wer entscheidet/liefert.** 9R Studios — nennt den GitHub-Handle (Account oder
+Organisation), der als Collaborator eingetragen werden soll.
+
+**Ohne Antwort.** Die zweite Kopie des Projekts bleibt an einen einzelnen persönlichen
+Account gebunden statt an das Studio. Genau das war der Zustand, den die
+Repo-Anlage eigentlich auflösen sollte.
+
+**Antwort landet in.** Als Collaborator-Einladung auf
+[`github.com/SmVHutchy/pepp-landingpage/settings/access`](https://github.com/SmVHutchy/pepp-landingpage/settings/access).
