@@ -5,6 +5,40 @@ Die Seite folgt keiner Versionsnummerierung nach außen — Einträge werden nac
 
 ## [Unveröffentlicht]
 
+### Geändert — 03.09.2026 · `v1`
+
+Übergabe-Tag. Arbeitsbaum geleert, vier fertige C-Arbeitsbäume eingesammelt, Kundendoku
+ergänzt.
+
+- **Harte Kante oben an allen vier `.mkt-section--card`-Sektionen behoben.** Die
+  `border-top`-Haarlinie erzeugte an jeder Spalte denselben 37-Werte-Farbsprung, unabhängig
+  von der tatsächlichen Fläche darüber — auch Weiss auf Weiss. Ersetzt durch `.mkt-kante-oben`,
+  einen proportionalen Verlauf auf Höhe des jeweiligen Sektionspolsters. Gemessene Sprünge
+  danach: 0–30, sie folgen jetzt der echten Blob-Farbe statt einer erfundenen Linie.
+- **`c23ae60` zurückgenommen** — die Figur in „Der Alltag" ragte bei 1920×1080 mit nur 121 px
+  Luft fast in den Kartenblock. Bei der ursprünglichen Position (36,1 %) sind es 566 px; die
+  freischwebende Figur ist die Komposition, kein Fehler.
+- Blob im Pott zurück in die obere rechte Ecke, Stossfuge zum Sicherheit-Kapitel ergänzt.
+- Trustbar in „Hero" stand 1 px unter der Falz (`min-height` ohne Haarlinien-Abzug) — behoben.
+- Seite scrollte am Desktop waagerecht (`Security.astro`, Figur ragte 118,75 px über den
+  Sektionsrand) — `overflow-x: clip`, gemessen scrollX 119 → 0.
+- **„Zwei Welten":** Dawn wird zur Kante statt zur Fläche, Kartentexte beider Spalten auf
+  gleicher Höhe.
+- **FAQ:** ein gemeinsamer Kasten mit Haarlinien statt zwölf Einzelkarten, Plus/Minus statt
+  Chevron. Die Reveal-Animation wandert dabei von jedem `<details>` auf die ganze Liste — sonst
+  hätte eine ruhende Fläche wie eine nachladende Liste gewirkt.
+- **„Für alle, die mitziehen":** Tint auf der ganzen Kartenfläche statt nur der Kachel, Icons
+  invertiert (4,67–4,84:1 Kontrast).
+- **„Die Mechanik":** vier Schritte in einem gemeinsamen Kasten statt vier Einzelkarten.
+- `docs/OFFEN-KUNDE.md` neu — die einzige Datei, die dem Kunden nach dem Projektende noch
+  nützt: acht offene Positionen, je mit Konsequenz und Fundstelle.
+- Zwei irreführende Bestandsaussagen korrigiert (`docs/ENVIRONMENT.md`, `UEBERGABE.md`
+  beschrieben beide einen Arbeitsstand, der nicht mehr der aktuelle ist), 18
+  `src/content/legal/`-Pfadverweise auf `src/legal/` korrigiert.
+- **Nicht in `v1`:** der Tausch der beiden Kostüm-Pepp-Bilder (A8) — die Flutung hinterliess
+  Rest-Weiss in der Schwanzlocke und eine beschädigte Silhouette an beiden Quellbildern.
+  Abbruchbedingung des Plans griff wie vorgesehen. Verschoben auf `v1.1`.
+
 ### Geändert — 18.08.2026
 
 - **Astro 5.6 auf 7.2.2, sharp auf 0.35 — abgenommen.** Der Commit `a44891f` trug den

@@ -87,6 +87,9 @@ Design-Spezifikation.
 - Keine erfundenen Zahlen, Bewertungen oder Testimonials.
 - Ein CTA-Typ, ein Text, sechs Instanzen. Der Text ist in der Komponente fest verdrahtet
   und lässt sich nicht überschreiben — das ist Absicht.
+- Kein `[PLATZHALTER]` im Build — **außer** auf `/barrierefreiheit`: die drei
+  BFSG-Pflichtangaben (Kontaktstelle, Durchsetzungsstelle, Prüfdatum) kann nur der Kunde
+  liefern, siehe `docs/OFFEN-KUNDE.md`. Jede andere Seite bleibt frei davon.
 
 **Technik**
 
