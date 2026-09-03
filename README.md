@@ -25,26 +25,26 @@ Umgebungsvariablen und keine `.env`-Datei (Details: [docs/ENVIRONMENT.md](docs/E
 ## Stack
 
 | Was       | Womit                                                                              |
-| --------- | ----------------------------------------------------------------------------------- |
-| Generator | Astro 5.18.2, `output: 'static'`                                                    |
-| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                       |
-| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)               |
-| Animation | GSAP 3.12.5 mit ScrollTrigger                                                       |
-| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                  |
-| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt weder `.nvmrc` noch ein `engines`-Feld)   |
+| --------- | ---------------------------------------------------------------------------------- |
+| Generator | Astro 5.18.2, `output: 'static'`                                                   |
+| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                      |
+| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)              |
+| Animation | GSAP 3.12.5 mit ScrollTrigger                                                      |
+| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                 |
+| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt weder `.nvmrc` noch ein `engines`-Feld) |
 
 ## Die wichtigsten Befehle
 
 Diese Befehle stehen in `package.json` und laufen alle:
 
-| Befehl             | Macht                                                | Status                     |
-| ------------------ | ----------------------------------------------------- | -------------------------- |
-| `npm run dev`       | Startet den Dev-Server auf Port 4321                  | funktioniert               |
-| `npm run build`     | Baut die Seite nach `dist/` (6 Seiten, ~7 s)          | funktioniert               |
-| `npm run preview`   | Serviert den `dist/`-Build lokal                      | funktioniert, siehe unten¹ |
-| `npm run check`     | `astro check` im strict-Modus                         | funktioniert, 0 Fehler     |
-| `npm run format`    | Formatiert das ganze Projekt mit Prettier             | funktioniert               |
-| `npm run verify`    | **Die Abnahme-Prüfung** — 19 automatisierte Regeln    | funktioniert, 19/19        |
+| Befehl            | Macht                                              | Status                     |
+| ----------------- | -------------------------------------------------- | -------------------------- |
+| `npm run dev`     | Startet den Dev-Server auf Port 4321               | funktioniert               |
+| `npm run build`   | Baut die Seite nach `dist/` (6 Seiten, ~7 s)       | funktioniert               |
+| `npm run preview` | Serviert den `dist/`-Build lokal                   | funktioniert, siehe unten¹ |
+| `npm run check`   | `astro check` im strict-Modus                      | funktioniert, 0 Fehler     |
+| `npm run format`  | Formatiert das ganze Projekt mit Prettier          | funktioniert               |
+| `npm run verify`  | **Die Abnahme-Prüfung** — 19 automatisierte Regeln | funktioniert, 19/19        |
 
 ¹ siehe [Fallstricke](#fallstricke) unten.
 
@@ -65,14 +65,14 @@ Stand 17.08.2026: **19 von 19 bestanden.** Jeder neue Fehler, der danach auftauc
 
 Die Playwright-basierten Skripte brauchen einen laufenden Dev-Server.
 
-| Befehl                                          | Macht                                                              |
-| ------------------------------------------------ | -------------------------------------------------------------------- |
-| `node scripts/verify.mjs`                        | Die Abnahme-Prüfung (siehe oben)                                     |
-| `node scripts/shots.mjs [1440\|390\|320]`        | Screenshottet jede Sektion des eigenen Stands nach `.compare/`       |
-| `node scripts/compare.mjs [sektion]`             | Vergleicht diese Screenshots mit der Design-Referenz                 |
-| `node scripts/measure.mjs [--save]`              | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie |
-| `node scripts/palette.mjs [1440\|390\|320]`      | Prüft die Flächenverteilung gegen die 60/30/10-Regel                 |
-| `node scripts/freistellen.mjs <quelle> <ziel>`   | Stellt gelieferte Renders frei und entsäumt sie                      |
+| Befehl                                         | Macht                                                                  |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `node scripts/verify.mjs`                      | Die Abnahme-Prüfung (siehe oben)                                       |
+| `node scripts/shots.mjs [1440\|390\|320]`      | Screenshottet jede Sektion des eigenen Stands nach `.compare/`         |
+| `node scripts/compare.mjs [sektion]`           | Vergleicht diese Screenshots mit der Design-Referenz                   |
+| `node scripts/measure.mjs [--save]`            | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie |
+| `node scripts/palette.mjs [1440\|390\|320]`    | Prüft die Flächenverteilung gegen die 60/30/10-Regel                   |
+| `node scripts/freistellen.mjs <quelle> <ziel>` | Stellt gelieferte Renders frei und entsäumt sie                        |
 
 ## Fallstricke
 
@@ -99,16 +99,16 @@ Ein paar Dinge, die beim Arbeiten an diesem Projekt überraschen können:
 
 ## Wo finde ich was?
 
-| Frage                                | Datei                                                                              |
-| ------------------------------------- | ------------------------------------------------------------------------------------ |
-| Wie ist das gebaut, was hängt woran   | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                         |
-| Wie richte ich mich lokal ein         | [docs/SETUP.md](docs/SETUP.md)                                                       |
-| Welche Umgebungsvariablen gibt es     | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                           |
-| Wie ändere ich Preise, FAQ, Texte     | [docs/CONTENT.md](docs/CONTENT.md)                                                   |
-| Warum ist das so und nicht anders     | [docs/DECISIONS.md](docs/DECISIONS.md)                                               |
-| Wie wird deployt                      | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                             |
-| Was tue ich, wenn etwas kaputt ist    | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                                   |
-| Was ist noch offen                    | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md)     |
+| Frage                               | Datei                                                                            |
+| ----------------------------------- | -------------------------------------------------------------------------------- |
+| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                     |
+| Wie richte ich mich lokal ein       | [docs/SETUP.md](docs/SETUP.md)                                                   |
+| Welche Umgebungsvariablen gibt es   | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                       |
+| Wie ändere ich Preise, FAQ, Texte   | [docs/CONTENT.md](docs/CONTENT.md)                                               |
+| Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)                                           |
+| Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                         |
+| Was tue ich, wenn etwas kaputt ist  | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                               |
+| Was ist noch offen                  | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md) |
 
 ## Die wichtigste Regel im Projekt
 
