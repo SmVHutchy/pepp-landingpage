@@ -140,6 +140,25 @@ const cards = [
 
      width auf dem Container, weil `margin-inline: auto` an einem Grid-Item die
      Streckung abschaltet — Begründung ausführlich in Problem.astro. */
+  /* WAAGERECHTER ÜBERLAUF (behoben 03.09.2026). Die Figur unten hängt per
+     right:-12,5% bewusst über die rechte Kante hinaus; Prozente an den Kanten
+     rechnen gegen ihre eigene Box, bei groesse="950px" sind das 118,75px.
+     Sichtbar war das nie — body trägt overflow-x:hidden —, aber hidden
+     unterdrückt nur den Scrollbalken, nicht die Scrollbarkeit: gemessen bei
+     1440x900 lieferte scrollTo(9999,0) ein scrollX von 119, bei 768 von 65.
+     Ein Ankersprung oder ein Tab-Fokus schiebt die Seite damit seitwärts, und
+     der Benutzer kann nicht zurückscrollen.
+
+     clip statt hidden, weil hidden auf einer Achse die andere zu auto zwingt:
+     die Sektion darf senkrecht weiter in die Nachbarn auslaufen, sie ist
+     Kapitelfläche. Die Sektion ist randlos breit, ihre rechte Kante ist also
+     genau die Viewport-Kante — die Figur wird damit dort abgeschnitten, wo
+     der Bildschirm sie ohnehin schon abschneidet. Am Bild ändert sich nichts,
+     gemessen bei 1440, 1280, 1024 und 768. */
+  .sec {
+    overflow-x: clip;
+  }
+
   @media (min-width: 901px) {
     .sec {
       display: grid;
