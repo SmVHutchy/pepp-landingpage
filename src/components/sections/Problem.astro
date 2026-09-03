@@ -147,8 +147,19 @@ const cards = [
       initPeek() in site.js findet kein [data-peek] und läuft leer. Das ist
       kein Fehler, nur eine Funktion ohne Anwendungsfall.
 
-      Ohne u-desk steht die Figur jetzt auch unter 901px. --mk-skala macht aus
-      den 490px dort 270 beziehungsweise 206 Pixel.
+      u-desk ist wieder dran, und zwar am Element statt als Medienregel im
+      <style> unten. Auf schmalen Schirmen macht --mk-skala aus den 490px nur
+      noch 206 (gemessen bei 390x844: 205,8 x 365,7) — die Figur stand dort
+      hinter den Karten und wurde von der blauen angeschnitten. Statt sie halb
+      zu zeigen, blenden wir sie aus; die visuelle Auflösung übernimmt der
+      Glow-Blob oben im BlobFeld, der genau dafür gesetzt wurde.
+
+      WARUM DIE UTILITY UND NICHT EINE @media-REGEL HIER. Bis zum 03.09.2026
+      stand unten `@media (max-width:900px){.problem__pepp{display:none}}`.
+      Die Regel traf kein Element: Astro hängt an gescoptes CSS ein
+      data-astro-cid, und das trägt die Wurzel von Maskottchen.astro nicht.
+      Gemessen war display bei 390 deshalb „block“, nicht „none“. Dieselbe
+      Falle steht in global.css bei .u-hide-xs beschrieben.
 
       `springt` ist die einzige eigene Scroll-Bewegung einer Figur auf der
       Seite: sie kommt von unten ins Bild und wächst dabei auf ihre Grösse.
@@ -162,7 +173,7 @@ const cards = [
     bottom="36.1%"
     right="62.8%"
     springt
-    class="problem__pepp"
+    class="problem__pepp u-desk"
   />
 </section>
 
@@ -233,12 +244,7 @@ const cards = [
      festen Kante, und die Figur ist ein paar Sekunden länger ganz zu sehen.
      Genau dafür war sie gedacht. */
 
-  /* Auf schmalen Schirmen ragt Pepp hinter den Karten abgeschnitten hervor.
-     Statt ihn halb zu zeigen, blenden wir ihn aus — die visuelle Auflösung
-     übernimmt dann der zusätzliche Glow-Blob im BlobFeld. */
-  @media (max-width: 900px) {
-    .problem__pepp {
-      display: none;
-    }
-  }
+  /* Pepp wird auf schmalen Schirmen ausgeblendet — die Regel dafür steht
+     nicht hier, sondern als u-desk am Element. Warum, steht im Kommentar
+     dort. */
 </style>
