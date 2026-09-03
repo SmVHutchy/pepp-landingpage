@@ -73,19 +73,19 @@ Bewegungsquelle (`src/scripts/motion-config.js`) und eine Stilquelle
 ### 3.1 `PRICING` → alle Verwendungsstellen
 
 Definiert in `src/data/site.js:10-15` (`currency: 'EUR'`, `monthly: 2.99`,
-`yearly: 19.9`, `trialDays: 14`). Vollständige Liste der Lesestellen:
+`yearly: 19.9`, `trialDays: 7`). Vollständige Liste der Lesestellen:
 
 | Stelle                                     | Was daraus wird                                                                                                                           |
 | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `src/components/Cta.astro:35`              | Der CTA-Text: `` `${PRICING.trialDays} Tage gratis starten` `` — sechsmal auf der Startseite, viermal in der Navigation der Rechtsseiten. |
 | `src/components/sections/Pricing.astro:12` | `formatEuro(PRICING.monthly)` → „2,99 €" im Monatsplan (`:37`).                                                                           |
 | `src/components/sections/Pricing.astro:13` | `formatEuro(PRICING.yearly)` → „19,90 €" im Jahresplan (`:48`) und in der Kleingedruckt-Zeile (`:65`).                                    |
-| `src/components/sections/Pricing.astro:29` | Lead: „14 Tage voller Zugriff — kostenlos."                                                                                               |
+| `src/components/sections/Pricing.astro:29` | Lead: „7 Tage voller Zugriff — kostenlos."                                                                                                |
 | `src/components/sections/Pricing.astro:45` | `yearlySavingsPercent()` → Badge „Beliebt · spart 45 %". Gerechnet in `site.js:56-58`: `1 − 19,9/(2,99·12) = 0,4454` → 45.                |
 | `src/components/sections/Pricing.astro:49` | `yearlyPerMonth()` → „nur 1,66 € im Monat". Gerechnet in `site.js:51-53`: `19,9/12 = 1,6583`, kaufmännisch auf 1,66 gerundet.             |
-| `src/components/sections/Pricing.astro:71` | Trust-Zeile: „14 Tage gratis · Erinnerung vor Ablauf · jederzeit kündbar".                                                                |
+| `src/components/sections/Pricing.astro:71` | Trust-Zeile: „7 Tage gratis · Erinnerung vor Ablauf · jederzeit kündbar".                                                                 |
 | `src/data/faq.js:23`                       | FAQ-Antwort 3: Monats- und Jahrespreis plus Testdauer als Template-String.                                                                |
-| `src/data/faq.js:42`                       | FAQ-**Frage** 8: „Was passiert nach den 14 Tagen?"                                                                                        |
+| `src/data/faq.js:42`                       | FAQ-**Frage** 8: „Was passiert nach den 7 Tagen?"                                                                                         |
 | `src/pages/index.astro:74`                 | JSON-LD `MobileApplication.offers[0]`: `price: "2.99"`, `priceCurrency: "EUR"`.                                                           |
 | `src/pages/index.astro:81`                 | JSON-LD `MobileApplication.offers[1]`: `price: "19.90"`, `priceCurrency: "EUR"`.                                                          |
 

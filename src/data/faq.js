@@ -1,7 +1,9 @@
 import { PRICING, formatEuro } from './site.js';
 
 /* Die acht FAQ-Einträge, wortgleich aus der Design-Quelle übernommen:
-   die sechs Eltern-Einwände plus Alter und „nach den 14 Tagen".
+   die sechs Eltern-Einwände plus Alter und „nach den 7 Tagen".
+   Eine Abweichung von der Design-Quelle: die nennt 14 Tage. Seit dem
+   01.09.2026 sind es 7, und die Zahl kommt aus PRICING.trialDays.
 
    Diese Liste ist die einzige Quelle — das Markup in Sektion 13 UND das
    FAQPage-JSON-LD lesen sie beide. Die strukturierte Antwort kann damit nie

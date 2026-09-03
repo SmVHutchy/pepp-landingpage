@@ -14,7 +14,7 @@
 import { chromium } from 'playwright';
 
 const LOCAL = process.env.LOCAL_URL ?? 'http://localhost:4321/';
-const CTA_TEXT = '14 Tage gratis starten';
+const CTA_TEXT = '7 Tage gratis starten';
 
 const errors = [];
 const warnings = [];

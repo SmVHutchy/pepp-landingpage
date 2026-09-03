@@ -33,7 +33,7 @@ export const PRICING = {
   currency: 'EUR',
   monthly: 2.99,
   yearly: 19.9,
-  trialDays: 14,
+  trialDays: 7,
 };
 
 /* OFFEN: finale Domain steht noch nicht fest (README, offener Punkt 5).

@@ -53,7 +53,7 @@ Alle Dateien liegen in `src/components/sections/`. „Zeilen" = `wc -l` der Komp
 **Zwei Anmerkungen zum Bestand:**
 
 1. Der Projektbeschrieb nennt 18 Sektionen. Es sind **17** Dateien in `src/components/sections/` (`find src/components -type f`). `SocialProof` trägt die Zwischennummer 11b, deshalb reicht die Zählung im Code bis „Sektion 15 · Footer" (`Footer.astro:2`) plus die ungezählte Sticky-Leiste.
-2. Im Build stehen 14 `<section>`-Elemente (`grep -o "<section" dist/index.html | wc -l`) — Nav ist `<header>`, Footer ist `<footer>`, StickyCta ist ein `<div>`. Die CTA-Disziplin hält: `grep -o "14 Tage gratis starten" dist/index.html | wc -l` → **6**.
+2. Im Build stehen 14 `<section>`-Elemente (`grep -o "<section" dist/index.html | wc -l`) — Nav ist `<header>`, Footer ist `<footer>`, StickyCta ist ein `<div>`. Die CTA-Disziplin hält: `grep -o "7 Tage gratis starten" dist/index.html | wc -l` → **6**.
 
 ---
 

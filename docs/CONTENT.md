@@ -18,7 +18,7 @@ export const PRICING = {
   currency: 'EUR',
   monthly: 2.99,
   yearly: 19.9,
-  trialDays: 14,
+  trialDays: 7,
 };
 ```
 
@@ -29,7 +29,7 @@ Was sich beim Ändern **automatisch** mitzieht:
 | Preissektion         | beide Preiskarten, „nur 1,66 € im Monat", Badge „spart 45 %" |
 | FAQ, Antwort 3 und 8 | Preis und Testdauer im Antworttext                           |
 | JSON-LD im `<head>`  | die beiden `Offer`-Einträge für Google                       |
-| Jeder CTA            | Beschriftung „**14** Tage gratis starten" aus `trialDays`    |
+| Jeder CTA            | Beschriftung „**7** Tage gratis starten" aus `trialDays`     |
 
 Die abgeleiteten Werte werden gerechnet, nicht getippt: `yearlyPerMonth()` teilt durch 12 und
 rundet kaufmännisch, `yearlySavingsPercent()` rechnet die Ersparnis gegenüber monatlich.
@@ -137,7 +137,7 @@ Ein Verstoß lässt die Abnahme durchfallen.
 | CAPS       | nur Sektions-Labels | Überschriften          |
 | Emoji      | keine               | ein einziges           |
 
-**Der CTA-Text ist unveränderlich.** „14 Tage gratis starten", sechsmal, überall gleich. Er
+**Der CTA-Text ist unveränderlich.** „7 Tage gratis starten", sechsmal, überall gleich. Er
 steht fest verdrahtet in [`src/components/Cta.astro`](../src/components/Cta.astro) und lässt
 sich nicht pro Instanz überschreiben — das ist Absicht. Nie „Mehr erfahren", nie „Jetzt
 downloaden".
