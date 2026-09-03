@@ -291,6 +291,12 @@ const REWARDS = [
     gap: var(--space-4);
   }
 
+  /* Links 8px, rechts 20px. Das ist kein zu knapper Rand, sondern die Folge
+     davon, dass an der linken Kante das runde 32px-Tile steht und an der
+     rechten die Textkante: 8px sind der Ring um das Tile, der Text hat auf
+     seiner Seite die vollen 20px. Wer die Kartenregel „mindestens 16px bis zum
+     Text“ hier prüft, misst sonst gegen das Tile und meldet einen Verstoss,
+     den es nicht gibt. */
   .rewards__chip {
     display: flex;
     align-items: center;

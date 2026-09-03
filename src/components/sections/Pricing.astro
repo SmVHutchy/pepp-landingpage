@@ -233,6 +233,15 @@ const included = [
     display: inline-flex;
     align-items: center;
     height: var(--space-7);
+    /* 10px steht neben der --space-Leiter, die zwischen --space-3 (8) und
+       --space-4 (12) nichts hat. Die Seite benutzt diese Zwischenstufe
+       durchgehend: dreizehn gap-Werte in sechs Sektionen stehen auf 10px, vom
+       Marken-Logo über die FAQ-Liste bis zu den Footer-Spalten. Das Abzeichen
+       greift dieselbe Stufe waagerecht auf. Sie ganz zu entfernen wäre eine
+       eigene Aufgabe über die ganze Seite, nicht eine Zeile hier.
+
+       Kein Berührungsziel: das Abzeichen ist eine Auszeichnung, kein
+       Bedienelement — WCAG 2.5.8 gilt dafür nicht. */
     padding: 0 10px;
     border-radius: var(--radius-pill);
     background: var(--pepp-pink-tint);

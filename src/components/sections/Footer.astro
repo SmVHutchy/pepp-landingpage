@@ -213,9 +213,19 @@ const legal = [
     color: var(--text-secondary);
   }
 
+  /* Die einzige Stelle der Seite, an der Fließtext keine Zeilenlängenbremse
+     erbte: der Markenhinweis lief bei 1440px über 1099px auf einer einzigen
+     Zeile, gemessen 134 Zeichen. WCAG 1.4.8 nennt 80 als Obergrenze — dieselbe
+     Grenze, die im FAQ schon zitiert ist. --measure-body (42ch) wäre hier
+     falsch: das ist das Maß für Lesetext in Bodygröße, bei 11px Kleingedrucktem
+     ergäbe es sechs Zeilen. 80ch statt eines px-Werts, damit die Grenze in
+     Zeichen steht und nicht in einer Breite, die von der Schrift abhängt.
+     Die Zeile über dem Markenhinweis bleibt ohne Bremse: sie ist eine Angabe,
+     kein Absatz, und bricht mit 68 Zeichen nie um. */
   .foot__trademarks {
     margin-top: var(--space-3);
     font-size: 11px;
     line-height: 16px;
+    max-width: 80ch;
   }
 </style>

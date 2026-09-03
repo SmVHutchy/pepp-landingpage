@@ -280,6 +280,25 @@ svg[data-pepp-icon] {
 
 /* ── Karten ───────────────────────────────────────────────────────────── */
 
+/* Zum Kartenpolster, weil es die meistkopierte Zeile der Seite ist und beim
+   nächsten Token-Abgleich als Verstoss aussieht: die Werte liegen absichtlich
+   NEBEN der --space-Leiter. Sie sind eine eigene, feinere Reihe, und die
+   Abstufung ist die Aussage — jede Kartenart sagt über ihr Polster, wie laut
+   sie ist:
+
+     .modes__inset   20 – 28   Fläche in einer Fläche, die leiseste
+     .mkt-card       22 – 32   der Normalfall, diese Zeile
+     .price__plan    24 – 36
+     .modes__panel   24 – 40
+     .final__panel   28 – 64   der Schlussblock, die lauteste
+
+   Die Leiter hat oberhalb von 24 nur 32, 40, 48, 64. Auf sie gerundet fielen
+   .mkt-card und .price__plan auf 32 zusammen, .price__plan und .modes__panel
+   auf 40 — von fünf unterscheidbaren Karten blieben drei. Das wäre kein
+   Token-Abgleich mehr, sondern ein neuer Maßstab.
+
+   Wer hier trotzdem rastern will, ändert die Reihe als Ganzes und misst die
+   Sektionshöhen nach (scripts/measure.mjs), nicht eine Zeile davon. */
 .mkt-card {
   background: var(--surface-card);
   border: var(--border-hair) solid var(--border-hairline);

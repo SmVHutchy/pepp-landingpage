@@ -216,7 +216,9 @@ const cards = [
     gap: var(--mkt-card-gap);
   }
 
-  /* Bewusst ohne box-shadow: die Sektion soll flacher wirken als Sicherheit. */
+  /* Bewusst ohne box-shadow: die Sektion soll flacher wirken als Sicherheit.
+     Das Polster ist das von .mkt-card, absichtlich Zeichen für Zeichen — warum
+     es neben der --space-Leiter liegt, steht dort in global.css. */
   .fam__card {
     position: relative;
     z-index: 1;

@@ -302,7 +302,13 @@ const TRAIL = {
     /* Die Karte hängt links unten über der Figur; ohne diesen Boden stünde sie
        auf der Kante der Sektion. Unter 901px ist der Boden höher: dort ist die
        Karte fast so breit wie die Figur, und mit dem Desktop-Wert lag sie über
-       deren halbem Körper statt über der unteren Ecke. */
+       deren halbem Körper statt über der unteren Ecke.
+
+       56px liegt bewusst zwischen den Sprossen: die --space-Leiter springt hier
+       von 48 auf 64 und hat für diese Passung keinen Wert. Der Boden geht eins
+       zu eins in die Bühnenhöhe — gemessen bei 390px 310px mit 48, 318px mit 56,
+       326px mit 64. Der Desktop-Wert unten in der Datei ist dagegen gerastert
+       (clamp 24/40), weil die Karte dort nicht mehr über der Figur klebt. */
     padding-bottom: 56px;
   }
 
