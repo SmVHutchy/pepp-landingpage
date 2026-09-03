@@ -247,4 +247,41 @@ const cards = [
   /* Pepp wird auf schmalen Schirmen ausgeblendet — die Regel dafür steht
      nicht hier, sondern als u-desk am Element. Warum, steht im Kommentar
      dort. */
+
+  /* Bei 390 misst das Panel 350 x 262,5 für ein 96px-Icon: die Fläche liest
+     sich als Leerraum, nicht als Figur. Auf Desktop stimmt das Verhältnis
+     (356 x 267 in einer dreispaltigen Reihe), auf dem Handy stehen die drei
+     Karten untereinander und die Höhe summiert sich.
+
+     3/2 statt 4/3 zieht das Panel bei 390 von 350x262,5 auf 350x233 zusammen,
+     rund 88px über die drei Karten. Das Icon geht von 96 auf 80px mit, damit
+     es die kleinere Fläche nicht füllt; sein Anteil an der Panelhöhe sinkt
+     dabei leicht mit, von 36,6 auf 34,3 %.
+
+     max-width:600 ist eine der vier bestehenden Stufen. Die Grenze der
+     Kartenreihe ist sie nicht: per Binärsuche gemessen steht die Reihe
+     einspaltig bis 582, zweispaltig 583-879, dreispaltig ab 880. Die Stufe
+     deckt damit die ganze einspaltige Strecke ab und dazu 583-600. Dort
+     schadet sie nicht — das Panel ist in diesem Band nur noch 260-268 breit,
+     und der Icon-Anteil liegt mit der Regel bei 44,8-46,1 % statt 47,8-49,2 %
+     ohne sie.
+
+     Die Regel ist auf .problem gescopt und steht NICHT in global.css:
+     .mkt-figure__panel ist ein globales Rezept. Heute ist diese Sektion die
+     einzige Verwendung (per grep geprüft), aber das ist ein Zustand und keine
+     Zusicherung.
+
+     :global() beim Icon, weil Icon.astro sein SVG per set:html ausgibt — das
+     Element trägt kein data-astro-cid und eine gescopte Regel träfe es nicht.
+     Der Selektor hängt an [data-pepp-icon], dem Marker aus Icon.astro. */
+  @media (max-width: 600px) {
+    .problem .mkt-figure__panel {
+      aspect-ratio: 3 / 2;
+    }
+
+    .problem .mkt-figure__panel :global([data-pepp-icon]) {
+      width: 80px;
+      height: 80px;
+    }
+  }
 </style>
