@@ -1,15 +1,57 @@
 # Pepp — Marketing-Landingpage
 
+## Übergabe — was noch zu tun ist
+
+Stand: 03.09.2026. **Die Seite selbst ist fertig und wird hier nicht mehr angefasst.** Was fehlt,
+ist keine Programmierarbeit mehr, sondern acht Entscheidungen bzw. Lieferungen vom Kunden.
+
+| Status                                            | Bereich                   | Anzahl  |
+| ------------------------------------------------- | ------------------------- | ------- |
+| ✅ Erledigt                                       | Technische Launch-Blocker | 1 von 3 |
+| 🔴 Noch zu beheben, ohne Kunde möglich            | —                         | 0       |
+| 🟡 Braucht eine Entscheidung/Lieferung vom Kunden | siehe unten               | 8       |
+
+### ✅ Erledigt
+
+- **CTA-Knopf in der Navigation** brach auf dem Handy um und war teilweise unsichtbar — behoben
+  (`src/components/Cta.astro`).
+- **Standarddateien**, die früher fehlten (og-image, robots.txt, sitemap.xml, Favicon-Set,
+  Web-Manifest, eigene 404-Seite) — sind jetzt alle im Projekt vorhanden.
+
+### 🟡 Braucht eine Entscheidung oder Lieferung vom Kunden
+
+| #   | Was fehlt                                                                                                                                                    | Wer liefert         | Was passiert ohne Antwort                                                            |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------ |
+| 1   | **Rechtstext-Widerspruch:** AGB nennen 23,88 €/Jahr + Lifetime-Tarif 79,99 €, die Preissektion 23,90 €/Jahr ohne Lifetime. Welche Zahlen gelten?             | Kunde (Rechtsfrage) | Nutzer sieht auf der Seite einen anderen Preis als im Vertrag — rechtlich angreifbar |
+| 2   | **Barrierefreiheitserklärung:** Kontaktstelle, Durchsetzungsstelle, Prüfdatum fehlen — stehen aktuell als sichtbarer Platzhaltertext live auf der Seite      | Kunde               | Verstößt gegen das BFSG                                                              |
+| 3   | **Hosting-Anbieter** noch nicht gewählt — keinerlei Deploy-Konfiguration im Repo                                                                             | Kunde               | Seite kann nicht live gehen                                                          |
+| 4   | **Finale Domain** — steht noch auf Platzhalter `taschengeldapp.com`                                                                                          | Kunde               | Betrifft Canonical-URLs, QR-Code im Hero, Sitemap                                    |
+| 5   | **Fünf Zugänge**: Domain/DNS, Hosting-Konto, App-Store-Konto, Play-Console-Konto, Design-Originaldateien                                                     | Kunde               | Übergabe bleibt unvollständig                                                        |
+| 6   | **Social-Proof-Sektion** ist absichtlich leer — echte Kundenzitate/Store-Bewertungen fehlen (erfundene Inhalte sind bewusst nicht drin)                      | Kunde               | Sektion bleibt ausgeblendet                                                          |
+| 7   | **Ein App-Screenshot fehlt** (`eltern-07-pruefen.png`) — zeigt aktuell ersatzweise ein anderes Bild                                                          | Kunde / Design      | Kein Fehler, aber nicht der finale Screen                                            |
+| 8   | **Zwei Maskottchen-Bilder** haben ein sichtbares Artefakt, das sich nicht automatisiert entfernen lässt — braucht neue Freisteller aus der Original-3D-Szene | Kunde / Design      | Bleiben mit kleinem Makel im Bild                                                    |
+
+### Danach, vor dem eigentlichen Livegang
+
+- [ ] `node scripts/verify.mjs` läuft grün
+- [ ] Rechtstexte sind anwaltlich freigegeben
+- [ ] Sobald Hoster feststeht: Security-Header, HTTPS, `/impressum`-Routing prüfen
+      (Details: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md))
+
+**Mehr Detail je Punkt** (Fundstelle im Code, genaue Begründung): [docs/STATUS.md](docs/STATUS.md)
+und [docs/OFFEN-KUNDE.md](docs/OFFEN-KUNDE.md). Vollständiger technischer Audit-Bericht (127
+Positionen, historisch, teils überholt): [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
+
+---
+
+## Über dieses Projekt
+
 Statische Marketing-Seite für **Pepp**, die deutsche Familien-App für Aufgaben, Taschengeld und
 Medienzeit. Sie hat ein einziges Ziel: zum App-Download führen. Es gibt keinen Anwendungszustand,
 kein SPA-Framework und keine externen Ressourcen zur Laufzeit — die Seite ist rein statisches HTML.
 
 Sie besteht aus fünf Seiten: der eigentlichen Landingpage mit 15 Sektionen, plus Impressum,
 Datenschutz, AGB und Barrierefreiheitserklärung.
-
-> ⚠️ **Was noch zu tun ist, auf einen Blick:** [docs/STATUS.md](docs/STATUS.md). Die Seite ist
-> technisch fertig; was fehlt, sind acht Entscheidungen bzw. Lieferungen vom Kunden — keine
-> Programmierarbeit mehr. Details je Fund: [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
 
 ## Schnellstart
 
@@ -99,16 +141,16 @@ Ein paar Dinge, die beim Arbeiten an diesem Projekt überraschen können:
 
 ## Wo finde ich was?
 
-| Frage                               | Datei                                                                            |
-| ----------------------------------- | -------------------------------------------------------------------------------- |
-| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                     |
-| Wie richte ich mich lokal ein       | [docs/SETUP.md](docs/SETUP.md)                                                   |
-| Welche Umgebungsvariablen gibt es   | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                       |
-| Wie ändere ich Preise, FAQ, Texte   | [docs/CONTENT.md](docs/CONTENT.md)                                               |
-| Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)                                           |
-| Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                         |
-| Was tue ich, wenn etwas kaputt ist  | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                               |
-| Was ist noch offen                  | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md) |
+| Frage                               | Datei                                        |
+| ----------------------------------- | -------------------------------------------- |
+| Was ist noch offen (Übergabe)       | [docs/STATUS.md](docs/STATUS.md)             |
+| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Wie richte ich mich lokal ein       | [docs/SETUP.md](docs/SETUP.md)               |
+| Welche Umgebungsvariablen gibt es   | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)   |
+| Wie ändere ich Preise, FAQ, Texte   | [docs/CONTENT.md](docs/CONTENT.md)           |
+| Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)       |
+| Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)     |
+| Was tue ich, wenn etwas kaputt ist  | [docs/RUNBOOK.md](docs/RUNBOOK.md)           |
 
 ## Die wichtigste Regel im Projekt
 
@@ -118,4 +160,4 @@ Preise also nie an mehreren Stellen gleichzeitig.
 
 Eine Ausnahme gibt es, und sie ist ein bekannter Bug: Die AGB in
 [`src/legal/agb.html`](src/legal/agb.html) enthalten fest eingetragene Preise, die den Preisen an
-der zentralen Stelle widersprechen. Das ist Blocker B3 im Audit-Bericht.
+der zentralen Stelle widersprechen — siehe Punkt 1 in der Übergabe oben.
