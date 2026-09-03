@@ -121,12 +121,16 @@ const trustPoints = [
             loading="eager"
           />
         </a>
-        <a href={STORE.android} class="hero__store" aria-label="Jetzt bei Google Play">
+        <a
+          href={STORE.android}
+          class="hero__store hero__store--play"
+          aria-label="Jetzt bei Google Play"
+        >
           <img
-            src="/badges/google-play-de.svg"
+            src="/badges/google-play-de.png"
             alt="Jetzt bei Google Play"
-            width="135"
-            height="40"
+            width="646"
+            height="250"
             loading="eager"
           />
         </a>
@@ -460,6 +464,11 @@ const trustPoints = [
   .hero__stores {
     display: flex;
     flex-wrap: wrap;
+    /* align-items: center, weil die beiden Kästen unterschiedlich hoch sind —
+       40px Apple gegen 52px Google, siehe .hero__store--play. Ohne die Zeile
+       stünde Apples Badge per stretch auf 52px Zeilenhöhe und wäre 4px zu
+       hoch ausgerichtet. */
+    align-items: center;
     gap: var(--space-4);
     margin-top: var(--space-6);
   }
@@ -485,6 +494,23 @@ const trustPoints = [
     display: block;
     width: auto;
     height: 40px;
+  }
+
+  /* 52px, nicht 40 — und das ist kein grösseres Badge, sondern ein gleich
+     grosses. Googles Originalgrafik liefert ihren Freiraum mit: von 250px
+     Dateihöhe sind 646x192 sichtbarer Knopf, oben und unten je 29px
+     transparent (gemessen mit sharp über den Alphakanal). Apple füllt seine
+     Zeichenfläche dagegen ganz aus.
+
+     Bei gleicher Kastenhöhe wäre Googles Knopf 40 x 0,768 = 30,7px hoch gegen
+     Apples 40 — sichtbar kleiner. 52 x 0,768 = 39,9px trifft Apple. Die 6px
+     Überstand nach oben und unten sind transparent, die Reihe zentriert.
+
+     Der Freiraum wegzuschneiden wäre der naheliegende Weg und zugleich eine
+     Veränderung der Marke, die beide Richtlinien untersagen.
+     Siehe public/badges/HERKUNFT.md. */
+  .hero__store--play img {
+    height: 52px;
   }
 
   .hero__visual {

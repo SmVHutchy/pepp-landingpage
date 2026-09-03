@@ -89,12 +89,16 @@ const legal = [
             loading="lazy"
           />
         </a>
-        <a href={STORE.android} class="foot__store" aria-label="Jetzt bei Google Play">
+        <a
+          href={STORE.android}
+          class="foot__store foot__store--play"
+          aria-label="Jetzt bei Google Play"
+        >
           <img
-            src="/badges/google-play-de.svg"
+            src="/badges/google-play-de.png"
             alt="Jetzt bei Google Play"
-            width="135"
-            height="40"
+            width="646"
+            height="250"
             loading="lazy"
           />
         </a>
@@ -186,6 +190,15 @@ const legal = [
     display: block;
     width: auto;
     height: 40px;
+  }
+
+  /* Googles Originalgrafik bringt 29px Freiraum oben und unten mit, Apples
+     nicht. 52px Kastenhöhe ergibt 39,9px sichtbaren Knopf und trifft damit
+     Apples 40. Ausführlich in Hero.astro und public/badges/HERKUNFT.md.
+     Hier stapelt die Reihe untereinander, align-items ist deshalb ohne
+     Wirkung — die Kästen stehen links auf Kante. */
+  .foot__store--play img {
+    height: 52px;
   }
 
   .foot__legal {
