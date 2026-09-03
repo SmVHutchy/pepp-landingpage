@@ -1,16 +1,24 @@
 ---
 /* Sektion 11 · Für die ganze Familie
-   Weiss mit Radius oben. Karten in Off-White auf Weiss, ohne Schatten. */
+   Weiss mit Radius oben. Jede Karte steht auf ihrem eigenen Tint, ohne
+   Schatten. */
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
 import quest from '../../assets/mascot/pepp-quest.png';
 
-/* Farbtöne wie in „So funktioniert's": dieselben Tile-Tints, andere Reihenfolge.
-   Die Icons standen vorher nackt auf der Karte — als einzige Icons der Seite
-   ohne Fläche. Die Sektion bleibt trotzdem flach: ein Tint ist Farbe, kein
-   Schatten.
+/* Farbtöne wie in „So funktioniert's": dieselben Tints, andere Reihenfolge.
+   Seit dem 03.09.2026 tragen sie hier die KARTENFLÄCHE und nicht mehr die
+   40px-Kachel — Variante „D1", ausführlich begründet im Kommentar an der
+   Kartenliste unten. Die Sektion bleibt trotzdem flach: ein Tint ist Farbe,
+   kein Schatten.
+
+   Die Kachel bleibt, kehrt sich aber auf --surface-card um: auf einer Karte
+   in derselben Farbe wäre sie unsichtbar, und die Icons stünden wieder nackt
+   auf der Fläche — als einzige Icons der Seite ohne Fläche, so wie in der
+   Fassung vor den Kacheln. --ink-* bleibt die Icon-Farbe je Karte und trägt
+   damit weiterhin den Hue der Karte.
 
    Karte 2, 3 und 4 tragen seit dem 01.09.2026 den Wortlaut des Kunden. Was
    dabei wegfiel: die Namen Emma und Ben (erfundenes Beispiel), der Nachsatz
@@ -81,6 +89,8 @@ const cards = [
     />
   </BlobFeld>
 
+  <div class="mkt-kante-oben" aria-hidden="true"></div>
+
   <div class="mkt-container">
     {
       /* Der Kopf trägt hier zwei Spalten ohne Lead: links Label und H2, rechts
@@ -116,11 +126,49 @@ const cards = [
       </div>
     </div>
 
+    {
+      /* VARIANTE „D1" — DER TINT IST DIE KARTENFLÄCHE (Kundenentscheid,
+        03.09.2026). Bis dahin trug die 40px-Kachel den Tint und die Karte
+        stand in --bg-app. Jetzt steht die Karte auf dem Tint und Titel und
+        Body liegen darauf; die Kachel kehrt sich dafür auf --surface-card um.
+        Der Tint kommt als Inline-Wert pro Karte, wie überall sonst auf der
+        Seite, wo ein Tint einem einzelnen Inhalt zugeordnet ist (Alltag,
+        Mechanik, So funktioniert's, Belohnungen): er gehört zur Karte und
+        nicht zum Rezept.
+
+        Der Alltag (Problem.astro) benutzt denselben Tint weiterhin als Panel
+        ÜBER dem Text. Zwei Verwendungen desselben Tints an zwei Stellen —
+        das ist die Unterscheidung, die der Kunde ausdrücklich will, und
+        keine Unstimmigkeit, die beim nächsten Aufräumen glattzuziehen wäre.
+
+        AUFLAGE ZUM KONTRAST — der Grund, unter dem die Variante überhaupt
+        genehmigt wurde. --text-secondary bleibt die Farbe von .fam__body und
+        wird NICHT abgedunkelt. Gemessen erreicht sie auf den vier Tints:
+
+          --pepp-peach-tint   4,84:1   (Karte 4)
+          --pepp-pink-tint    4,76:1   (Karte 1)
+          --pepp-blue-tint    4,73:1   (Karte 3)
+          --pepp-lilac-tint   4,67:1   (Karte 2)
+
+        Die Schwelle ist 4,5:1 und nicht 3:1: --type-body-size sind 15px bei
+        Gewicht 400, das ist keine grosse Schrift. Die Reserve liegt damit
+        bei allen vier unter 0,35 und auf dem Lilac-Tint am knappsten. JEDE
+        spätere Änderung an einem der vier Tints ODER an --text-secondary
+        muss deshalb neu gemessen werden — in diesem Band lässt sich nichts
+        abschätzen. scripts/verify.mjs prüft genau das („getönte Flächen:
+        Text und Icons halten 4,5:1 bzw. 3:1"); die Prüfung sucht den
+        Hintergrund nach oben und findet auf dieser Karte den Tint.
+
+        Nicht der knappe Fall sind der Titel in --text-primary und die Icons:
+        die --ink-*-Hues sind für ihren Tint angelegt und stehen jetzt auf
+        --surface-card, das heller ist als jeder der vier Tints — dort kann
+        ihr Abstand nur grösser werden, nicht kleiner. */
+    }
     <ul class="fam__cards mkt-list-reset">
       {
         cards.map((card) => (
-          <li class="fam__card" data-anim="card">
-            <span class="mkt-tile" style={`background:${card.tint}`}>
+          <li class="fam__card" data-anim="card" style={`background:${card.tint}`}>
+            <span class="mkt-tile">
               <Icon name={card.icon} size={22} color={card.ink} />
             </span>
             <h3 class="fam__title">{card.title}</h3>
@@ -137,6 +185,9 @@ const cards = [
      liesse sich die Seite nach rechts schieben. */
   .family {
     overflow: hidden;
+    /* darüber liegt .sec (--mkt-surface-chapter) — die Kante blendet in
+       diese Farbe aus, nicht in --bg-app. */
+    --kante-oben-farbe: var(--mkt-surface-chapter);
   }
 
   /* Zweispaltiger Kopf ohne Lead. Das globale Rezept in global.css hängt an
@@ -218,14 +269,35 @@ const cards = [
 
   /* Bewusst ohne box-shadow: die Sektion soll flacher wirken als Sicherheit.
      Das Polster ist das von .mkt-card, absichtlich Zeichen für Zeichen — warum
-     es neben der --space-Leiter liegt, steht dort in global.css. */
+     es neben der --space-Leiter liegt, steht dort in global.css.
+
+     KEIN background hier: die Fläche ist seit „D1" der Tint der jeweiligen
+     Karte und steht als Inline-Wert am <li>. Die Auflage zum Kontrast, die an
+     dieser Fläche hängt, steht im Kommentar über der Kartenliste — wer die
+     Textfarbe unten oder einen Tint oben anfasst, liest sie zuerst.
+
+     Radius und Hairline bleiben: 28px über --radius-2xl ist der Radius aller
+     Inhaltskarten der Seite, und die Hairline hält die Kante gegen die weisse
+     Sektionsfläche, auch wo Tint und Weiss dicht beieinander liegen. */
   .fam__card {
     position: relative;
     z-index: 1;
-    background: var(--bg-app);
     border: var(--border-hair) solid var(--border-hairline);
     border-radius: var(--radius-2xl);
     padding: clamp(22px, 2.2vw, 32px);
+  }
+
+  /* Die Umkehrung: die Kachel trägt jetzt die Fläche, die vorher die Karte
+     hatte — und zwar --surface-card, dieselbe Farbe wie die Sektion, nicht
+     --bg-app. Auf dem Tint liest sie sich damit als Ausschnitt bis auf die
+     Sektionsfläche.
+
+     Der Selektor braucht kein :global(): das <span> steht in dieser Datei und
+     trägt das data-astro-cid. Nur das SVG darin käme aus Icon.astro (set:html)
+     und wäre für eine gescopte Regel unerreichbar — es wird hier aber nicht
+     gestylt, seine Farbe kommt als Prop. */
+  .fam__card .mkt-tile {
+    background: var(--surface-card);
   }
 
   .fam__title {
@@ -237,6 +309,12 @@ const cards = [
     color: var(--text-primary);
   }
 
+  /* Diese Textfarbe steht unter der Auflage des Kunden und ist die knappste
+     Paarung der Sektion: --text-secondary auf dem Tint der Karte, Reserve
+     unter 0,35 zur Schwelle. Die vier gemessenen Werte stehen im Kommentar
+     über der Kartenliste. Wer hier eine andere Farbe einsetzt — auch eine
+     dunklere, „um sicherzugehen" —, ändert eine abgenommene Entscheidung und
+     misst neu. */
   .fam__body {
     margin: 6px 0 0;
     font-size: var(--type-body-size);
