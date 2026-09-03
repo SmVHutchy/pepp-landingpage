@@ -65,7 +65,8 @@ ABNAHME nach jeder Änderung, in dieser Reihenfolge:
    Ausgangslage 17.08.2026: 17 bestanden, 2 FEHLER (320 px, Navigation, Blocker B1).
    Nach deiner Änderung darf es NICHT mehr Fehler geben. Behebst du B1, müssen es 0 sein.
 4. Bei sichtbaren Änderungen: node scripts/shots.mjs 320 und node scripts/shots.mjs 1440
-Hinweis: der Dev-Server bindet nur IPv6 — mit http://[::1]:4321/ prüfen, nicht localhost.
+Hinweis: der Preview bindet hier IPv4 — mit http://localhost:4321/ prüfen. Frühere
+Fassungen dieser Zeile behaupteten IPv6-only; das ist am laufenden Prozess widerlegt.
 `;
 
 const ERGEBNIS = {

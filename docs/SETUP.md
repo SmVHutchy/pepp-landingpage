@@ -48,7 +48,9 @@ npm run dev
 <http://localhost:4321> — der Dev-Server lädt bei jeder Dateiänderung neu.
 
 **Wenn `localhost` nicht antwortet:** Astro bindet unter Umständen nur IPv6. Dann
-`http://[::1]:4321/` versuchen. Der Server läuft, nur die Adressauflösung greift daneben.
+`http://[::1]:4321/` versuchen — und umgekehrt. Welchen Stack `astro preview` belegt,
+wechselt je nach Rechner; am 03.09.2026 war es hier IPv4 (`127.0.0.1`). Der Server läuft,
+nur die Adressauflösung greift daneben.
 
 ### 4. Build prüfen
 
@@ -115,10 +117,10 @@ der Code; die bekannten Abweichungen stehen im [Auditbericht](AUDIT-2026-08-17.m
 
 ## Bekannte Fallstricke
 
-| Symptom                                                   | Ursache                                      | Lösung                                     |
-| --------------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
-| `verify.mjs` meldet Fehler, die der echte Build nicht hat | Dev-Server hängt nach vielen Dateiänderungen | Dev-Server neu starten, dann erneut messen |
-| `curl localhost:4321` liefert nichts                      | Server lauscht nur auf IPv6                  | `curl http://[::1]:4321/`                  |
-| Playwright-Werkzeuge brechen ab                           | keine Browser installiert                    | `npx playwright install chromium`          |
-| Bilder fehlen nach dem Build                              | `sharp` nicht sauber installiert             | `rm -rf node_modules && npm install`       |
-| `dist/` enthält alte Stände                               | Build-Cache                                  | `rm -rf dist .astro && npm run build`      |
+| Symptom                                                   | Ursache                                      | Lösung                                      |
+| --------------------------------------------------------- | -------------------------------------------- | ------------------------------------------- |
+| `verify.mjs` meldet Fehler, die der echte Build nicht hat | Dev-Server hängt nach vielen Dateiänderungen | Dev-Server neu starten, dann erneut messen  |
+| `curl localhost:4321` liefert nichts                      | Server lauscht auf dem anderen IP-Stack      | `curl http://[::1]:4321/` — und andersherum |
+| Playwright-Werkzeuge brechen ab                           | keine Browser installiert                    | `npx playwright install chromium`           |
+| Bilder fehlen nach dem Build                              | `sharp` nicht sauber installiert             | `rm -rf node_modules && npm install`        |
+| `dist/` enthält alte Stände                               | Build-Cache                                  | `rm -rf dist .astro && npm run build`       |

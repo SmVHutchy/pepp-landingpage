@@ -21,7 +21,7 @@ export const meta = {
    Sie sind gemessen und stehen im jeweiligen Auftrag ausgeschrieben. */
 
 const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/02_PROJEKTE/pepp-landingpage';
-const PREVIEW = 'http://[::1]:4321/';
+const PREVIEW = 'http://localhost:4321/';
 
 const REGELN = `
 PROJEKT: Pepp Landingpage, Astro 5 static. WURZEL: ${ROOT}
@@ -78,7 +78,7 @@ const ABNAHME = `
 ABNAHME nach jeder Änderung, in dieser Reihenfolge:
 
 1. npm run build                             — muss durchlaufen
-2. Preview: EINER LÄUFT SCHON auf [::1]:4321. Prüf zuerst
+2. Preview: EINER LÄUFT SCHON auf localhost:4321. Prüf zuerst
      curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"
    Antwortet er 200, starte KEINEN zweiten — astro preview serviert aus dist/,
    dein npm run build aus Schritt 1 wirkt dort also sofort. Ein zweiter Start
@@ -86,8 +86,9 @@ ABNAHME nach jeder Änderung, in dieser Reihenfolge:
    Antwortet er nicht: npm run preview -- --port 4321 im Hintergrund, dann
    erneut curl bis 200.
    npm run dev gibt es hier NICHT: Astros Startbudget von 30 s reicht auf der
-   SMB-Freigabe nicht. Und astro preview bindet nur IPv6 — deshalb [::1],
-   niemals localhost.
+   SMB-Freigabe nicht. astro preview bindet hier IPv4 (127.0.0.1) — deshalb
+   localhost. Frühere Fassungen dieser Zeile behaupteten IPv6-only und [::1];
+   das ist am laufenden Prozess widerlegt. Im Zweifel beide Stacks probieren.
 3. LOCAL_URL="${PREVIEW}" node scripts/verify.mjs
    Basislinie 01.09.2026 (Commit d4ce2ef): 20 bestanden, 0 FEHLER, 1 PRÜFEN.
    Das PRÜFEN betrifft U+2192, U+2011, U+202F und ist seit jeher da.
@@ -732,7 +733,7 @@ Agenten auf echten Zeilen arbeiten und nicht auf Zahlen aus einem alten Bericht.
 
 1. git status --porcelain — ist der Baum sauber? Wenn nicht: LISTE, was offen ist.
 2. npm run build — läuft er?
-3. Preview: einer LÄUFT SCHON auf [::1]:4321. Erst curl gegen ${PREVIEW};
+3. Preview: einer LÄUFT SCHON auf localhost:4321. Erst curl gegen ${PREVIEW};
    bei 200 keinen zweiten starten (astro preview serviert aus dist/), sonst
    npm run preview -- --port 4321 im Hintergrund und auf 200 warten. Dann
    LOCAL_URL="${PREVIEW}" node scripts/verify.mjs

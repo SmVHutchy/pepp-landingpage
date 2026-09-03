@@ -23,7 +23,7 @@ export const meta = {
    Viewport je besucht. */
 
 const ROOT = '/Volumes/9R_Drive/Dropbox/_Liam_Praktikant/02_PROJEKTE/pepp-landingpage';
-const PREVIEW = 'http://[::1]:4321/';
+const PREVIEW = 'http://localhost:4321/';
 
 const REGELN = `
 PROJEKT: Pepp Landingpage, Astro 5 static. WURZEL: ${ROOT}
@@ -89,7 +89,7 @@ const ABNAHME = `
 ABNAHME nach jeder Änderung:
 
 1. npm run build                             — muss durchlaufen
-2. Preview: EINER LÄUFT SCHON auf [::1]:4321. Prüf zuerst
+2. Preview: EINER LÄUFT SCHON auf localhost:4321. Prüf zuerst
      curl -sS -o /dev/null -w "%{http_code}" "${PREVIEW}"
    Antwortet er 200, starte KEINEN zweiten — astro preview serviert aus dist/,
    dein npm run build aus Schritt 1 wirkt dort also sofort. Ein zweiter Start
@@ -97,7 +97,10 @@ ABNAHME nach jeder Änderung:
    Antwortet er nicht: npm run preview -- --port 4321 im Hintergrund, dann
    erneut curl bis 200.
    npm run dev gibt es hier NICHT (SMB-Freigabe, Astros 30-s-Budget reicht nicht).
-   astro preview bindet nur IPv6 — [::1], niemals localhost.
+   ACHTUNG, frueher stand hier das Gegenteil: astro preview bindet in
+   diesem Projekt IPv4 (127.0.0.1), NICHT [::1]. Gemessen am laufenden
+   Prozess. Wer LOCAL_URL auf [::1] setzt, misst gegen einen toten Port
+   und haelt jede Pruefung faelschlich fuer bestanden.
 3. LOCAL_URL="${PREVIEW}" node scripts/verify.mjs
    Basislinie: 20 bestanden, 0 FEHLER, 1 PRÜFEN (U+2192, U+2011, U+202F).
    Nach dir: 0 FEHLER, keine zusätzliche PRÜFEN-Zeile.
