@@ -161,6 +161,21 @@ const cards = [
       Gemessen war display bei 390 deshalb „block“, nicht „none“. Dieselbe
       Falle steht in global.css bei .u-hide-xs beschrieben.
 
+      ANGESCHNITTEN STATT SCHWEBEND (03.09.2026). `bottom` stand auf 36,1 %
+      und liess die Figur frei in der Sektion stehen. Gemessen bei 1512x1000:
+      sie ragte 185px oben aus .problem heraus in die Vertrauensleiste und
+      hielt unten 314px Abstand zur Kante. Beides war unbeabsichtigt — die
+      Sektion hat sichtbaren overflow, es schneidet sie also nichts.
+
+      -15 % setzt sie auf die Kante und 131px darunter. Angeschnitten wird sie
+      von .how: die Folgesektion ist deckend weiss und trägt overflow:hidden,
+      der Schnitt ist damit eine harte Kante und kein Verlauf. Die Figur macht
+      an dieser Stelle wieder das, wofür der Peek hier stand.
+
+      Prozente an den Kanten rechnen gegen die EIGENE Box der Figur, nicht
+      gegen die Sektion (Maskottchen.astro:143-157): -15 % sind 15 % von
+      490px x 1,777 = 871px Höhe, also die 131px.
+
       `springt` ist die einzige eigene Scroll-Bewegung einer Figur auf der
       Seite: sie kommt von unten ins Bild und wächst dabei auf ihre Grösse.
       Werte in MOTION.sprung, Mechanik in initSprung() (site.js). Gemessen bei
@@ -170,7 +185,7 @@ const cards = [
   <Maskottchen
     figur="pepp-jump"
     groesse="490px"
-    bottom="36.1%"
+    bottom="-15%"
     right="62.8%"
     springt
     class="problem__pepp u-desk"
@@ -240,9 +255,9 @@ const cards = [
      aufgegangen.
 
      Der Peek stand hier, um von der Folgesektion angeschnitten zu werden.
-     Das gilt weiter — nur passiert es jetzt im Vorbeiziehen statt an einer
-     festen Kante, und die Figur ist ein paar Sekunden länger ganz zu sehen.
-     Genau dafür war sie gedacht. */
+     Das gilt seit dem 03.09.2026 wieder wörtlich: die Figur sitzt auf
+     bottom:-15% und wird von .how um 131px beschnitten. Die Messung dazu
+     steht im Kommentar am Element. */
 
   /* Pepp wird auf schmalen Schirmen ausgeblendet — die Regel dafür steht
      nicht hier, sondern als u-desk am Element. Warum, steht im Kommentar
