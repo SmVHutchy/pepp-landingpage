@@ -37,7 +37,7 @@ Du änderst also **eine** Zahl, nicht sieben.
 
 > ### Achtung: Die AGB ziehen NICHT mit
 >
-> [`src/content/legal/agb.html`](../src/content/legal/agb.html) enthält hart getippte Preise.
+> [`src/legal/agb.html`](../src/legal/agb.html) enthält hart getippte Preise.
 > Stand heute widersprechen sie sich: AGB sagen 23,88 €/Jahr und einen Lifetime-Tarif für
 > 79,99 €, alles andere sagt 19,90 € und kein Lifetime. **Nach jeder Preisänderung die AGB
 > von Hand nachziehen** und den Prozentsatz der Ersparnis nachrechnen.
@@ -82,7 +82,7 @@ Firmierung, Anschrift, Geschäftsführer, Registereintrag, USt-IdNr., Kontakt, C
 Speist Footer und JSON-LD.
 
 **Die Rechtstexte lesen diese Werte nicht** — sie enthalten die Angaben als eigenen Text.
-Bei einer Adressänderung also auch alle vier Dateien in `src/content/legal/` und
+Bei einer Adressänderung also auch alle vier Dateien in `src/legal/` und
 `src/pages/barrierefreiheit.astro` prüfen.
 
 ## Domain
@@ -94,7 +94,7 @@ Open-Graph-URL und später die Sitemap. **Ein Wert ändern reicht.**
 
 ## Rechtstexte
 
-**Dateien:** [`src/content/legal/`](../src/content/legal/) — `impressum.html`,
+**Dateien:** [`src/legal/`](../src/legal/) — `impressum.html`,
 `datenschutz.html`, `agb.html`
 
 Rohe HTML-Fragmente, die wortgleich aus dem bestehenden Auftritt stammen. Sie werden per

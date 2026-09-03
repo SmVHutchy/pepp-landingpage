@@ -171,7 +171,7 @@ Rechtstexten.
 **Konsequenz.** Eine Preisänderung ist eine Zahl.
 
 **Preis — und hier ist die Entscheidung heute gebrochen.** Die Rechtstexte in
-`src/content/legal/` sind Fremdtext und lesen nichts aus `PRICING`. Die AGB enthalten hart
+`src/legal/` sind Fremdtext und lesen nichts aus `PRICING`. Die AGB enthalten hart
 getippte Preise, die den übrigen widersprechen. Das ist Blocker B3. Die Zusicherung im
 Kommentarkopf von `site.js` stimmt also nur für den Code, nicht für die ausgelieferte Seite.
 
@@ -181,7 +181,7 @@ Kommentarkopf von `site.js` stimmt also nur für den Code, nicht für die ausgel
 
 **Kontext.** Impressum, Datenschutz und AGB stammen wortgleich aus dem bestehenden Auftritt.
 
-**Entscheidung.** Sie liegen als HTML in `src/content/legal/` und werden per `?raw` importiert
+**Entscheidung.** Sie liegen als HTML in `src/legal/` und werden per `?raw` importiert
 und mit `set:html` eingesetzt. Das Layout gibt ihnen nur Typografie.
 
 **Alternativen.** Nach Markdown oder in eine Astro Content Collection überführen. Beides hätte

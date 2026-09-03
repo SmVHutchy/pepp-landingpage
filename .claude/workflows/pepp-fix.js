@@ -44,7 +44,7 @@ NICHT VERHANDELBAR — verify.mjs prüft das maschinell:
 
 NICHT ANFASSEN ohne ausdrückliche Freigabe:
 - Preise (Blocker B3 ist ungeklärt: AGB 23,88 € gegen Landingpage 19,90 €)
-- Rechtstexte in src/content/legal/ (juristisch geprüfter Fremdtext)
+- Rechtstexte in src/legal/ (juristisch geprüfter Fremdtext)
 - Design-Tokens (1:1 aus dem Design System)
 - Assets (nie nachzeichnen, nie umfärben)
 - Sektionsreihenfolge

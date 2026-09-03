@@ -109,5 +109,5 @@ Begründung in [docs/DECISIONS.md](docs/DECISIONS.md) (ADR-002).
 Preissektion, FAQ und JSON-LD lesen alle von dort.
 
 Eine Ausnahme gibt es, und sie ist ein Bug: Die AGB in
-[`src/content/legal/agb.html`](src/content/legal/agb.html) enthalten hart codierte Preise, die
+[`src/legal/agb.html`](src/legal/agb.html) enthalten hart codierte Preise, die
 den anderen widersprechen. Siehe Blocker B3.
