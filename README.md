@@ -7,9 +7,9 @@ kein SPA-Framework und keine externen Ressourcen zur Laufzeit — die Seite ist 
 Sie besteht aus fünf Seiten: der eigentlichen Landingpage mit 15 Sektionen, plus Impressum,
 Datenschutz, AGB und Barrierefreiheitserklärung.
 
-> ⚠️ **Vor dem ersten Commit lesen:** [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
-> Der Bericht listet 127 offene Punkte, davon 3 Launch-Blocker. **Die Seite ist noch nicht
-> launchbereit.**
+> ⚠️ **Was noch zu tun ist, auf einen Blick:** [docs/STATUS.md](docs/STATUS.md). Die Seite ist
+> technisch fertig; was fehlt, sind acht Entscheidungen bzw. Lieferungen vom Kunden — keine
+> Programmierarbeit mehr. Details je Fund: [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
 
 ## Schnellstart
 
