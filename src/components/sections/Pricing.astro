@@ -63,6 +63,8 @@ const included = [
     />
   </BlobFeld>
 
+  <div class="mkt-kante-oben" aria-hidden="true"></div>
+
   <div class="mkt-container price__inner">
     <div class="mkt-head">
       <p class="mkt-label" data-anim>Preis</p>
@@ -151,6 +153,9 @@ const included = [
   .price {
     position: relative;
     overflow: hidden;
+    /* darüber liegt .family, ebenfalls --surface-card — Weiss in Weiss, die
+       Kante bleibt trotzdem gesetzt: sie trägt auch den Radius-Ausschnitt. */
+    --kante-oben-farbe: var(--surface-card);
   }
 
   .price__inner {

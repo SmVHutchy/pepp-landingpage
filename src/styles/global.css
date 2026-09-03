@@ -100,12 +100,60 @@ svg[data-pepp-icon] {
   padding-block: var(--mkt-section-y-sm);
 }
 
-/* Sektionsübergang: weiße Sektion legt sich mit Radius über die Off-White-Fläche */
+/* Sektionsübergang: weiße Sektion legt sich mit Radius über die Off-White-Fläche.
+
+   OHNE HAARSTRICH, und das ist gemessen. Eine Pixelspalte über jede der vier
+   Kartenkanten, je drei Spalten bei 12/50/88 % der Breite, bei 390, 1440 und
+   1920: der Farbsprung an der Kante lag zwischen 11 und 23, der Strich selbst
+   bei 37 — an .price stand über und unter der Kante reines Weiss und der
+   Sprung war trotzdem 37. Der Strich war also das Lauteste an der Fuge, nicht
+   der Farbwechsel, und er zeichnete eine Fuge nach, die es dort gar nicht gab.
+   Die Silhouette der Karte trägt jetzt allein der Radius: ausserhalb der
+   56px-Rundung steht die Grundfarbe der Seite, das genügt als Kante.
+   Den weichen Übergang übernimmt .mkt-kante-oben. */
 .mkt-section--card {
   position: relative;
   background: var(--surface-card);
-  border-top: var(--border-hair) solid var(--border-hairline);
   border-radius: var(--radius-section-top) var(--radius-section-top) 0 0;
+}
+
+/* Weiche Oberkante. Das Band trägt die Farbe der Fläche DARÜBER und läuft in
+   die Karte aus; an der Kante stehen dann beide Flächen auf demselben Wert.
+
+   EIGENES ELEMENT, KEIN ::before — derselbe Grund wie bei .pot__fuge: axe
+   kann den Hintergrund eines Textes nicht mehr bestimmen, sobald ein VORFAHR
+   ein Pseudoelement mit Fläche trägt („background color could not be
+   determined due to a pseudo element"). Ein Geschwister ist unbedenklich.
+
+   HÖHE = 0,75 × DEM POLSTER DER SEKTION. Das Polster ist genau der Raum über
+   der ersten Textzeile, also endet das Band immer ein Viertel des Polsters
+   darüber — bei jeder Breite, ohne zweite Zahl. Gemessen an .family, der
+   knappsten Sektion (Polster --sm): 40px bei 390, 80px bei 1920.
+
+   ALS ERSTES KIND IM MARKUP: alle Geschwister tragen aus `.mkt-section > *`
+   denselben z-index 1 und zeichnen deshalb darüber — Text wie Blob. Das Band
+   dämpft den Anschnitt der Fläche, nicht die Dekoration der Sektion. */
+.mkt-kante-oben {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  height: calc(var(--mkt-section-y) * 0.75);
+  /* inherit holt den Radius der Sektion: 56px bei den Karten, 0 bei .mech. */
+  border-radius: inherit;
+  background: linear-gradient(
+    to bottom,
+    var(--kante-oben-farbe, var(--bg-app)),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.mkt-section--xl > .mkt-kante-oben {
+  height: calc(var(--mkt-section-y-xl) * 0.75);
+}
+
+.mkt-section--sm > .mkt-kante-oben {
+  height: calc(var(--mkt-section-y-sm) * 0.75);
 }
 
 .mkt-section--ground {
