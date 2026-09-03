@@ -52,3 +52,7 @@ public/fonts/*.woff2.vorher
 # Wegwerf-Messskripte von Agenten (siehe .prettierignore)
 _*.mjs
 scripts/_tmp_*.mjs
+
+# Arbeitsbaeume der Workflow-Agenten (git worktree add). Ephemer, werden nach
+# der Zusammenfuehrung mit `git worktree remove` entfernt.
+.claude/worktrees/

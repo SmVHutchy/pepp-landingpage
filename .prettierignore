@@ -36,3 +36,8 @@ public/*.svg
 # nie eingecheckt werden sollen. Aufräumen: rm _*.mjs scripts/_tmp_*.mjs
 _*.mjs
 scripts/_tmp_*.mjs
+
+# Arbeitsbaeume der Workflow-Agenten. Jeder ist eine vollstaendige Kopie des
+# Projekts; ohne diese Zeile prueft der Pre-Commit-Hook sie mit und meldet
+# Formatierfehler in Dateien, die nie in einen Commit gelangen.
+.claude/worktrees/
