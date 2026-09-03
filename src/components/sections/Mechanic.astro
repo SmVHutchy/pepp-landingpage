@@ -149,7 +149,12 @@ const layerOf = steps.map((step) => {
         </div>
       </div>
 
-      <ol class="mech__steps mkt-list-reset">
+      {
+        /* Kein `mkt-list-reset` mehr, dafür `mkt-card`: warum die beiden
+          Klassen sich hier gegenseitig ausschliessen, steht unten an
+          `.mech__steps`. */
+      }
+      <ol class="mech__steps mkt-card mkt-card--sunken">
         {
           steps.map((step, i) => (
             <li data-anim="card" data-mech-step={layerOf[i]}>
@@ -258,15 +263,72 @@ const layerOf = steps.map((step) => {
     z-index: 1;
   }
 
+  /* Variante C2 · EIN Kasten um alle vier Schritte, nicht vier Karten.
+     Vorher waren die Schritte freie Zeilen: `.mech__steps li` war eine nackte
+     Flex-Zeile, die einzige Fläche weit und breit war die 44px-Kachel links.
+     Neben der Gerätebühne stand damit nichts, was die vier Schritte als einen
+     zusammengehörigen Block gezeigt hätte.
+
+     Ausdrücklich EINE Fläche und nicht vier: sechs andere Sektionen stellen
+     ihre Karten schon nebeneinander, alle über --mkt-card-gap (Problem,
+     HowItWorks, Modes, Pricing, Security, Family — grep-bar über den
+     Token-Namen). Vier Einzelkarten wären hier das siebte Kartenraster
+     gewesen, ausgerechnet in der Sektion, deren Aussage ist, dass die vier
+     Schritte EINE Mechanik sind.
+
+     Fläche, Rahmen, Radius, Polster und Schatten kommen aus `.mkt-card` in
+     global.css, dieselbe Herkunft wie bei `.sec__card`. Damit trägt der Kasten
+     --radius-2xl (28px) wie jede andere Inhaltskarte der Seite. Die Kachel
+     behält ihre 12px: --radius-lg heisst in tokens/radius.css „icon tiles",
+     --radius-2xl „marketing cards". Der Kasten ist eine Karte, die Kachel
+     bleibt eine Kachel — die beiden Radien sagen etwas Verschiedenes.
+
+     `--sunken`, weil `.mech` weiss ist (background: var(--surface-card), ganz
+     oben in diesem Block). Ohne die Modifier-Klasse läge Weiss auf Weiss und
+     der Kasten hinge nur an seiner Haarlinie; global.css hält die Klasse für
+     genau diesen Fall bereit. */
   .mech__steps {
+    /* `mkt-list-reset` steht nicht mehr am <ol>, und das ist kein Versehen:
+       sie setzt `padding: 0` und steht in global.css hinter `.mkt-card`
+       (Zeile 380 gegen Zeile 514). Beide sind eine Klasse breit, also gewinnt
+       die spätere — die Karte hätte kein Polster. Von der Reset-Klasse bleiben
+       hier die zwei Zeilen übrig, die `.mkt-card` nicht selbst mitbringt; die
+       dritte, `padding: 0`, ist genau die, die weg muss.
+
+       Wer `mkt-list-reset` wieder anhängt, holt sich das Problem zurück: die
+       beiden Zeilen hier gewinnen zwar gegen sie (gescoptes CSS trägt ein
+       zusätzliches [data-astro-cid-…], zwei Merkmale gegen eines), aber das
+       Polster steht in `.mkt-card` und ist damit selbst nur eine Klasse
+       breit — dagegen hilft die Scope-Spezifität nicht. */
+    list-style: none;
+    margin: 0;
+
     display: flex;
     flex-direction: column;
-    gap: clamp(24px, 3vw, 40px);
+    /* Kein `gap` mehr — er sass zwischen den Zeilen und liesse die Haarlinie
+       an der oberen Kante der folgenden Zeile kleben. Er steckt jetzt in den
+       Zeilen selbst, siehe `padding-block` unten. */
   }
 
+  /* Der frühere Listenabstand war clamp(24px, 3vw, 40px). Genau seine Hälfte
+     steht jetzt an jeder Zeile: zwei benachbarte Zeilen bringen ihn zusammen
+     wieder auf, und die Haarlinie dazwischen bekommt oben und unten gleich
+     viel Luft. Der Abstand von Schritttext zu Schritttext ist damit derselbe
+     wie vorher. Höher wird der Block nur um das, was der Kasten dazugibt:
+     sein Polster oben und unten plus das der ersten und der letzten Zeile. */
   .mech__steps li {
     display: flex;
     gap: var(--space-5);
+    padding-block: clamp(12px, 1.5vw, 20px);
+  }
+
+  /* Haarlinie NUR zwischen den Schritten, deshalb `li + li` und nicht `li`.
+     `.mkt-rows` in global.css setzt den border-top an jede Reihe — dort ist er
+     die einzige Kante, weil die Reihen dort keinen Kasten haben. Hier gibt es
+     einen Kartenrand; eine Linie an der ersten Zeile liefe dicht darunter
+     parallel mit und ergäbe eine doppelte Kante. */
+  .mech__steps li + li {
+    border-top: var(--border-hair) solid var(--border-hairline);
   }
 
   .mech__tile {
