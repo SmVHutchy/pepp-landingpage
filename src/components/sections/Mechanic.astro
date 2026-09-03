@@ -15,10 +15,13 @@ import BlobFeld from '../BlobFeld.astro';
 
 /* Schritt 3 zeigt in der Referenz `eltern-07-pruefen.png`. Diese Datei ist
    weder im Design-Bundle noch in der Dateiliste des Design-Projekts enthalten.
-   Als Ersatz dient der Startbildschirm mit dem offenen Beweis-Stapel: er zeigt
-   die Kartenstapel-Mechanik, ohne einen fehlenden Screen zu erfinden. Sobald
-   `eltern-07-pruefen.png` in src/assets/screens/ liegt, kann sie hier direkt
-   eingetragen werden. */
+   Als Ersatz dient der Startbildschirm mit den offenen Beweisen: er zeigt
+   eingegangene Nachweise, die auf eine Entscheidung warten — also genau das,
+   wovon der Schritt spricht, ohne einen fehlenden Screen zu erfinden. Die
+   frühere Begründung nannte die „Kartenstapel-Mechanik"; seit der Schritt
+   „Individueller Nachweis" heisst, trägt nicht mehr die Darstellungsform die
+   Bildwahl, sondern der Inhalt. Sobald `eltern-07-pruefen.png` in
+   src/assets/screens/ liegt, kann sie hier direkt eingetragen werden. */
 /* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
    getrennt: der erste Satz steht in --text-primary semibold, der Rest in
    --text-secondary. Gleiche Größe, gleicher Absatz, kein Wort geändert. Diese
@@ -33,7 +36,7 @@ const steps = [
     screen: anlegen,
     alt: 'Pepp Eltern-App: Quest anlegen mit Belohnung, Wochentagen, Frist und Nachweisart',
     title: 'Kategorie, Belohnung, Frist',
-    lead: 'Schnellauswahl aus sieben Kategorien.',
+    lead: 'Schnellauswahl aus vorgefertigten Kategorien.',
     body: 'Dann 2,50 € oder 30 Min dranhängen — und eine Frist setzen.',
   },
   {
@@ -52,9 +55,9 @@ const steps = [
     ink: 'var(--ink-blue)',
     screen: beweise,
     alt: 'Pepp Eltern-App: Beweis-Stapel wartet auf Prüfung',
-    title: 'Prüfen als Kartenstapel',
+    title: 'Individueller Nachweis',
     lead: 'Foto oder Antippen als Nachweis — du entscheidest pro Quest.',
-    body: 'Beweise liegen als Stapel bereit: rechts wischen gibt frei, links schickt zurück.',
+    body: 'Was hereinkommt, gibst du mit einem Wisch nach rechts frei; nach links geht es zurück.',
   },
   {
     icon: 'users',

@@ -7,7 +7,7 @@
    1. Der Kopf steht links, rechts steht Pepp gross auf einem Peach-Schein,
       mit einer Nachweis-Karte davor. Dieselbe Komposition wie im Hero, nur
       gespiegelt zur Mechanik-Sektion, die ihre Bühne links hat.
-   2. Darunter zeichnet die Schnauze die Linie über die vier Schritte. Der
+   2. Darunter zeichnet die Schnauze die Linie über die drei Schritte. Der
       Snout Trail ist eine Geste aus dem Design System
       (components/brand/SnoutTrail.jsx): die Schnauze ist der Stift, die Linie
       entsteht hinter ihr. Dort läuft sie einmal beim Screen-Eintritt ab, hier
@@ -48,29 +48,37 @@ const steps = [
   },
   {
     number: '03',
-    icon: 'check-check',
-    tint: 'var(--pepp-blue-tint)',
-    ink: 'var(--ink-blue)',
-    title: 'Du gibst frei',
-    body: 'Kurz ansehen, freigeben. Oder zurückschicken — ohne Neustart.',
-    proof: { title: 'Freigegeben', meta: 'Ein Tipp, fertig' },
-  },
-  {
-    number: '04',
     icon: 'coins',
     tint: 'var(--pepp-gold-tint)',
     ink: 'var(--ink-gold)',
     title: 'Der Pott füllt sich',
-    body: 'Die Belohnung wandert in den Pott — sichtbar als Ring um Pepp.',
+    body: 'Die Belohnung wandert in den Pott deines Kindes — der Erfolg ist sofort sichtbar.',
     proof: { title: 'Im Pott', meta: '+2,50 €' },
   },
 ];
 
 /* Die Welle aus PATHS.wave in SnoutTrail.jsx, unverändert. Nichts nachgezogen:
    dieselbe Geste steht in den App-Screens. Die Linie läuft von x=120 bis x=920
-   in einer 1040 breiten Viewbox — also von 11,5 % bis 88,5 % der Fläche, und
-   damit ungefähr über den Mitten der vier Karten darunter. Genau abgemessen
-   wird trotzdem im Skript, nicht hier. */
+   in einer 1040 breiten Viewbox — also von 11,5 % bis 88,5 % der Fläche.
+
+   Sie ist eine Welle mit ZWEI Perioden und stammt aus der Zeit mit vier
+   Karten. Mit drei Karten steht die Schnauze bei jedem Schrittwechsel
+   weiterhin ÜBER der richtigen Karte, aber nicht mehr über deren Mitte:
+   gemessen bei 1440x900 liegt sie 139px rechts, 7px rechts und 164px links
+   der jeweiligen Kartenmitte, jedes Mal noch innerhalb der Karte. Und die
+   Wellenberge sitzen jetzt zwischen den Karten statt über ihnen.
+
+   Beides ist rein optisch und bewusst nicht angefasst: eine Welle mit
+   anderthalb Perioden wäre eine Änderung an einer Geste des Design Systems
+   und nicht an dieser Seite.
+
+   Für den Versatz gibt es ausserdem einen zweiten, älteren Grund, der nichts
+   mit der Zahl der Karten zu tun hat: das SVG hat kein preserveAspectRatio,
+   die Viewbox wird also in die Elementbreite eingepasst statt gestreckt. Bei
+   1440px ist das Element 1116px breit, gezeichnet werden davon nur 630px,
+   mittig. marken() in site.js rechnet die Kartenmitten aber gegen die volle
+   Elementbreite um — die Marken stimmen deshalb in Viewbox-Einheiten und
+   nicht in Bildschirmpixeln. Bestand schon mit vier Karten. */
 const TRAIL = {
   d: 'M120,95 C260,5 380,185 520,95 C660,5 780,185 920,95',
   w: 1040,
@@ -102,7 +110,18 @@ const TRAIL = {
             20ch. Die Reihenfolge Label → H2 → Lead bleibt dieselbe. */
         }
         <p class="mkt-label" data-anim>So funktioniert’s</p>
-        <h2 class="mkt-h2" data-anim>Vier Schritte, dann läuft es.</h2>
+        {
+          /* Diese H2 ist die erste Stelle, an der „Quest“ überhaupt erklärt
+            wird: im Hero fällt das Wort seit dem Umbau nicht mehr, und danach
+            begegnet es der Leserin erst rund 1700px unter der Falz im Lead
+            („Danach macht die Quest die Diskussion.“) — während <title> und
+            og:title weiter darauf bauen. Der Satz stellt Aufgabe und Quest
+            nebeneinander und nennt die Zahl der Schritte, ohne dass dafür ein
+            Element dazukommt. */
+        }
+        <h2 class="mkt-h2" data-anim>
+          Aus Aufgaben werden Quests &#8212; in drei Schritten.
+        </h2>
         <p class="mkt-lead how__lead" data-anim>
           Einmal einrichten dauert Minuten. Danach macht die Quest die Diskussion.
         </p>
@@ -139,7 +158,7 @@ const TRAIL = {
         />
 
         {
-          /* Vier Karten im selben Kasten, deckend, die erste oben. Ohne Skript
+          /* Drei Karten im selben Kasten, deckend, die erste oben. Ohne Skript
             ist genau eine zu sehen — dieselbe Lösung wie im Karussell der
             Mechanik-Sektion, und aus demselben Grund: ein Startzustand
             `opacity: 0` im CSS lässt Inhalt verschwinden, sobald das Skript
@@ -147,7 +166,13 @@ const TRAIL = {
 
             Feste Höhe, weil die Karten übereinanderliegen: eine Karte, die
             zwei Zeilen braucht, würde sonst unten aus der darunterliegenden
-            herausschauen. */
+            herausschauen.
+
+            Die 84px unten gelten auch für drei Karten weiter: freigestellt
+            gemessen ist jede der drei 70px hoch, bei 1440px wie bei 800px
+            Fensterhöhe. Der Wegfall von Schritt 03 hat daran nichts geändert,
+            weil der Stapel deckend übereinanderliegt und seine Höhe von der
+            höchsten Karte kommt, nicht von ihrer Zahl. */
         }
         <div class="how__proofs">
           {
@@ -173,7 +198,7 @@ const TRAIL = {
           genau der Ruhezustand, den SnoutTrail.jsx rendert. Das Skript nimmt
           die Linie erst zurück, wenn es wirklich läuft.
 
-          Ab 901px: darunter stehen die vier Karten untereinander, eine
+          Ab 901px: darunter stehen die drei Karten untereinander, eine
           waagerechte Welle hätte dort nichts zu verbinden. */
       }
       <svg

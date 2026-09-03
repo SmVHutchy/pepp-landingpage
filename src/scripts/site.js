@@ -558,7 +558,7 @@ function initSprungBlick() {
    dieses Skript wirklich läuft. Bei prefers-reduced-motion wird buildReveals()
    gar nicht erst aufgerufen; dann bleibt die gezeichnete Linie stehen.
 
-   Unter runFrom passiert nichts: dort stehen die vier Karten untereinander und
+   Unter runFrom passiert nichts: dort stehen die drei Karten untereinander und
    die Welle ist ausgeblendet. Die erste Nachweis-Karte liegt per z-index oben,
    das reicht als Standbild. */
 function initQuestRun() {
@@ -590,9 +590,13 @@ function initQuestRun() {
       const x = ((r.left + r.width / 2 - box.left) / box.width) * viewBreite;
       let l = 0;
       while (l < laenge && linie.getPointAtLength(l).x < x) l += 8;
-      /* Gedeckelt: die Mitte der vierten Karte liegt rechts vom Ende der
-         Linie, die Schleife läuft dort über die Länge hinaus. Ohne den Deckel
-         käme die Marke auf 1,006 und der vierte Schritt würde nie aktiv. */
+      /* Gedeckelt, weil die Schleife über die Länge hinauslaufen kann, sobald
+         eine Kartenmitte rechts vom Ende der Linie liegt: mit vier Karten kam
+         die letzte Marke auf 1,006, und der vierte Schritt wurde nie aktiv.
+         Mit drei Karten greift der Deckel nicht mehr — gemessen liegen die
+         Marken bei 0,067 / 0,508 / 0,939, bei 1440x900 wie bei 1440x800. Er
+         bleibt trotzdem stehen: das Raster ist auto-fit, und wer eine Karte
+         ergänzt, hätte den Fall sonst sofort wieder. */
       return Math.min(l, laenge) / laenge;
     });
   };
@@ -629,9 +633,9 @@ function initQuestRun() {
 
   /* DIE SEITE HÄLT AN, BIS DIE LINIE GEZEICHNET IST — dieselbe Bauart wie in
      der Mechanik-Sektion. Vorher lief die Linie am Scroll mit, und wer zügig
-     scrollte, war an Schritt 4 vorbei, bevor die Schnauze bei Schritt 2 war.
-     Die Sektion erzählt vier Schritte nacheinander; sie braucht die Strecke,
-     die sie behauptet.
+     scrollte, war am letzten Schritt vorbei, bevor die Schnauze beim zweiten
+     war. Die Sektion erzählt ihre Schritte nacheinander; sie braucht die
+     Strecke, die sie behauptet.
 
      Gepinnt wird der Inhalt, NICHT die Sektion: der pin-spacer läge sonst um
      `.how`, und `main > section` steht in verify.mjs, measure.mjs, shots.mjs
@@ -640,15 +644,32 @@ function initQuestRun() {
      pinSpacing mit und trägt weiter den Hintergrund, der sich beim Überziehen
      auf „Der Alltag" legt.
 
+     GEPINNT WIRD `.how__run`, NICHT `.mkt-container`. Das ist derselbe Gedanke
+     einen Schritt weiter gedacht, und der Unterschied ist keiner der Ordnung,
+     sondern einer der Sichtbarkeit: der Container trägt Kopf, Bühne UND Lauf
+     und ist damit 865px hoch. Eingefroren bei `top top` reichte er von 159 bis
+     1024 — bei 900px Fenster lagen 124px davon unter der Kante, jede Karte war
+     nur 99 ihrer 223px hoch zu sehen, und bei 800px (Laptop) war während der
+     gesamten 1920px langen Haltestrecke KEINE der Karten im Bild. Die Seite
+     hielt an, um etwas zu zeigen, das ausserhalb des Fensters stand.
+     `.how__run` ist 359px hoch und passt.
+
+     Und deshalb auch `trigger: lauf` statt der Sektion: der Pin friert das
+     Element dort ein, wo es beim Auslösen steht — nicht dort, wo es hingehört.
+     Mit `top top` auf der Sektion blieb der Lauf auf seinen 665px stehen, die
+     Karten weiter unter der Kante. `center center` friert ihn in der Mitte des
+     Fensters ein; von dort passt er in jede Fensterhöhe, die er selbst nicht
+     überschreitet.
+
      Kein `scrub` mehr: mit Pin ist der Fortschritt der Weg auf der
      Haltestrecke, und der ist bereits die Scrollposition selbst. Ein Scrub
      obendrauf würde die Linie hinter dem Finger herziehen. */
   const trigger = ScrollTrigger.create({
-    trigger: lauf.closest('section'),
-    pin: lauf.closest('.mkt-container'),
+    trigger: lauf,
+    pin: lauf,
     pinSpacing: true,
     anticipatePin: 1,
-    start: 'top top',
+    start: 'center center',
     end: () =>
       `+=${Math.round(window.innerHeight * Q.halteProSchritt * schritte.length)}`,
     onUpdate: (self) => {

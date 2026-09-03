@@ -175,7 +175,8 @@ export const MOTION = {
     end: 'top 40%',
   },
 
-  /* Snout Trail über den vier Schritten in „Vier Schritte, dann läuft es".
+  /* Snout Trail über den Schritten in „Aus Aufgaben werden Quests — in drei
+     Schritten".
      Die Geste stammt aus dem Design System (components/brand/SnoutTrail.jsx):
      die Schnauze ist der Stift, die Linie entsteht hinter ihr. Dort läuft sie
      einmal beim Screen-Eintritt ab; hier hängt sie am Scroll — der Weg ist
@@ -187,10 +188,10 @@ export const MOTION = {
      Linie schon fertig, bevor die erste Karte oben ist.
 
      Das Ende liegt bei halber Viewporthöhe und nicht höher: die Linie soll
-     ankommen, während alle vier Karten im Bild stehen. Mit `bottom 72%` war
-     sie fertig, sobald der Block zu zwei Dritteln zu sehen war — gezeichnet
-     wurde dann in der unteren Bildschirmhälfte, wo die vierte Karte noch gar
-     nicht stand.
+     ankommen, während alle Karten im Bild stehen. Mit `bottom 72%` war sie
+     fertig, sobald der Block zu zwei Dritteln zu sehen war — gezeichnet wurde
+     dann in der unteren Bildschirmhälfte, wo die letzte Karte noch gar nicht
+     stand.
 
      `swap` ist der Kartenwechsel an Pepp — der einzige Teil, der auf Zeit
      läuft: ein Wechsel am Scrub würde beim Zurückrollen rückwärts blenden.
@@ -202,7 +203,9 @@ export const MOTION = {
     /* Wie viele Bildschirmhöhen ein Schritt braucht, bis er durch ist — die
        Sektion hält so lange an. Gleicher Wert wie in der Mechanik, damit die
        beiden Halte sich gleich anfühlen und nicht wie zwei verschiedene
-       Ideen. Vier Schritte ergeben 2,4 Bildschirmhöhen. */
+       Ideen. Seit Schritt 03 („Du gibst frei") entfallen ist, sind es drei
+       Schritte und damit 1,8 Bildschirmhöhen — der Wert bleibt, die Strecke
+       wird aus der Zahl der Schritte gerechnet (site.js, `end`). */
     halteProSchritt: 0.6,
     swap: 0.45,
     ease: '--ease-out-soft',
