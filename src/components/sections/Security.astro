@@ -7,32 +7,41 @@ import Maskottchen from '../Maskottchen.astro';
 import Blob from '../Blob.astro';
 import BlobFeld from '../BlobFeld.astro';
 
-/* `lead` und `body` sind der Wortlaut aus dem Handoff, nur am Satzende
-   getrennt — gleiches Muster wie in Mechanic und Pot. */
+/* Wortlaut aus dem Handoff. Die Trennung in `lead` und `body` ist weg: sie
+   gehörte zum Reihen-Rezept, das den ersten Satz per <strong> hervorhob.
+   Auf einer Karte trägt die Überschrift diese Rolle, ein zweites hervorgehobenes
+   Stück daneben wäre eine Betonung zu viel.
+
+   Zwei Sätze sind auf Kundenwunsch entfallen. „Der Pott ist ein Zähler."
+   erklärte nicht die Karte, unter der er stand, sondern schob den Pott als
+   zweites Thema nach — der hat vier Sektionen weiter oben eine eigene.
+   „DSGVO-konform, Server in der EU." war die einzige Zeile der Sektion, die
+   eine Zusicherung statt einer Verneinung macht.
+
+   „Durch die App fließt kein echtes Geld." stand bis hierher im Lead der
+   Sektion. Der Lead ist auf „Pepp ist keine Banking-App." verkürzt, und der
+   Satz wäre sonst ersatzlos verschwunden; er sagt für Karte 1 dasselbe wie
+   ihre Überschrift, nur als Folge statt als Aufzählung. */
 const cards = [
   {
     icon: 'wallet',
     title: 'Kein Bankkonto, keine Karte',
-    lead: 'Dein Kind braucht keine Zahlungsdaten und kein eigenes Konto.',
-    body: 'Der Pott ist ein Zähler.',
+    body: 'Dein Kind braucht keine Zahlungsdaten und kein eigenes Konto. Durch die App fließt kein echtes Geld.',
   },
   {
     icon: 'hand-coins',
     title: 'Ausgezahlt wird von dir',
-    lead: 'Die Auszahlung ist eine Anfrage an dich.',
-    body: 'Bar auf die Hand oder aufs Sparkonto — außerhalb der App.',
+    body: 'Die Auszahlung ist eine Anfrage an dich. Bar auf die Hand oder aufs Sparkonto — außerhalb der App.',
   },
   {
     icon: 'circle-slash',
     title: 'Keine Werbung, kein Datenverkauf',
-    lead: 'Keine Werbe-ID, keine Weitergabe an Dritte.',
-    body: 'DSGVO-konform, Server in der EU.',
+    body: 'Keine Werbe-ID, keine Weitergabe an Dritte.',
   },
   {
     icon: 'shield-check',
     title: 'Du führst den Familien-Account',
-    lead: 'Grenzen, Beträge, Medienzeit, Kind-Modus:',
-    body: 'alles liegt bei dir, PIN-geschützt.',
+    body: 'Grenzen, Beträge, Medienzeit, Kind-Modus: alles liegt bei dir, PIN-geschützt.',
   },
 ];
 ---
@@ -67,27 +76,43 @@ const cards = [
       <h2 class="mkt-h2 mkt-h2--sm" data-anim>
         Kein Konto. Keine Karte. Kein Datenhandel.
       </h2>
-      <p class="mkt-lead sec__lead" data-anim>
-        Pepp ist keine Banking-App. Durch die App fließt kein echtes Geld.
-      </p>
+      <p class="mkt-lead sec__lead" data-anim>Pepp ist keine Banking-App.</p>
     </div>
 
     {
-      /* Kartenrezept „Hairline-Reihen": eine Trennlinie zwischen den Reihen,
-        kein Rahmen um sie herum. Diese Sektion beruhigt, sie verkauft nicht —
-        vier Verkaufskarten wären der falsche Ton. */
+      /* KARTEN STATT HAIRLINE-REIHEN — und was von der alten Begründung bleibt.
+
+        Hier stand: „Kartenrezept ‚Hairline-Reihen': eine Trennlinie zwischen
+        den Reihen, kein Rahmen um sie herum. Diese Sektion beruhigt, sie
+        verkauft nicht — vier Verkaufskarten wären der falsche Ton."
+
+        Das Argument ist nicht widerlegt, es ist überstimmt. Der Kunde verlangt
+        Karten und begründet es mit der Lesbarkeit, und dieser Teil trifft zu:
+        die vier Aussagen standen ab 901px in zwei Spalten zu je zwei Reihen,
+        getrennt nur durch eine 1px-Linie über der Zeile. Wer die zweite Spalte
+        las, musste die Zuordnung von Icon, Titel und Text jedes Mal neu
+        auflösen, weil nichts die vier Blöcke gegeneinander abgrenzt.
+
+        Was von „beruhigt statt verkauft" bleibt, steht in der Ausführung: die
+        Icons bleiben nackt bei 24px statt auf einem getönten Plättchen wie in
+        „Familie", die Karten tragen keine Farbe, keine Zahl und keinen Knopf,
+        und die Fläche ist Weiß mit Haarlinie — die leiseste Kartenform, die
+        das System hat. Verkauft wird hier weiterhin nichts.
+
+        Der Preis steht in der Nachbarschaft und ist eine Gestaltungsfrage, die
+        über diese Sektion hinausgeht: „Familie" bringt direkt darunter eine
+        zweite Kartenreihe. Zwei Kartenreihen übereinander sind genau das
+        Metronom, gegen das der Sektionsrhythmus angelegt ist — die Prüfung in
+        scripts/verify.mjs greift nicht, weil sie Klassennamen vergleicht und
+        die hier andere sind. Siehe Rückfrage im Übergabebericht. */
     }
-    <ul class="sec__rows mkt-rows mkt-list-reset">
+    <ul class="sec__cards mkt-list-reset">
       {
         cards.map((card) => (
-          <li data-anim="card">
+          <li class="sec__card mkt-card" data-anim="card">
             <Icon name={card.icon} size={24} color="var(--pepp-ink)" />
-            <div>
-              <h3 class="mkt-rows__title">{card.title}</h3>
-              <p class="mkt-rows__body">
-                <strong>{card.lead}</strong> {card.body}
-              </p>
-            </div>
+            <h3 class="sec__title">{card.title}</h3>
+            <p class="sec__body">{card.body}</p>
           </li>
         ))
       }
@@ -136,9 +161,60 @@ const cards = [
     line-height: var(--type-bodyl-lh);
   }
 
-  /* Reihen und Typografie kommen aus dem Rezept .mkt-rows in global.css. */
-  .sec__rows {
+  /* EINE REIHE, VIER SPALTEN — NICHT auto-fit und NICHT 2x2.
+
+     Ab 901px ist die Spaltenzahl fest auf vier gesetzt, obwohl „Familie" für
+     dieselbe Kartenzahl `auto-fit` mit 250px Mindestbreite benutzt.
+
+     Die Höhenrechnung über der 100svh-Regel gibt dem Kartenblock 491px, bevor
+     --haft-top negativ wird (bei 1440x800: 800 minus Kopf 151 minus 2x79,2
+     Polster, plus die 238px, die die Reihen vorher brauchten). Gemessen gegen
+     dist, `auto-fit` per addStyleTag eingesetzt: bei 901, 1024 und 1100px
+     ergibt `auto-fit` DREI Spalten und damit zwei Zeilen — 460, 465 und 429px
+     Kartenblock. Das bricht den Vertrag also nicht, die Sektion bleibt in
+     allen drei Fällen 800px hoch. Es lässt aber nur 26px Luft, und jede
+     spätere Zeile Text in einer Karte frisst sie auf.
+
+     Vier feste Spalten können nicht umbrechen: gemessen 302px bei 901, 255 bei
+     1024, 273 bei 1440 — der Abstand zur Grenze bleibt bei rund 200px. Dazu
+     kommt der einfachere Grund: 3+1 ist keine Reihe. Die Karten werden schmal,
+     aber sie stehen in einer Zeile.
+
+     Darunter greift die 100svh-Regel nicht mehr, dort darf `auto-fit` walten:
+     zwei Spalten auf dem Tablet, eine auf dem Handy. */
+  .sec__cards {
     margin-top: var(--mkt-stack-gap);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+    gap: var(--mkt-card-gap);
+  }
+
+  @media (min-width: 901px) {
+    .sec__cards {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* Fläche, Rahmen, Radius, Polster und Schatten kommen aus .mkt-card in
+     global.css. Weiß auf der Kapitelfläche ist die Umkehrung von „Familie",
+     wo Off-White auf Weiß liegt — und der Schatten ist der Grund, aus dem der
+     Kommentar an .fam__card sagt, „Familie" solle flacher wirken als
+     „Sicherheit". Diese Zusage stimmt erst jetzt wieder. */
+  .sec__title {
+    margin: var(--space-5) 0 0;
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
+    font-size: var(--type-h3-size);
+    line-height: var(--type-h3-lh);
+    color: var(--text-primary);
+  }
+
+  .sec__body {
+    margin: 6px 0 0;
+    font-size: var(--type-body-size);
+    line-height: var(--type-body-lh);
+    color: var(--text-secondary);
+    max-width: var(--measure-body);
   }
   /* Auf schmalen Handys nimmt die Figur fast die ganze Sektionsbreite ein und
      wirkt hinter dem Text störend. */
