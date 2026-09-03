@@ -43,12 +43,28 @@ const points = [
 <section class="pot mkt-section mkt-section--card">
   {/* Weiss. Oben rechts, hinter den beiden Geräten. */}
   {/* Von Liam im Blob-Editor gesetzt. */}
+  {
+    /* WARUM DAS `right` NEGATIV IST — und warum 62,1 % das Gegenteil bewirkte.
+     Der Kommentar oben stand hier auch schon, als der Bogen links lag: eine
+     Kantenangabe in Prozent rechnet gegen den BLOB, nicht gegen die Sektion
+     (Begründung in Blob.astro). `right: 62,1%` sind also 62,1 % von 880px =
+     546px nach links — gemessen left 13,5 bei 1440 und left −209,1 bei 390.
+     Der Bogen lag damit über der oberen Sektionsrundung und über dem Eyebrow
+     „Der Pott", bei 0,51 Deckkraft.
+
+     −40 % schiebt ihn um 40 % der eigenen Breite nach rechts aus der Sektion
+     heraus. Weil der Bezug der Blob selbst ist, skaliert der Versatz mit
+     --blob-skala mit und die Ecke bleibt auf jeder Breite dieselbe Ecke.
+     Gemessen linke Blobkante: 912,0 bei 1440, 168,2 bei 390, 98,2 bei 320 —
+     das Rechteck des Labels endet bei 227,1 / 85,1 / 85,1 und wird auf keiner
+     der drei Breiten mehr geschnitten. */
+  }
   <BlobFeld>
     <Blob
       form="blob2"
       groesse="880px"
       top="-42.8%"
-      right="62.1%"
+      right="-40%"
       deckkraft={0.51}
       weichzeichnen={64}
       winkel={235}
