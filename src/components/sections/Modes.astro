@@ -2,7 +2,10 @@
 /* Sektion 8 · Elternmodus ∥ Kindermodus
    Off-White. Zwei Panels: links weiss und ruhig, rechts auf Dawn — die beiden
    Welten unterscheiden sich in der Fläche, nicht im Text. Die Screens sind
-   unten angeschnitten (negativer margin plus overflow:hidden). */
+   unten angeschnitten (negativer margin plus overflow:hidden) — ab 901px.
+   Darunter fallen sie ganz weg, siehe .modes__stage. Die beiden Panels sind
+   dann reine Karten und tragen die Unterscheidung allein in der Fläche:
+   weiss mit Hairline gegen Dawn mit weissem .modes__inset. */
 import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import Blob from '../Blob.astro';
@@ -115,7 +118,16 @@ const childPoints = [
             }
           </ul>
         </div>
-        <div class="modes__stage mkt-fade-edges">
+        {
+          /* u-desk, nicht eine eigene Medienregel: die Utility steht global in
+             global.css:524-528, trägt !important und ist damit gegen beide
+             Fallen dieses Repos immun — kein Astro-cid, das an der Wurzel
+             einer Kindkomponente vorbeizielt, und keine spätere unbedingte
+             Regel in dieser Datei, die sie bei gleicher Spezifität
+             überstimmt. Warum die Bühne unter 901px weg ist, steht bei
+             .modes__stage. */
+        }
+        <div class="modes__stage mkt-fade-edges u-desk">
           <Image
             src={eltern}
             alt="Pepp Eltern-App: Quest-Übersicht nach Zustand gruppiert"
@@ -143,7 +155,7 @@ const childPoints = [
             }
           </ul>
         </div>
-        <div class="modes__stage modes__stage--child mkt-fade-edges">
+        <div class="modes__stage modes__stage--child mkt-fade-edges u-desk">
           <Image
             src={kind}
             alt="Pepp Kinder-App: Quest-Liste nach Dringlichkeit"
@@ -227,7 +239,28 @@ const childPoints = [
 
   /* Angeschnitten: das Gerät läuft unten aus dem Panel heraus — mit weicher
      Kante (.mkt-fade-edges), sonst endet es an einer geraden Linie quer durchs
-     Display. Nur unten; seitlich wird hier nichts beschnitten. */
+     Display. Nur unten; seitlich wird hier nichts beschnitten.
+
+     Das gilt ab 901px. Darunter trägt die Bühne u-desk und ist weg — der
+     Grund ist, dass die weiche Kante dort nicht mehr weich war: gemessen bei
+     390x844 ist die Bühne 324 bzw. 326 x 300 und das Gerät darin 300x649, das
+     Panel schneidet es mit seinem eigenen overflow:hidden bei 244 von 300px
+     ab, und an dieser Stelle steht die Maske noch bei Alpha 0,78. Sichtbar
+     blieben 244 von 649px Gerät mit einer harten Kante bei 78% Deckkraft. Der
+     Kunde hat am 01.09.2026 entschieden: auf dem Handy keine Geräte, auf dem
+     Desktop beide.
+
+     Was dabei mitgeht: margin-top:auto hat die beiden Panelhöhen angeglichen
+     (bei 1440 gemessen 134,797px am Elternpanel). Ohne Bühne wachsen die
+     Panels nach Inhalt — beim Stapeln untereinander ist genau das richtig.
+
+     Nebenwirkung, gemessen und erwünscht: die beiden <Image loading="lazy">
+     liegen unter 901px in einem display:none-Teilbaum und werden nicht mehr
+     angefordert. Beim Durchscrollen der ganzen Seite bei 390x844: vorher zwei
+     .webp-Anfragen (46.086 + 44.484 = 90.570 Bytes), nachher null; bei 1440
+     unverändert vier. `npm run perf` zeigt das NICHT — seine Gewichtstabelle
+     steht vorher wie nachher bei 109 kB Bildern, weil der Lauf gar nicht bis
+     zu dieser Sektion scrollt. */
   .modes__stage {
     margin: auto -12px -80px;
     display: flex;
