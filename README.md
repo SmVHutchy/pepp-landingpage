@@ -66,14 +66,14 @@ Umgebungsvariablen und keine `.env`-Datei (Details: [docs/ENVIRONMENT.md](docs/E
 
 ## Stack
 
-| Was       | Womit                                                                              |
-| --------- | ---------------------------------------------------------------------------------- |
-| Generator | Astro 5.18.2, `output: 'static'`                                                   |
-| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                      |
-| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)              |
-| Animation | GSAP 3.12.5 mit ScrollTrigger                                                      |
-| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                 |
-| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt weder `.nvmrc` noch ein `engines`-Feld) |
+| Was       | Womit                                                                                        |
+| --------- | -------------------------------------------------------------------------------------------- |
+| Generator | Astro 7.2.2, `output: 'static'`                                                              |
+| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                                |
+| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)                        |
+| Animation | GSAP 3.12.5 mit ScrollTrigger                                                                |
+| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                           |
+| Node      | v22.22.3, npm 10.9.8 (siehe `.nvmrc`; `engines` in `package.json`: `>=20.3.0 <21 \|\| >=22`) |
 
 ## Die wichtigsten Befehle
 
