@@ -1,113 +1,121 @@
 # Pepp — Marketing-Landingpage
 
 Statische Marketing-Seite für **Pepp**, die deutsche Familien-App für Aufgaben, Taschengeld und
-Medienzeit. Ein einziges Ziel: App-Download. Kein Anwendungszustand, kein SPA-Framework, keine
-externen Ressourcen zur Laufzeit.
+Medienzeit. Sie hat ein einziges Ziel: zum App-Download führen. Es gibt keinen Anwendungszustand,
+kein SPA-Framework und keine externen Ressourcen zur Laufzeit — die Seite ist rein statisches HTML.
 
-Fünf Seiten: die Landingpage mit 15 Sektionen, dazu Impressum, Datenschutz, AGB und
-Barrierefreiheitserklärung.
+Sie besteht aus fünf Seiten: der eigentlichen Landingpage mit 15 Sektionen, plus Impressum,
+Datenschutz, AGB und Barrierefreiheitserklärung.
 
-> **Vor dem ersten Commit lesen:** [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
-> Der Bericht listet 127 offene Positionen, davon 3 Launch-Blocker. Die Seite ist **nicht**
-> launchbereit.
-
-## Stack
-
-|           |                                                                                    |
-| --------- | ---------------------------------------------------------------------------------- |
-| Generator | Astro 5.18.2, `output: 'static'`                                                   |
-| Sprache   | JavaScript und `.astro`, TypeScript nur für Komponenten-Props                      |
-| Styling   | CSS Custom Properties, keine Utility-Bibliothek                                    |
-| Animation | GSAP 3.12.5 mit ScrollTrigger                                                      |
-| Bilder    | `astro:assets` mit sharp, PNG → WebP beim Build                                    |
-| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt keine `.nvmrc` und kein `engines`-Feld) |
+> ⚠️ **Vor dem ersten Commit lesen:** [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md).
+> Der Bericht listet 127 offene Punkte, davon 3 Launch-Blocker. **Die Seite ist noch nicht
+> launchbereit.**
 
 ## Schnellstart
 
 ```bash
-git clone <repo-url> && cd pepp_final
+git clone <repo-url> && cd pepp-landingpage
 npm install
 npm run dev
 ```
 
-Danach läuft der Dev-Server auf <http://localhost:4321>. Es gibt **keine Umgebungsvariablen** und
-keine `.env` — siehe [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md). Drei Befehle, dann läuft es.
+Danach läuft der Dev-Server auf <http://localhost:4321>. Mehr braucht es nicht — es gibt keine
+Umgebungsvariablen und keine `.env`-Datei (Details: [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)).
 
-## Skripte
+## Stack
 
-### In `package.json`
+| Was       | Womit                                                                              |
+| --------- | ----------------------------------------------------------------------------------- |
+| Generator | Astro 5.18.2, `output: 'static'`                                                    |
+| Sprache   | JavaScript und `.astro`; TypeScript nur für Komponenten-Props                       |
+| Styling   | CSS Custom Properties, keine Utility-Bibliothek (kein Tailwind o. ä.)               |
+| Animation | GSAP 3.12.5 mit ScrollTrigger                                                       |
+| Bilder    | `astro:assets` mit sharp — PNG wird beim Build automatisch zu WebP                  |
+| Node      | v22.22.3, npm 10.9.8 (verifiziert; es gibt weder `.nvmrc` noch ein `engines`-Feld)   |
 
-| Befehl            | Was er tut                         | Status                               |
-| ----------------- | ---------------------------------- | ------------------------------------ |
-| `npm run dev`     | Dev-Server auf Port 4321           | funktioniert                         |
-| `npm run build`   | Baut nach `dist/` — 6 Seiten, ~7 s | funktioniert                         |
-| `npm run preview` | Serviert `dist/` lokal             | funktioniert, siehe Fallstrick unten |
-| `npm run check`   | `astro check` (strict)             | funktioniert, 0 Fehler               |
-| `npm run format`  | Prettier über das ganze Projekt    | funktioniert                         |
-| `npm run verify`  | **Abnahme-Prüfung**, 19 Regeln     | funktioniert, 19/19                  |
+## Die wichtigsten Befehle
 
-### Werkzeuge in `scripts/`
+Diese Befehle stehen in `package.json` und laufen alle:
 
-Acht Werkzeuge, alle als npm-Skript hinterlegt. Die Playwright-basierten brauchen einen
-laufenden Dev-Server.
+| Befehl             | Macht                                                | Status                     |
+| ------------------ | ----------------------------------------------------- | -------------------------- |
+| `npm run dev`       | Startet den Dev-Server auf Port 4321                  | funktioniert               |
+| `npm run build`     | Baut die Seite nach `dist/` (6 Seiten, ~7 s)          | funktioniert               |
+| `npm run preview`   | Serviert den `dist/`-Build lokal                      | funktioniert, siehe unten¹ |
+| `npm run check`     | `astro check` im strict-Modus                         | funktioniert, 0 Fehler     |
+| `npm run format`    | Formatiert das ganze Projekt mit Prettier             | funktioniert               |
+| `npm run verify`    | **Die Abnahme-Prüfung** — 19 automatisierte Regeln    | funktioniert, 19/19        |
 
-| Befehl                                         | Was er tut                                                                                                                                                             |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `node scripts/verify.mjs`                      | **Abnahme-Prüfung.** 19 harte Regeln: CTA-Disziplin, verbotene Begriffe, Kontrast, genau eine `<h1>`, Bedienbarkeit ohne JavaScript, Reduced Motion, Reflow bei 320 px |
-| `node scripts/shots.mjs [1440\|390\|320]`      | Sektions-Screenshots des eigenen Stands nach `.compare/`                                                                                                               |
-| `node scripts/compare.mjs [sektion]`           | Screenshot-Vergleich gegen die Design-Referenz                                                                                                                         |
-| `node scripts/measure.mjs [--save]`            | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie                                                                                                 |
-| `node scripts/palette.mjs [1440\|390\|320]`    | Prüft die Flächenverteilung gegen die 60/30/10-Regel                                                                                                                   |
-| `node scripts/freistellen.mjs <quelle> <ziel>` | Stellt gelieferte Renders frei und entsäumt sie                                                                                                                        |
+¹ siehe [Fallstricke](#fallstricke) unten.
 
-**`verify.mjs` ist das Qualitätstor dieses Projekts.** Vor jedem Commit laufen lassen:
+### `npm run verify` — vor jedem Commit ausführen
+
+Das ist das Qualitätstor des Projekts: 19 harte Regeln, unter anderem CTA-Disziplin, verbotene
+Begriffe, Kontrast, genau eine `<h1>` pro Seite, Bedienbarkeit ohne JavaScript, Reduced Motion
+und Reflow bei 320 px Breite. Der Dev-Server muss dafür laufen:
 
 ```bash
-npm run dev &          # muss laufen
+npm run dev &          # muss im Hintergrund laufen
 node scripts/verify.mjs
 ```
 
-Stand 17.08.2026: **19 bestanden, 0 Fehler.** Das Tor ist grün — die beiden Fehler bei
-320 px sind mit Blocker B1 behoben. Jeder neue Fehler gehört dir.
+Stand 17.08.2026: **19 von 19 bestanden.** Jeder neue Fehler, der danach auftaucht, gehört dir.
+
+### Weitere Werkzeuge in `scripts/`
+
+Die Playwright-basierten Skripte brauchen einen laufenden Dev-Server.
+
+| Befehl                                          | Macht                                                              |
+| ------------------------------------------------ | -------------------------------------------------------------------- |
+| `node scripts/verify.mjs`                        | Die Abnahme-Prüfung (siehe oben)                                     |
+| `node scripts/shots.mjs [1440\|390\|320]`        | Screenshottet jede Sektion des eigenen Stands nach `.compare/`       |
+| `node scripts/compare.mjs [sektion]`             | Vergleicht diese Screenshots mit der Design-Referenz                 |
+| `node scripts/measure.mjs [--save]`              | Misst Sektionsrhythmus, Höhe und Textmenge gegen die eigene Basislinie |
+| `node scripts/palette.mjs [1440\|390\|320]`      | Prüft die Flächenverteilung gegen die 60/30/10-Regel                 |
+| `node scripts/freistellen.mjs <quelle> <ziel>`   | Stellt gelieferte Renders frei und entsäumt sie                      |
 
 ## Fallstricke
 
-**Der Dev-Server hängt sich nach vielen Dateiänderungen auf.** `npm run verify` meldet dann
-Fehler, die der echte Build nicht hat — zweimal reproduziert. Dev-Server neu starten, dann
-noch einmal messen.
+Ein paar Dinge, die beim Arbeiten an diesem Projekt überraschen können:
 
-**`npm run preview` lauscht nur auf IPv6.** Der Server bindet `[::1]`, nicht `127.0.0.1`. Wenn
-`curl http://localhost:4321` nichts liefert, ist der Server trotzdem da:
+- **Dev-Server hängt sich nach vielen Dateiänderungen auf.** `npm run verify` meldet dann Fehler,
+  die der echte Build gar nicht hat (zweimal reproduziert). Abhilfe: Dev-Server neu starten und
+  noch einmal messen.
 
-```bash
-curl http://[::1]:4321/
-```
+- **`npm run preview` lauscht nur auf IPv6.** Der Server bindet an `[::1]`, nicht an `127.0.0.1`.
+  Falls `curl http://localhost:4321` leer bleibt, läuft der Server trotzdem — einfach so testen:
 
-**Die Playwright-Werkzeuge brauchen Browser.** Sind sie nicht da:
-`npx playwright install chromium`.
+  ```bash
+  curl http://[::1]:4321/
+  ```
 
-**Der Ordner „Pepp Final Design System/" ist nicht im Repo.** 241 MB Nachschlagewerk, keine
-Build-Abhängigkeit. Wo er liegt und wofür man ihn braucht: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md),
-Begründung in [docs/DECISIONS.md](docs/DECISIONS.md) (ADR-002).
+- **Die Playwright-Werkzeuge brauchen installierte Browser.** Fehlen sie:
+  `npx playwright install chromium`.
 
-## Wo was steht
+- **Der Ordner „Pepp Final Design System/" liegt nicht im Repo.** Es ist ein 241 MB großes
+  Nachschlagewerk, aber keine Build-Abhängigkeit. Wo er liegt und wofür man ihn braucht, steht in
+  [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md); die Begründung dazu in
+  [docs/DECISIONS.md](docs/DECISIONS.md) (ADR-002).
 
-| Frage                               | Datei                                                                            |
-| ----------------------------------- | -------------------------------------------------------------------------------- |
-| Wie ist das gebaut, was hängt woran | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                     |
-| Wie richte ich mich lokal ein       | [docs/SETUP.md](docs/SETUP.md)                                                   |
-| Welche Umgebungsvariablen gibt es   | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                       |
-| Wie ändere ich Preise, FAQ, Texte   | [docs/CONTENT.md](docs/CONTENT.md)                                               |
-| Warum ist das so und nicht anders   | [docs/DECISIONS.md](docs/DECISIONS.md)                                           |
-| Wie wird deployt                    | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                         |
-| Was tun, wenn etwas kaputt ist      | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                               |
-| Was ist offen                       | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md) |
+## Wo finde ich was?
 
-## Die wichtigste Regel
+| Frage                                | Datei                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------ |
+| Wie ist das gebaut, was hängt woran   | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)                                         |
+| Wie richte ich mich lokal ein         | [docs/SETUP.md](docs/SETUP.md)                                                       |
+| Welche Umgebungsvariablen gibt es     | [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md)                                           |
+| Wie ändere ich Preise, FAQ, Texte     | [docs/CONTENT.md](docs/CONTENT.md)                                                   |
+| Warum ist das so und nicht anders     | [docs/DECISIONS.md](docs/DECISIONS.md)                                               |
+| Wie wird deployt                      | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)                                             |
+| Was tue ich, wenn etwas kaputt ist    | [docs/RUNBOOK.md](docs/RUNBOOK.md)                                                   |
+| Was ist noch offen                    | [docs/AUDIT-2026-08-17.md](docs/AUDIT-2026-08-17.md), [HANDOVER.md](HANDOVER.md)     |
 
-**Preise und Store-URLs stehen an genau einer Stelle:** [`src/data/site.js`](src/data/site.js).
-Preissektion, FAQ und JSON-LD lesen alle von dort.
+## Die wichtigste Regel im Projekt
 
-Eine Ausnahme gibt es, und sie ist ein Bug: Die AGB in
-[`src/legal/agb.html`](src/legal/agb.html) enthalten hart codierte Preise, die
-den anderen widersprechen. Siehe Blocker B3.
+**Preise und Store-URLs stehen an genau einer einzigen Stelle:**
+[`src/data/site.js`](src/data/site.js). Preissektion, FAQ und JSON-LD lesen alle von dort — ändere
+Preise also nie an mehreren Stellen gleichzeitig.
+
+Eine Ausnahme gibt es, und sie ist ein bekannter Bug: Die AGB in
+[`src/legal/agb.html`](src/legal/agb.html) enthalten fest eingetragene Preise, die den Preisen an
+der zentralen Stelle widersprechen. Das ist Blocker B3 im Audit-Bericht.
